@@ -25,8 +25,11 @@ export function initTelegramBot() {
 
       if (!pendingAuth.has(chatId)) {
         // Assume this is the username
-        const foundUser = await prisma.user.findUnique({ where: { username: text }, include: { role: true } });
-        if (!foundUser || foundUser.role.level !== 1) {
+        const foundUser = await prisma.user.findFirst({ 
+          where: { username: { equals: text, mode: 'insensitive' } }, 
+          include: { role: true } 
+        });
+        if (!foundUser || (!foundUser.role.name.toLowerCase().includes('super') && foundUser.role.level > 1)) {
           bot.sendMessage(chatId, 'عذراً، هذا الحساب غير موجود أو ليس لديه صلاحيات المشرف العام.');
           return;
         }
