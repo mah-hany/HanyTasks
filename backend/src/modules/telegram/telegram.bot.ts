@@ -5,7 +5,7 @@ import bcrypt from 'bcryptjs';
 // State machine for conversations
 const pendingAuth = new Map<number, string>(); // chatId -> username (waiting for password)
 const awaitingUsername = new Set<number>();    // chatIds waiting for username input
-const sessionState = new Map<number, string>(); // chatId -> current state e.g. 'select_employee'
+const sessionState = new Map<number, string>(); // chatId -> current state e.g. 'awaiting_task_code'
 
 export function initTelegramBot() {
   const token = process.env.TELEGRAM_BOT_TOKEN || '7808940555:AAFvtJAdJFaaqV47_htRkRvdb97ub0duC_c';
@@ -112,6 +112,10 @@ export function initTelegramBot() {
       const empId = parseInt(data.replace('emp_overdue_', ''));
       await showEmployeeOverdueTasks(bot, chatId, empId);
 
+    } else if (data === 'menu_search_task') {
+      sessionState.set(chatId, 'awaiting_task_code');
+      await bot.sendMessage(chatId, '🔍 *البحث عن مهمة*\nأدخل كود المهمة (مثال: TASK-001):', { parse_mode: 'Markdown' });
+
     } else if (data === 'menu_departments') {
       const depts = await prisma.department.findMany({ include: { _count: { select: { users: true } } } });
       let msg = `🏢 *الأقسام (${depts.length})*\n\n`;
@@ -178,9 +182,25 @@ export function initTelegramBot() {
       return;
     }
 
-    // User is authenticated - handle text queries
+    // User is authenticated - handle state-based input first
+    if (sessionState.get(chatId) === 'awaiting_task_code') {
+      sessionState.delete(chatId);
+      await showTaskByCode(bot, chatId, text);
+      return;
+    }
+
+    // Handle text queries
     const lower = text.toLowerCase();
-    if (lower.includes('احصائيات') || lower.includes('إحصائيات') || lower.includes('stats')) {
+    if (lower.includes('بحث') || lower.includes('مهمة رقم') || lower.includes('task-')) {
+      // Extract task code if mentioned directly
+      const match = text.match(/[A-Za-z]+-\d+/i);
+      if (match) {
+        await showTaskByCode(bot, chatId, match[0]);
+      } else {
+        sessionState.set(chatId, 'awaiting_task_code');
+        await bot.sendMessage(chatId, '🔍 أدخل كود المهمة (مثال: TASK-001):');
+      }
+    } else if (lower.includes('احصائيات') || lower.includes('إحصائيات') || lower.includes('stats')) {
       const stats = await getSystemStats();
       await bot.sendMessage(chatId, `📊 إجمالي المهام: ${stats.totalTasks} | المكتملة: ${stats.completedTasks} | المتأخرة: ${stats.overdueTasks} | نسبة الإنجاز: ${stats.completionRate}%`);
     } else if (lower.includes('موظف') || lower.includes('موظفين')) {
@@ -191,6 +211,14 @@ export function initTelegramBot() {
     } else {
       await sendMainMenu(bot, chatId, 'يمكنك استخدام القائمة أدناه أو اسألني مباشرة:');
     }
+  });
+
+  // ── /task command shortcut ─────────────────────────────
+  bot.onText(/\/task (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const user = await getAuthenticatedUser(chatId);
+    if (!user) { await bot.sendMessage(chatId, '🔒 سجل دخولك أولاً /start'); return; }
+    await showTaskByCode(bot, chatId, match![1].trim());
   });
 
   console.log('Telegram Bot initialized and polling...');
@@ -205,7 +233,90 @@ async function sendMainMenu(bot: TelegramBot, chatId: number, caption?: string) 
         [{ text: '📊 إحصائيات النظام', callback_data: 'menu_stats' }],
         [{ text: '⚠️ المهام المتأخرة', callback_data: 'menu_overdue' }],
         [{ text: '👥 قائمة الموظفين', callback_data: 'menu_employees' }],
+        [{ text: '🔍 بحث عن مهمة', callback_data: 'menu_search_task' }],
         [{ text: '🏢 الأقسام', callback_data: 'menu_departments' }],
+      ]
+    }
+  });
+}
+
+// ── Helper: Show Task by Code ──────────────────────────────
+async function showTaskByCode(bot: TelegramBot, chatId: number, code: string) {
+  const task = await prisma.task.findFirst({
+    where: { taskCode: { equals: code.trim(), mode: 'insensitive' } },
+    include: {
+      assignedTo: { include: { department: true } },
+      createdBy: true,
+      category: true,
+    }
+  });
+
+  if (!task) {
+    await bot.sendMessage(chatId,
+      `❌ لم يتم العثور على مهمة بكود *${code}*\nتأكد من الكود وحاول مرة أخرى.`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🔍 بحث مرة أخرى', callback_data: 'menu_search_task' }],
+            [{ text: '🏠 القائمة الرئيسية', callback_data: 'main_menu' }],
+          ]
+        }
+      }
+    );
+    return;
+  }
+
+  const statusMap: Record<string, string> = {
+    PENDING: '⏳ معلقة',
+    IN_PROGRESS: '🔄 قيد التنفيذ',
+    IN_REVIEW: '👀 قيد المراجعة',
+    COMPLETED: '✅ مكتملة',
+    CANCELLED: '❌ ملغاة',
+  };
+
+  const priorityMap: Record<string, string> = {
+    LOW: '🟢 منخفضة',
+    MEDIUM: '🟡 متوسطة',
+    HIGH: '🔴 عالية',
+    URGENT: '🚨 عاجلة',
+  };
+
+  const startDate = task.startDate ? new Date(task.startDate).toLocaleDateString('ar-EG') : 'غير محدد';
+  const dueDate = task.dueDate ? new Date(task.dueDate).toLocaleDateString('ar-EG') : 'غير محدد';
+  const isOverdue = task.dueDate && task.dueDate < new Date() && task.status !== 'COMPLETED';
+  const daysDiff = task.dueDate ? Math.floor((Date.now() - new Date(task.dueDate).getTime()) / 86400000) : 0;
+
+  let msg =
+    `🗂️ *تفاصيل المهمة*\n\n` +
+    `📌 الكود: *${task.taskCode}*\n` +
+    `📝 العنوان: ${task.titleAr || task.title}\n` +
+    `🏷️ الحالة: ${statusMap[task.status] || task.status}\n` +
+    `⚡ الأولوية: ${priorityMap[task.priority] || task.priority}\n` +
+    `📅 تاريخ البداية: *${startDate}*\n` +
+    `⏰ تاريخ الانتهاء: *${dueDate}*\n`;
+
+  if (isOverdue) msg += `🚨 متأخرة بـ *${daysDiff}* ${daysDiff === 1 ? 'يوم' : 'أيام'}!\n`;
+  if (task.progress !== undefined && task.progress !== null) msg += `📈 نسبة الإنجاز: *${task.progress}%*\n`;
+
+  msg += `\n👤 *المسند إليه:*\n`;
+  msg += `   الاسم: ${task.assignedTo.fullNameAr}\n`;
+  msg += `   القسم: ${task.assignedTo.department?.nameAr || 'غير محدد'}\n`;
+
+  if (task.createdBy) msg += `\n🖊️ أنشأها: ${task.createdBy.fullNameAr}\n`;
+  if (task.category) msg += `📂 التصنيف: ${task.category.nameAr || task.category.name}\n`;
+  if (task.descriptionAr || task.description) {
+    const desc = task.descriptionAr || task.description || '';
+    msg += `\n📄 الوصف:\n_${desc.slice(0, 200)}${desc.length > 200 ? '...' : ''}_`;
+  }
+
+  await bot.sendMessage(chatId, msg, {
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '👤 عرض ملف الموظف', callback_data: `emp_${task.assignedToId}` }],
+        [{ text: '🔍 بحث عن مهمة أخرى', callback_data: 'menu_search_task' }],
+        [{ text: '🏠 القائمة الرئيسية', callback_data: 'main_menu' }],
       ]
     }
   });
