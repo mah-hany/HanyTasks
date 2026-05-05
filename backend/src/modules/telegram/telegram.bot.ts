@@ -2,116 +2,349 @@ import TelegramBot from 'node-telegram-bot-api';
 import prisma from '../../prisma/client';
 import bcrypt from 'bcryptjs';
 
+// State machine for conversations
+const pendingAuth = new Map<number, string>(); // chatId -> username (waiting for password)
+const awaitingUsername = new Set<number>();    // chatIds waiting for username input
+const sessionState = new Map<number, string>(); // chatId -> current state e.g. 'select_employee'
+
 export function initTelegramBot() {
   const token = process.env.TELEGRAM_BOT_TOKEN || '7808940555:AAFvtJAdJFaaqV47_htRkRvdb97ub0duC_c';
   if (!token) return;
 
   const bot = new TelegramBot(token, { polling: true });
-  const pendingAuth = new Map<number, string>(); // chatId -> username
 
-  bot.on('message', async (msg) => {
+  // ── /start command ────────────────────────────────────────
+  bot.onText(/\/start/, async (msg) => {
     const chatId = msg.chat.id;
-    const text = msg.text?.trim() || '';
+    const user = await getAuthenticatedUser(chatId);
 
-    // Check if user is already authenticated
-    const user = await prisma.user.findUnique({ where: { telegramChatId: String(chatId) }, include: { role: true } });
+    if (user) {
+      await bot.sendMessage(chatId, `مرحباً بعودتك ${user.fullNameAr}! 👋\nأنا مساعدك الذكي لنظام TaskFlow Pro.`);
+      await sendMainMenu(bot, chatId);
+    } else {
+      awaitingUsername.add(chatId);
+      await bot.sendMessage(
+        chatId,
+        '🔐 *مرحباً بك في TaskFlow Pro Bot*\n\nأنا مساعد إداري ذكي مخصص للمشرفين فقط.\nالرجاء إدخال اسم المستخدم (Username) للتحقق من صلاحياتك:',
+        { parse_mode: 'Markdown' }
+      );
+    }
+  });
 
+  // ── Callback queries (button presses) ────────────────────
+  bot.on('callback_query', async (query) => {
+    const chatId = query.message!.chat.id;
+    const data = query.data || '';
+    await bot.answerCallbackQuery(query.id);
+
+    const user = await getAuthenticatedUser(chatId);
     if (!user) {
-      // User is not authenticated
-      if (text.startsWith('/start')) {
-        bot.sendMessage(chatId, 'مرحباً بك في المساعد الذكي لنظام TaskFlow Pro! 🚀\nالرجاء إدخال اسم المستخدم (Username) للتحقق من هويتك:');
+      await bot.sendMessage(chatId, '🔒 يجب تسجيل الدخول أولاً. أرسل /start');
+      return;
+    }
+
+    // Main menu actions
+    if (data === 'menu_stats') {
+      const stats = await getSystemStats();
+      await bot.sendMessage(chatId,
+        `📊 *إحصائيات النظام الشاملة*\n\n` +
+        `👥 إجمالي الموظفين: *${stats.totalUsers}*\n` +
+        `✅ المهام المكتملة: *${stats.completedTasks}*\n` +
+        `🔄 قيد التنفيذ: *${stats.inProgressTasks}*\n` +
+        `⏳ قيد المراجعة: *${stats.reviewTasks}*\n` +
+        `⚠️ المتأخرة: *${stats.overdueTasks}*\n` +
+        `📋 إجمالي المهام: *${stats.totalTasks}*\n` +
+        `📈 نسبة الإنجاز: *${stats.completionRate}%*\n` +
+        `🏢 الأقسام: *${stats.totalDepts}*`,
+        { parse_mode: 'Markdown' }
+      );
+      await sendMainMenu(bot, chatId);
+
+    } else if (data === 'menu_overdue') {
+      const overdue = await getOverdueTasks();
+      if (overdue.length === 0) {
+        await bot.sendMessage(chatId, '🎉 ممتاز! لا توجد أي مهام متأخرة حالياً في النظام.');
+      } else {
+        let msg = `⚠️ *المهام المتأخرة (${overdue.length})*\n\n`;
+        overdue.slice(0, 15).forEach((t, i) => {
+          const days = Math.floor((Date.now() - new Date(t.dueDate!).getTime()) / 86400000);
+          msg += `${i + 1}. *${t.taskCode}* - ${t.titleAr || t.title}\n   👤 ${t.assignedTo.fullNameAr} | تأخر ${days} أيام\n\n`;
+        });
+        if (overdue.length > 15) msg += `_... و ${overdue.length - 15} مهمة أخرى_`;
+        await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
+      }
+      await sendMainMenu(bot, chatId);
+
+    } else if (data === 'menu_employees') {
+      const employees = await prisma.user.findMany({
+        where: { isActive: true },
+        include: { role: true, department: true },
+        orderBy: { fullNameAr: 'asc' },
+      });
+
+      if (employees.length === 0) {
+        await bot.sendMessage(chatId, 'لا يوجد موظفون نشطون في النظام.');
+        await sendMainMenu(bot, chatId);
         return;
       }
 
-      if (!pendingAuth.has(chatId)) {
-        // Assume this is the username
-        const foundUser = await prisma.user.findFirst({ 
-          where: { username: { equals: text, mode: 'insensitive' } }, 
-          include: { role: true } 
+      // Show list as inline buttons (max 20)
+      const buttons = employees.slice(0, 20).map(emp => ([{
+        text: `👤 ${emp.fullNameAr} (${emp.role.nameAr || emp.role.name})`,
+        callback_data: `emp_${emp.id}`
+      }]));
+      buttons.push([{ text: '🔙 القائمة الرئيسية', callback_data: 'main_menu' }]);
+
+      await bot.sendMessage(chatId, `👥 *قائمة الموظفين النشطين (${employees.length})*\nاختر موظفاً لعرض تفاصيله:`, {
+        parse_mode: 'Markdown',
+        reply_markup: { inline_keyboard: buttons }
+      });
+
+    } else if (data.startsWith('emp_')) {
+      const empId = parseInt(data.replace('emp_', ''));
+      await showEmployeeDetails(bot, chatId, empId);
+
+    } else if (data.startsWith('emp_tasks_')) {
+      const empId = parseInt(data.replace('emp_tasks_', ''));
+      await showEmployeeTasks(bot, chatId, empId);
+
+    } else if (data.startsWith('emp_overdue_')) {
+      const empId = parseInt(data.replace('emp_overdue_', ''));
+      await showEmployeeOverdueTasks(bot, chatId, empId);
+
+    } else if (data === 'menu_departments') {
+      const depts = await prisma.department.findMany({ include: { _count: { select: { users: true } } } });
+      let msg = `🏢 *الأقسام (${depts.length})*\n\n`;
+      depts.forEach(d => {
+        msg += `• *${d.nameAr || d.name}*: ${d._count.users} موظف\n`;
+      });
+      await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
+      await sendMainMenu(bot, chatId);
+
+    } else if (data === 'main_menu') {
+      await sendMainMenu(bot, chatId);
+    }
+  });
+
+  // ── Text messages ─────────────────────────────────────────
+  bot.on('message', async (msg) => {
+    if (msg.text?.startsWith('/')) return; // handled by onText
+    const chatId = msg.chat.id;
+    const text = msg.text?.trim() || '';
+
+    const user = await getAuthenticatedUser(chatId);
+
+    if (!user) {
+      // Auth flow
+      if (awaitingUsername.has(chatId)) {
+        // Step 1: username
+        const foundUser = await prisma.user.findFirst({
+          where: { username: { equals: text, mode: 'insensitive' } },
+          include: { role: true }
         });
         if (!foundUser || (!foundUser.role.name.toLowerCase().includes('super') && foundUser.role.level > 1)) {
-          bot.sendMessage(chatId, 'عذراً، هذا الحساب غير موجود أو ليس لديه صلاحيات المشرف العام.');
+          await bot.sendMessage(chatId, '❌ هذا الحساب غير موجود أو لا يملك صلاحيات المشرف العام.\nأعد المحاولة أو تواصل مع الدعم الفني.');
           return;
         }
-        pendingAuth.set(chatId, text);
-        bot.sendMessage(chatId, 'تم العثور على الحساب. يرجى إدخال كلمة المرور (Password):');
+        awaitingUsername.delete(chatId);
+        pendingAuth.set(chatId, foundUser.username);
+        await bot.sendMessage(chatId, `✅ تم العثور على الحساب: *${foundUser.fullNameAr}*\nالرجاء إدخال كلمة المرور:`, { parse_mode: 'Markdown' });
         return;
-      } else {
-        // Assume this is the password
+      }
+
+      if (pendingAuth.has(chatId)) {
+        // Step 2: password
         const username = pendingAuth.get(chatId)!;
         const foundUser = await prisma.user.findUnique({ where: { username } });
         if (!foundUser) return;
 
         const isMatch = await bcrypt.compare(text, foundUser.passwordHash);
         if (isMatch) {
-          await prisma.user.update({
-            where: { id: foundUser.id },
-            data: { telegramChatId: String(chatId) }
-          });
+          await prisma.user.update({ where: { id: foundUser.id }, data: { telegramChatId: String(chatId) } });
           pendingAuth.delete(chatId);
-          bot.sendMessage(chatId, `تم التحقق بنجاح! مرحباً بك ${foundUser.fullNameAr}. 🎉\nيمكنك الآن سؤالي عن أي شيء يخص النظام.`);
-          bot.sendMessage(chatId, 'يمكنك تجربة الأوامر التالية:\n- "كم عدد المهام؟"\n- "المهام المتأخرة"\n- "نسبة الانجاز"\n- "احصائيات النظام"');
+          await bot.sendMessage(chatId, `🎉 *تم تسجيل الدخول بنجاح!*\nمرحباً بك ${foundUser.fullNameAr}.`, { parse_mode: 'Markdown' });
+          await sendMainMenu(bot, chatId);
         } else {
-          bot.sendMessage(chatId, 'كلمة المرور غير صحيحة. يرجى إرسال اسم المستخدم للبدء من جديد.');
           pendingAuth.delete(chatId);
+          awaitingUsername.add(chatId);
+          await bot.sendMessage(chatId, '❌ كلمة المرور غير صحيحة. أعد إدخال اسم المستخدم:');
         }
         return;
       }
-    }
 
-    // User is authenticated
-    if (text === '/start') {
-      bot.sendMessage(chatId, `مرحباً بعودتك ${user.fullNameAr}! أنا جاهز لأي استفسار حول TaskFlow Pro.`);
+      // Not in any auth flow
+      awaitingUsername.add(chatId);
+      await bot.sendMessage(chatId, '🔒 يجب تسجيل الدخول أولاً.\nأرسل /start أو أدخل اسم المستخدم:');
       return;
     }
 
-    // Keyword based AI
-    if (text.includes('احصائيات') || text.includes('نسبة') || text.includes('عدد المهام')) {
+    // User is authenticated - handle text queries
+    const lower = text.toLowerCase();
+    if (lower.includes('احصائيات') || lower.includes('إحصائيات') || lower.includes('stats')) {
       const stats = await getSystemStats();
-      bot.sendMessage(chatId, `📊 **إحصائيات النظام العامة:**\n\n- إجمالي المهام: ${stats.totalTasks}\n- المهام المكتملة: ${stats.completedTasks} ✅\n- المهام المتأخرة: ${stats.overdueTasks} ⚠️\n- نسبة الإنجاز: ${stats.completionRate}%\n- عدد الموظفين: ${stats.totalEmployees}`);
-    } else if (text.includes('تأخير') || text.includes('متأخرة')) {
-      const overdue = await getOverdueTasks();
-      if (overdue.length === 0) {
-        bot.sendMessage(chatId, 'ممتاز! لا يوجد أي مهام متأخرة حالياً في النظام. 🎉');
-      } else {
-        let msgStr = `⚠️ يوجد ${overdue.length} مهام متأخرة:\n\n`;
-        overdue.slice(0, 10).forEach(t => {
-          msgStr += `- ${t.taskCode}: ${t.titleAr || t.title} (للموظف: ${t.assignedTo.fullNameAr})\n`;
-        });
-        if (overdue.length > 10) msgStr += `\n... وهناك ${overdue.length - 10} مهام أخرى متأخرة.`;
-        bot.sendMessage(chatId, msgStr);
-      }
-    } else if (text.includes('موظفين')) {
-      const activeUsers = await prisma.user.count({ where: { isActive: true } });
-      bot.sendMessage(chatId, `👥 يوجد حالياً ${activeUsers} موظفين نشطين في النظام.`);
+      await bot.sendMessage(chatId, `📊 إجمالي المهام: ${stats.totalTasks} | المكتملة: ${stats.completedTasks} | المتأخرة: ${stats.overdueTasks} | نسبة الإنجاز: ${stats.completionRate}%`);
+    } else if (lower.includes('موظف') || lower.includes('موظفين')) {
+      // Trigger employee menu
+      bot.emit('callback_query', { id: '0', message: { chat: { id: chatId } }, data: 'menu_employees' } as any);
+    } else if (lower.includes('متأخر') || lower.includes('تأخير')) {
+      bot.emit('callback_query', { id: '0', message: { chat: { id: chatId } }, data: 'menu_overdue' } as any);
     } else {
-      bot.sendMessage(chatId, 'عذراً، لم أفهم سؤالك. يمكنك سؤالي عن: "الاحصائيات"، "المهام المتأخرة"، أو "عدد الموظفين". وسيتم ربطي بنموذج ذكاء اصطناعي قريباً للإجابة بشكل أفضل! 🤖');
+      await sendMainMenu(bot, chatId, 'يمكنك استخدام القائمة أدناه أو اسألني مباشرة:');
     }
   });
 
   console.log('Telegram Bot initialized and polling...');
 }
 
-async function getSystemStats() {
-  const totalTasks = await prisma.task.count();
-  const completedTasks = await prisma.task.count({ where: { status: 'COMPLETED' } });
-  
-  const today = new Date();
-  const overdueTasks = await prisma.task.count({
-    where: { dueDate: { lt: today }, status: { not: 'COMPLETED' } }
+// ── Helper: Send Main Menu ─────────────────────────────────
+async function sendMainMenu(bot: TelegramBot, chatId: number, caption?: string) {
+  await bot.sendMessage(chatId, caption || '📋 *القائمة الرئيسية* - اختر ما تريد:', {
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '📊 إحصائيات النظام', callback_data: 'menu_stats' }],
+        [{ text: '⚠️ المهام المتأخرة', callback_data: 'menu_overdue' }],
+        [{ text: '👥 قائمة الموظفين', callback_data: 'menu_employees' }],
+        [{ text: '🏢 الأقسام', callback_data: 'menu_departments' }],
+      ]
+    }
   });
-
-  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  const totalEmployees = await prisma.user.count();
-
-  return { totalTasks, completedTasks, overdueTasks, completionRate, totalEmployees };
 }
 
-async function getOverdueTasks() {
+// ── Helper: Employee Details ───────────────────────────────
+async function showEmployeeDetails(bot: TelegramBot, chatId: number, empId: number) {
+  const emp = await prisma.user.findUnique({
+    where: { id: empId },
+    include: {
+      role: true,
+      department: true,
+      _count: { select: { assignedTasks: true } }
+    }
+  });
+  if (!emp) return;
+
+  const completedCount = await prisma.task.count({ where: { assignedToId: empId, status: 'COMPLETED' } });
+  const overdueCount = await prisma.task.count({
+    where: { assignedToId: empId, dueDate: { lt: new Date() }, status: { not: 'COMPLETED' } }
+  });
+
+  const msg =
+    `👤 *${emp.fullNameAr}*\n` +
+    `🏷️ المنصب: ${emp.role.nameAr || emp.role.name}\n` +
+    `🏢 القسم: ${emp.department?.nameAr || emp.department?.name || 'غير محدد'}\n` +
+    `📋 إجمالي المهام: ${emp._count.assignedTasks}\n` +
+    `✅ المكتملة: ${completedCount}\n` +
+    `⚠️ المتأخرة: ${overdueCount}\n` +
+    `📧 البريد: ${emp.email || 'غير محدد'}`;
+
+  await bot.sendMessage(chatId, msg, {
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '📋 كل مهامه', callback_data: `emp_tasks_${empId}` }],
+        [{ text: '⚠️ مهامه المتأخرة', callback_data: `emp_overdue_${empId}` }],
+        [{ text: '🔙 قائمة الموظفين', callback_data: 'menu_employees' }],
+        [{ text: '🏠 القائمة الرئيسية', callback_data: 'main_menu' }],
+      ]
+    }
+  });
+}
+
+// ── Helper: Employee Tasks ─────────────────────────────────
+async function showEmployeeTasks(bot: TelegramBot, chatId: number, empId: number) {
+  const emp = await prisma.user.findUnique({ where: { id: empId } });
+  const tasks = await prisma.task.findMany({
+    where: { assignedToId: empId },
+    orderBy: { createdAt: 'desc' },
+    take: 10,
+  });
+
+  if (tasks.length === 0) {
+    await bot.sendMessage(chatId, `لا توجد مهام مسندة لـ *${emp?.fullNameAr}*`, { parse_mode: 'Markdown' });
+    await showEmployeeDetails(bot, chatId, empId);
+    return;
+  }
+
+  const statusEmoji: Record<string, string> = {
+    PENDING: '⏳', IN_PROGRESS: '🔄', IN_REVIEW: '👀', COMPLETED: '✅', CANCELLED: '❌'
+  };
+
+  let msg = `📋 *مهام ${emp?.fullNameAr} (آخر ${tasks.length})*\n\n`;
+  tasks.forEach((t, i) => {
+    const emoji = statusEmoji[t.status] || '📌';
+    msg += `${i + 1}. ${emoji} *${t.taskCode}* - ${t.titleAr || t.title}\n`;
+  });
+
+  await bot.sendMessage(chatId, msg, {
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '⚠️ المتأخرة فقط', callback_data: `emp_overdue_${empId}` }],
+        [{ text: '🔙 رجوع للموظف', callback_data: `emp_${empId}` }],
+        [{ text: '🏠 القائمة الرئيسية', callback_data: 'main_menu' }],
+      ]
+    }
+  });
+}
+
+// ── Helper: Employee Overdue Tasks ─────────────────────────
+async function showEmployeeOverdueTasks(bot: TelegramBot, chatId: number, empId: number) {
+  const emp = await prisma.user.findUnique({ where: { id: empId } });
+  const tasks = await prisma.task.findMany({
+    where: { assignedToId: empId, dueDate: { lt: new Date() }, status: { not: 'COMPLETED' } },
+    orderBy: { dueDate: 'asc' },
+  });
+
+  if (tasks.length === 0) {
+    await bot.sendMessage(chatId, `🎉 ممتاز! لا توجد مهام متأخرة للموظف *${emp?.fullNameAr}*`, { parse_mode: 'Markdown' });
+  } else {
+    let msg = `⚠️ *المهام المتأخرة لـ ${emp?.fullNameAr} (${tasks.length})*\n\n`;
+    tasks.forEach((t, i) => {
+      const days = Math.floor((Date.now() - new Date(t.dueDate!).getTime()) / 86400000);
+      msg += `${i + 1}. *${t.taskCode}* - ${t.titleAr || t.title}\n   تأخر *${days}* ${days === 1 ? 'يوم' : 'أيام'}\n\n`;
+    });
+    await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
+  }
+
+  await bot.sendMessage(chatId, 'اختر:', {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '🔙 رجوع للموظف', callback_data: `emp_${empId}` }],
+        [{ text: '🏠 القائمة الرئيسية', callback_data: 'main_menu' }],
+      ]
+    }
+  });
+}
+
+// ── Helper: Get authenticated user ────────────────────────
+async function getAuthenticatedUser(chatId: number) {
+  return prisma.user.findUnique({
+    where: { telegramChatId: String(chatId) },
+    include: { role: true }
+  });
+}
+
+// ── Helper: System stats ───────────────────────────────────
+async function getSystemStats() {
   const today = new Date();
+  const [totalTasks, completedTasks, inProgressTasks, reviewTasks, overdueTasks, totalUsers, totalDepts] = await Promise.all([
+    prisma.task.count(),
+    prisma.task.count({ where: { status: 'COMPLETED' } }),
+    prisma.task.count({ where: { status: 'IN_PROGRESS' } }),
+    prisma.task.count({ where: { status: 'IN_REVIEW' } }),
+    prisma.task.count({ where: { dueDate: { lt: today }, status: { not: 'COMPLETED' } } }),
+    prisma.user.count({ where: { isActive: true } }),
+    prisma.department.count(),
+  ]);
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  return { totalTasks, completedTasks, inProgressTasks, reviewTasks, overdueTasks, totalUsers, totalDepts, completionRate };
+}
+
+// ── Helper: All overdue tasks ──────────────────────────────
+async function getOverdueTasks() {
   return prisma.task.findMany({
-    where: { dueDate: { lt: today }, status: { not: 'COMPLETED' } },
+    where: { dueDate: { lt: new Date() }, status: { not: 'COMPLETED' } },
     include: { assignedTo: true },
-    orderBy: { dueDate: 'asc' }
+    orderBy: { dueDate: 'asc' },
   });
 }
