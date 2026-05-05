@@ -18,7 +18,18 @@ const app = express();
 
 // ── Middleware ────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:4200',
+  origin: (origin, callback) => {
+    const allowed = [
+      'http://localhost:4200',
+      'https://hany-tasks.vercel.app',
+    ];
+    // Allow any vercel.app preview URL or no origin (mobile apps, curl, etc.)
+    if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Allow all for now during setup
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
