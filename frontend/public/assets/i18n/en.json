@@ -1,0 +1,89 @@
+{
+  "APP_SUBTITLE": "Enterprise Task Management System",
+  "AUTH": {
+    "LOGIN_TITLE": "Welcome Back",
+    "LOGIN_SUBTITLE": "Please sign in to your account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "LOGIN_BTN": "Sign In",
+    "LOGGING_IN": "Signing in...",
+    "FIRST_LOGIN_MSG": "For security, please change your password on first login.",
+    "CURRENT_PASSWORD": "Current Password",
+    "NEW_PASSWORD": "New Password",
+    "CHANGE_PASSWORD": "Change Password"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "TASKS": "Tasks",
+    "USERS": "Employees",
+    "ORG_CHART": "Org Chart",
+    "REPORTS": "Reports",
+    "AUDIT": "Audit Log",
+    "NOTIFICATIONS": "Notifications",
+    "SETTINGS": "Settings",
+    "PROFILE": "Profile",
+    "LOGOUT": "Logout"
+  },
+  "DASHBOARD": {
+    "WELCOME": "Welcome",
+    "TOTAL_TASKS": "Total Tasks",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED_WEEK": "Completed This Week",
+    "OVERDUE": "Overdue Tasks",
+    "TEAM_PRODUCTIVITY": "Team Productivity",
+    "STATUS_DISTRIBUTION": "Status Distribution",
+    "RECENT_TASKS": "Recent Tasks",
+    "NO_TASKS": "No recent tasks found"
+  },
+  "TASKS": {
+    "TITLE": "Task Management",
+    "NEW_TASK": "New Task",
+    "KANBAN_VIEW": "Kanban View",
+    "LIST_VIEW": "List View",
+    "SEARCH": "Search tasks...",
+    "ALL_STATUS": "All Statuses",
+    "ALL_PRIORITY": "All Priorities",
+    "NO_TASKS": "No tasks found matching your criteria",
+    "TASK_CODE": "Code",
+    "ASSIGNED_TO": "Assigned To",
+    "CREATED_BY": "Created By",
+    "DUE_DATE": "Due Date",
+    "PROGRESS": "Progress",
+    "TIMELINE": "Timeline",
+    "COMMENTS": "Comments",
+    "ATTACHMENTS": "Attachments",
+    "ADD_COMMENT": "Add a comment...",
+    "DRAG_DROP": "Drag files here or click to upload"
+  },
+  "USERS": {
+    "TITLE": "Employees Directory",
+    "NEW_USER": "Add Employee",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive"
+  },
+  "ORG_CHART": {
+    "TITLE": "Organization Chart",
+    "SEARCH": "Search employee or code..."
+  },
+  "REPORTS": {
+    "TITLE": "Reports & Analytics",
+    "ASSIGNED": "Assigned",
+    "COMPLETED": "Completed",
+    "OVERDUE": "Overdue",
+    "COMPLETION_RATE": "Completion Rate"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "Notifications",
+    "MARK_ALL_READ": "Mark all as read",
+    "NO_NOTIFICATIONS": "You're all caught up!"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "VIEW": "View",
+    "DESCRIPTION": "Description",
+    "SEARCH": "Search...",
+    "NO_DATA": "No data available",
+    "LOADING": "Loading..."
+  }
+}

@@ -1,0 +1,562 @@
+[2026-05-05 20:41:51] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 20:41:51] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 20:57:09] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 21:13:46] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:11] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:11] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:19] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:24] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 21:20:28] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:29] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:29] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:33] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:34] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:39] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:40] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:40] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:21:01] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:21:12] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 21:26:49] error: Error: كلمة المرور الحالية غير صحيحة / Current password incorrect
+    at Object.changePassword (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\auth\auth.service.ts:124:23)
+    at async changePassword (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\auth\auth.controller.ts:40:22)
+[2026-05-05 21:28:04] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:08] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:14] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:51] error: Prisma error: 
+Invalid `prisma.user.update()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:36
+
+  102   phone: string; departmentId: number; roleId: number;
+  103   managerId: number; isActive: boolean; profilePhoto: string; preferredLang: string;
+  104 }>) {
+→ 105   const user = await prisma.user.update({
+          where: {
+            id: 5
+          },
+          data: {
+            id: 5,
+            ~~
+            employeeCode: "EMP-2026-9051",
+            fullName: "mohamud mohamed",
+            fullNameAr: "محمود محمد",
+            username: "بندق",
+            email: "mh.abdel1997@gmail.com",
+            phone: null,
+            departmentId: 3,
+            roleId: 4,
+            managerId: 1,
+            isActive: true,
+            isFirstLogin: true,
+            failedLoginCount: 0,
+            lockedUntil: null,
+            profilePhoto: null,
+            preferredLang: "ar",
+            createdAt: "2026-05-05T18:16:35.806Z",
+            updatedAt: "2026-05-05T18:16:35.806Z",
+            lastLoginAt: null,
+            role: {
+              id: 4,
+              name: "SUPERVISOR",
+              nameAr: "مشرف",
+              level: 4
+            },
+            department: {
+              id: 3,
+              name: "Finance",
+              nameAr: "المالية",
+              code: "DEP-FIN",
+              parentId: null,
+              managerId: null,
+              isActive: true,
+              createdAt: "2026-05-05T17:12:39.899Z",
+              updatedAt: "2026-05-05T17:12:39.899Z"
+            },
+            manager: null,
+            subordinates: [],
+            tasksAssigned: [
+              {
+                id: 2,
+                taskCode: "TSK-2026-23294",
+                title: "تحليل اوراق الدفع الاهلى الكويتى",
+                titleAr: "تحليل اوراق الدفع الاهلى الكويتى",
+                description: "تحليل اوراق الدفع الاهلى الكويتى",
+                categoryId: 3,
+                priority: "URGENT",
+                status: "NEW",
+                assignedToId: 5,
+                createdById: 1,
+                startDate: "2026-05-04T21:00:00.000Z",
+                dueDate: null,
+                completedDate: null,
+                progressPercent: 0,
+                createdAt: "2026-05-05T18:18:38.945Z",
+                updatedAt: "2026-05-05T18:18:38.945Z",
+                category: {
+                  id: 3,
+                  name: "Finance",
+                  nameAr: "مالية",
+                  color: "#F18F01",
+                  icon: "attach_money"
+                }
+              }
+            ],
+        ?   passwordHash?: String | StringFieldUpdateOperationsInput,
+        ?   managedDepts?: DepartmentUpdateManyWithoutManagerNestedInput,
+        ?   tasksCreated?: TaskUpdateManyWithoutCreatedByNestedInput,
+        ?   taskComments?: TaskCommentUpdateManyWithoutUserNestedInput,
+        ?   statusChanges?: TaskStatusHistoryUpdateManyWithoutChangedByNestedInput,
+        ?   notifications?: NotificationUpdateManyWithoutReceiverUserNestedInput,
+        ?   sentNotifications?: NotificationUpdateManyWithoutSenderUserNestedInput,
+        ?   auditLogs?: AuditLogUpdateManyWithoutUserNestedInput,
+        ?   transferHistory?: EmployeeTransferUpdateManyWithoutUserNestedInput
+          },
+          include: {
+            role: true,
+            department: true
+          }
+        })
+
+Unknown argument `id`. Available options are marked with ?.
+[2026-05-05 21:28:51] error: PrismaClientValidationError: 
+Invalid `prisma.user.update()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:36
+
+  102   phone: string; departmentId: number; roleId: number;
+  103   managerId: number; isActive: boolean; profilePhoto: string; preferredLang: string;
+  104 }>) {
+→ 105   const user = await prisma.user.update({
+          where: {
+            id: 5
+          },
+          data: {
+            id: 5,
+            ~~
+            employeeCode: "EMP-2026-9051",
+            fullName: "mohamud mohamed",
+            fullNameAr: "محمود محمد",
+            username: "بندق",
+            email: "mh.abdel1997@gmail.com",
+            phone: null,
+            departmentId: 3,
+            roleId: 4,
+            managerId: 1,
+            isActive: true,
+            isFirstLogin: true,
+            failedLoginCount: 0,
+            lockedUntil: null,
+            profilePhoto: null,
+            preferredLang: "ar",
+            createdAt: "2026-05-05T18:16:35.806Z",
+            updatedAt: "2026-05-05T18:16:35.806Z",
+            lastLoginAt: null,
+            role: {
+              id: 4,
+              name: "SUPERVISOR",
+              nameAr: "مشرف",
+              level: 4
+            },
+            department: {
+              id: 3,
+              name: "Finance",
+              nameAr: "المالية",
+              code: "DEP-FIN",
+              parentId: null,
+              managerId: null,
+              isActive: true,
+              createdAt: "2026-05-05T17:12:39.899Z",
+              updatedAt: "2026-05-05T17:12:39.899Z"
+            },
+            manager: null,
+            subordinates: [],
+            tasksAssigned: [
+              {
+                id: 2,
+                taskCode: "TSK-2026-23294",
+                title: "تحليل اوراق الدفع الاهلى الكويتى",
+                titleAr: "تحليل اوراق الدفع الاهلى الكويتى",
+                description: "تحليل اوراق الدفع الاهلى الكويتى",
+                categoryId: 3,
+                priority: "URGENT",
+                status: "NEW",
+                assignedToId: 5,
+                createdById: 1,
+                startDate: "2026-05-04T21:00:00.000Z",
+                dueDate: null,
+                completedDate: null,
+                progressPercent: 0,
+                createdAt: "2026-05-05T18:18:38.945Z",
+                updatedAt: "2026-05-05T18:18:38.945Z",
+                category: {
+                  id: 3,
+                  name: "Finance",
+                  nameAr: "مالية",
+                  color: "#F18F01",
+                  icon: "attach_money"
+                }
+              }
+            ],
+        ?   passwordHash?: String | StringFieldUpdateOperationsInput,
+        ?   managedDepts?: DepartmentUpdateManyWithoutManagerNestedInput,
+        ?   tasksCreated?: TaskUpdateManyWithoutCreatedByNestedInput,
+        ?   taskComments?: TaskCommentUpdateManyWithoutUserNestedInput,
+        ?   statusChanges?: TaskStatusHistoryUpdateManyWithoutChangedByNestedInput,
+        ?   notifications?: NotificationUpdateManyWithoutReceiverUserNestedInput,
+        ?   sentNotifications?: NotificationUpdateManyWithoutSenderUserNestedInput,
+        ?   auditLogs?: AuditLogUpdateManyWithoutUserNestedInput,
+        ?   transferHistory?: EmployeeTransferUpdateManyWithoutUserNestedInput
+          },
+          include: {
+            role: true,
+            department: true
+          }
+        })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async Object.update (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:18)
+    at async update (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.controller.ts:47:20)
+[2026-05-05 21:29:48] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:29:56] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:58:05] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:01:23] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:07:01] error: Prisma error: 
+Invalid `prisma.user.delete()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:171:31
+
+  168 await prisma.notification.deleteMany({ where: { OR: [{ receiverId: id }, { senderId: id }] } });
+  169 
+  170 // Delete user
+→ 171 await prisma.user.delete(
+Foreign key constraint violated on the foreign key
+[2026-05-05 22:07:01] error: Error: Cannot delete this user because they are linked to tasks, comments, or other records. Deactivate them instead.
+    at Object.delete (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:175:15)
+    at async delete (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.controller.ts:86:20)
+[2026-05-05 22:46:50] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:46:50] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:22:22] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)

@@ -1,0 +1,89 @@
+{
+  "APP_SUBTITLE": "نظام إدارة المهام المؤسسي",
+  "AUTH": {
+    "LOGIN_TITLE": "مرحباً بك",
+    "LOGIN_SUBTITLE": "الرجاء تسجيل الدخول لحسابك",
+    "USERNAME": "اسم المستخدم",
+    "PASSWORD": "كلمة المرور",
+    "LOGIN_BTN": "تسجيل الدخول",
+    "LOGGING_IN": "جاري تسجيل الدخول...",
+    "FIRST_LOGIN_MSG": "لدواعي أمنية، يرجى تغيير كلمة المرور في أول تسجيل دخول.",
+    "CURRENT_PASSWORD": "كلمة المرور الحالية",
+    "NEW_PASSWORD": "كلمة المرور الجديدة",
+    "CHANGE_PASSWORD": "تغيير كلمة المرور"
+  },
+  "NAV": {
+    "DASHBOARD": "لوحة القيادة",
+    "TASKS": "المهام",
+    "USERS": "الموظفين",
+    "ORG_CHART": "الهيكل التنظيمي",
+    "REPORTS": "التقارير",
+    "AUDIT": "سجل النظام",
+    "NOTIFICATIONS": "الإشعارات",
+    "SETTINGS": "الإعدادات",
+    "PROFILE": "الملف الشخصي",
+    "LOGOUT": "تسجيل خروج"
+  },
+  "DASHBOARD": {
+    "WELCOME": "مرحباً",
+    "TOTAL_TASKS": "إجمالي المهام",
+    "IN_PROGRESS": "قيد التنفيذ",
+    "COMPLETED_WEEK": "المكتملة هذا الأسبوع",
+    "OVERDUE": "المهام المتأخرة",
+    "TEAM_PRODUCTIVITY": "إنتاجية فريق العمل",
+    "STATUS_DISTRIBUTION": "توزيع حالات المهام",
+    "RECENT_TASKS": "أحدث المهام",
+    "NO_TASKS": "لا توجد مهام حديثة"
+  },
+  "TASKS": {
+    "TITLE": "إدارة المهام",
+    "NEW_TASK": "مهمة جديدة",
+    "KANBAN_VIEW": "عرض لوحة كانبان",
+    "LIST_VIEW": "عرض القائمة",
+    "SEARCH": "البحث في المهام...",
+    "ALL_STATUS": "جميع الحالات",
+    "ALL_PRIORITY": "جميع الأولويات",
+    "NO_TASKS": "لا توجد مهام تطابق معايير البحث",
+    "TASK_CODE": "الكود",
+    "ASSIGNED_TO": "مسندة إلى",
+    "CREATED_BY": "بواسطة",
+    "DUE_DATE": "تاريخ الاستحقاق",
+    "PROGRESS": "نسبة الإنجاز",
+    "TIMELINE": "المسار الزمني",
+    "COMMENTS": "التعليقات",
+    "ATTACHMENTS": "المرفقات",
+    "ADD_COMMENT": "أضف تعليقاً...",
+    "DRAG_DROP": "اسحب الملفات هنا أو انقر للرفع"
+  },
+  "USERS": {
+    "TITLE": "دليل الموظفين",
+    "NEW_USER": "إضافة موظف",
+    "ACTIVE": "نشط",
+    "INACTIVE": "غير نشط"
+  },
+  "ORG_CHART": {
+    "TITLE": "الهيكل التنظيمي",
+    "SEARCH": "ابحث باسم الموظف أو الكود..."
+  },
+  "REPORTS": {
+    "TITLE": "التقارير والتحليلات",
+    "ASSIGNED": "المسندة",
+    "COMPLETED": "المكتملة",
+    "OVERDUE": "المتأخرة",
+    "COMPLETION_RATE": "نسبة الإنجاز"
+  },
+  "NOTIFICATIONS": {
+    "TITLE": "الإشعارات",
+    "MARK_ALL_READ": "تحديد الكل كمقروء",
+    "NO_NOTIFICATIONS": "لا توجد إشعارات جديدة!"
+  },
+  "COMMON": {
+    "SAVE": "حفظ",
+    "CANCEL": "إلغاء",
+    "VIEW": "عرض",
+    "DESCRIPTION": "الوصف",
+    "SEARCH": "بحث...",
+    "NO_DATA": "لا توجد بيانات",
+    "LOADING": "جاري التحميل..."
+  }
+}

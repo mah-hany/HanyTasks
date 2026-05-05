@@ -1,0 +1,5 @@
+export type TaskStatus = 'NEW' | 'IN_PROGRESS' | 'UNDER_REVIEW' | 'REVISION_REQUIRED' | 'COMPLETED' | 'CANCELLED';
+
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+
+export type NotificationType = 'TASK_ASSIGNED' | 'TASK_COMPLETED' | 'TASK_OVERDUE' | 'TASK_REVISION' | 'TASK_SUBMITTED' | 'TASK_APPROVED' | 'SYSTEM';

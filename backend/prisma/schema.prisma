@@ -1,0 +1,270 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+// ─────────────────────────────────────────
+//  ROLES & PERMISSIONS
+// ─────────────────────────────────────────
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique // SUPERADMIN | ADMIN | MANAGER | SUPERVISOR | EMPLOYEE
+  nameAr      String
+  level       Int          // 1=SUPERADMIN 5=EMPLOYEE
+  permissions Permission[]
+  users       User[]
+
+  @@map("tbl_Roles")
+}
+
+model Permission {
+  id       Int     @id @default(autoincrement())
+  roleId   Int
+  module   String  // USERS | TASKS | DEPARTMENTS | REPORTS | AUDIT
+  canCreate  Boolean @default(false)
+  canRead    Boolean @default(true)
+  canUpdate  Boolean @default(false)
+  canDelete  Boolean @default(false)
+  canAssign  Boolean @default(false)
+  canReport  Boolean @default(false)
+
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([roleId, module])
+  @@map("tbl_Permissions")
+}
+
+// ─────────────────────────────────────────
+//  DEPARTMENTS (Self-referencing hierarchy)
+// ─────────────────────────────────────────
+model Department {
+  id             Int          @id @default(autoincrement())
+  name           String
+  nameAr         String
+  code           String       @unique // DEP-HR, DEP-IT, etc.
+  parentId       Int?
+  managerId      Int?
+  isActive       Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  parent         Department?  @relation("DeptHierarchy", fields: [parentId], references: [id])
+  children       Department[] @relation("DeptHierarchy")
+  users          User[]
+  manager        User?        @relation("DeptManager", fields: [managerId], references: [id])
+
+  @@map("tbl_Departments")
+}
+
+// ─────────────────────────────────────────
+//  USERS / EMPLOYEES
+// ─────────────────────────────────────────
+model User {
+  id               Int       @id @default(autoincrement())
+  employeeCode     String    @unique // EMP-2026-001
+  fullName         String
+  fullNameAr       String
+  username         String    @unique
+  passwordHash     String
+  email            String    @unique
+  phone            String?
+  departmentId     Int?
+  roleId           Int
+  managerId        Int?      // Self-reference
+  isActive         Boolean   @default(true)
+  isFirstLogin     Boolean   @default(true)
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  profilePhoto     String?
+  preferredLang    String    @default("ar") // ar | en
+  telegramChatId   String?   @unique
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  lastLoginAt      DateTime?
+
+  role             Role       @relation(fields: [roleId], references: [id])
+  department       Department? @relation(fields: [departmentId], references: [id])
+  manager          User?      @relation("UserManager", fields: [managerId], references: [id])
+  subordinates     User[]     @relation("UserManager")
+  managedDepts     Department[] @relation("DeptManager")
+
+  // Task relations
+  tasksAssigned    Task[]     @relation("TaskAssignee")
+  tasksCreated     Task[]     @relation("TaskCreator")
+  taskComments     TaskComment[]
+  statusChanges    TaskStatusHistory[]
+  notifications    Notification[] @relation("NotifReceiver")
+  sentNotifications Notification[] @relation("NotifSender")
+  auditLogs        AuditLog[]
+  transferHistory  EmployeeTransfer[]
+
+  @@map("tbl_Users")
+}
+
+model EmployeeTransfer {
+  id              Int        @id @default(autoincrement())
+  userId          Int
+  fromDeptId      Int
+  toDeptId        Int
+  transferDate    DateTime   @default(now())
+  note            String?
+  transferredById Int
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tbl_EmployeeTransfers")
+}
+
+// ─────────────────────────────────────────
+//  TASKS
+// ─────────────────────────────────────────
+model TaskCategory {
+  id     Int    @id @default(autoincrement())
+  name   String // IT | HR | Finance | Marketing | Admin | Other
+  nameAr String
+  color  String @default("#2E86AB")
+  icon   String @default("task_alt")
+  tasks  Task[]
+
+  @@map("tbl_TaskCategories")
+}
+
+// Enums replaced with String for SQLite compatibility
+
+model Task {
+  id              Int          @id @default(autoincrement())
+  taskCode        String       @unique // TSK-2026-0001
+  title           String
+  titleAr         String?
+  description     String?
+  categoryId      Int?
+  priority        String       @default("MEDIUM")
+  status          String       @default("NEW")
+  assignedToId    Int
+  createdById     Int
+  startDate       DateTime?
+  dueDate         DateTime?
+  completedDate   DateTime?
+  progressPercent Int          @default(0)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  category        TaskCategory?      @relation(fields: [categoryId], references: [id])
+  assignedTo      User               @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  createdBy       User               @relation("TaskCreator", fields: [createdById], references: [id])
+  statusHistory   TaskStatusHistory[]
+  comments        TaskComment[]
+  attachments     TaskAttachment[]
+  notifications   Notification[]
+
+  @@map("tbl_Tasks")
+}
+
+model TaskStatusHistory {
+  id           Int        @id @default(autoincrement())
+  taskId       Int
+  fromStatus   String?
+  toStatus     String
+  changedById  Int
+  changeDate   DateTime   @default(now())
+  note         String?
+
+  task         Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  changedBy    User @relation(fields: [changedById], references: [id])
+
+  @@map("tbl_TaskStatusHistory")
+}
+
+model TaskComment {
+  id            Int      @id @default(autoincrement())
+  taskId        Int
+  userId        Int
+  commentText   String
+  commentDate   DateTime @default(now())
+  isManagerNote Boolean  @default(false)
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tbl_TaskComments")
+}
+
+model TaskAttachment {
+  id           Int      @id @default(autoincrement())
+  taskId       Int
+  fileName     String
+  fileUrl      String
+  fileSize     Int
+  fileType     String
+  uploadedById Int
+  uploadedAt   DateTime @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("tbl_Attachments")
+}
+
+// ─────────────────────────────────────────
+//  NOTIFICATIONS
+// ─────────────────────────────────────────
+// Enums replaced with String for SQLite compatibility
+
+model Notification {
+  id               Int              @id @default(autoincrement())
+  receiverId       Int
+  senderId         Int?
+  taskId           Int?
+  type             String
+  title            String
+  titleAr          String
+  message          String
+  messageAr        String
+  isRead           Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+
+  receiverUser User  @relation("NotifReceiver", fields: [receiverId], references: [id])
+  senderUser   User? @relation("NotifSender",   fields: [senderId], references: [id])
+  task         Task? @relation(fields: [taskId], references: [id])
+
+  @@map("tbl_Notifications")
+}
+
+// ─────────────────────────────────────────
+//  AUDIT LOG
+// ─────────────────────────────────────────
+model AuditLog {
+  id             Int      @id @default(autoincrement())
+  userId         Int?
+  action         String   // LOGIN | CREATE_TASK | DELETE_USER | etc.
+  tableAffected  String?
+  recordId       Int?
+  oldValues      String?  // JSON string
+  newValues      String?  // JSON string
+  ipAddress      String?
+  userAgent      String?
+  actionDate     DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("tbl_AuditLog")
+}
+
+// ─────────────────────────────────────────
+//  SYSTEM SETTINGS
+// ─────────────────────────────────────────
+model SystemSetting {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+
+  @@map("tbl_SystemSettings")
+}

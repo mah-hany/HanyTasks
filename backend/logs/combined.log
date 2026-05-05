@@ -1,0 +1,1312 @@
+[2026-05-05 20:18:30] info: ✅ Database connected successfully
+[2026-05-05 20:18:30] info: 🔌 Socket.IO initialized
+[2026-05-05 20:18:30] info: ⏰ Schedulers started
+[2026-05-05 20:18:30] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 20:18:30] info: 📡 Environment: development
+[2026-05-05 20:20:19] debug: POST /api/auth/login — ::1
+[2026-05-05 20:20:21] debug: GET /api/notifications — ::1
+[2026-05-05 20:20:21] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:20:22] debug: Socket connected: user 1
+[2026-05-05 20:20:22] debug: Socket connected: user 1
+[2026-05-05 20:21:39] debug: GET /api/tasks — ::1
+[2026-05-05 20:21:48] debug: GET /api/users/org-tree — ::1
+[2026-05-05 20:21:51] debug: GET /api/users — ::1
+[2026-05-05 20:21:55] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 20:21:55] debug: GET /api/reports/overdue — ::1
+[2026-05-05 20:22:04] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:22:08] debug: GET /api/audit — ::1
+[2026-05-05 20:22:13] debug: GET /api/notifications — ::1
+[2026-05-05 20:22:15] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:22:17] debug: GET /api/tasks — ::1
+[2026-05-05 20:22:55] debug: GET /api/users — ::1
+[2026-05-05 20:22:55] debug: GET /api/tasks/categories — ::1
+[2026-05-05 20:23:05] debug: GET /api/users — ::1
+[2026-05-05 20:23:05] debug: GET /api/tasks/categories — ::1
+[2026-05-05 20:25:37] debug: POST /api/auth/login — ::1
+[2026-05-05 20:25:38] debug: GET /api/notifications — ::1
+[2026-05-05 20:25:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:25:39] debug: Socket connected: user 1
+[2026-05-05 20:25:39] debug: Socket connected: user 1
+[2026-05-05 20:26:03] debug: GET /api/tasks — ::1
+[2026-05-05 20:26:10] debug: GET /api/users — ::1
+[2026-05-05 20:26:10] debug: GET /api/tasks/categories — ::1
+[2026-05-05 20:26:56] debug: POST /api/tasks — ::1
+[2026-05-05 20:26:57] debug: GET /api/tasks — ::1
+[2026-05-05 20:27:16] debug: GET /api/tasks/1 — ::1
+[2026-05-05 20:27:37] debug: PATCH /api/tasks/1/status — ::1
+[2026-05-05 20:27:37] debug: GET /api/tasks/1 — ::1
+[2026-05-05 20:27:41] debug: PATCH /api/tasks/1/status — ::1
+[2026-05-05 20:27:42] debug: GET /api/tasks/1 — ::1
+[2026-05-05 20:27:48] debug: POST /api/tasks/1/comments — ::1
+[2026-05-05 20:27:56] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:30:00] debug: 🕐 Running overdue task check...
+[2026-05-05 20:31:15] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:34:00] debug: GET /api/notifications — ::1
+[2026-05-05 20:34:00] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:34:00] debug: Socket connected: user 1
+[2026-05-05 20:34:00] debug: Socket connected: user 1
+[2026-05-05 20:35:12] debug: GET /api/notifications — ::1
+[2026-05-05 20:35:12] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:35:13] debug: Socket connected: user 1
+[2026-05-05 20:35:13] debug: Socket connected: user 1
+[2026-05-05 20:37:05] debug: GET /api/notifications — ::1
+[2026-05-05 20:37:05] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:37:05] debug: Socket connected: user 1
+[2026-05-05 20:37:05] debug: Socket connected: user 1
+[2026-05-05 20:37:51] debug: GET /api/notifications — ::1
+[2026-05-05 20:37:51] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:37:52] debug: Socket connected: user 1
+[2026-05-05 20:37:52] debug: Socket connected: user 1
+[2026-05-05 20:38:08] debug: GET /api/notifications — ::1
+[2026-05-05 20:38:08] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:38:08] debug: Socket connected: user 1
+[2026-05-05 20:38:08] debug: Socket connected: user 1
+[2026-05-05 20:38:30] debug: GET /api/notifications — ::1
+[2026-05-05 20:38:30] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:38:31] debug: Socket connected: user 1
+[2026-05-05 20:38:31] debug: Socket connected: user 1
+[2026-05-05 20:38:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:38:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:38:39] debug: Socket connected: user 1
+[2026-05-05 20:38:39] debug: Socket connected: user 1
+[2026-05-05 20:38:45] debug: GET /api/notifications — ::1
+[2026-05-05 20:38:45] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:38:46] debug: Socket connected: user 1
+[2026-05-05 20:38:46] debug: Socket connected: user 1
+[2026-05-05 20:40:10] debug: GET /api/notifications — ::1
+[2026-05-05 20:40:10] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:40:10] debug: Socket connected: user 1
+[2026-05-05 20:40:10] debug: Socket connected: user 1
+[2026-05-05 20:41:50] debug: GET /api/notifications — ::1
+[2026-05-05 20:41:51] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 20:41:51] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:41:51] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 20:41:51] debug: POST /api/auth/refresh — ::1
+[2026-05-05 20:41:51] debug: POST /api/auth/refresh — ::1
+[2026-05-05 20:41:51] debug: Socket connected: user 1
+[2026-05-05 20:41:51] debug: Socket connected: user 1
+[2026-05-05 20:41:51] debug: GET /api/notifications — ::1
+[2026-05-05 20:41:51] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:42:04] debug: GET /api/notifications — ::1
+[2026-05-05 20:42:04] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:42:04] debug: Socket connected: user 1
+[2026-05-05 20:42:04] debug: Socket connected: user 1
+[2026-05-05 20:43:18] debug: GET /api/notifications — ::1
+[2026-05-05 20:43:18] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:43:19] debug: Socket connected: user 1
+[2026-05-05 20:43:19] debug: Socket connected: user 1
+[2026-05-05 20:45:00] debug: 🕐 Running overdue task check...
+[2026-05-05 20:46:33] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:33] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:46:33] debug: Socket connected: user 1
+[2026-05-05 20:46:33] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:34] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:34] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:34] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:46:34] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:46:34] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:34] debug: Socket connected: user 1
+[2026-05-05 20:46:59] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:59] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:46:59] debug: Socket connected: user 1
+[2026-05-05 20:46:59] debug: Socket connected: user 1
+[2026-05-05 20:46:59] debug: GET /api/notifications — ::1
+[2026-05-05 20:46:59] debug: GET /api/notifications — ::1
+[2026-05-05 20:47:00] debug: GET /api/notifications — ::1
+[2026-05-05 20:47:00] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:47:00] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:47:00] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:00] debug: Socket connected: user 1
+[2026-05-05 20:47:20] debug: GET /api/notifications — ::1
+[2026-05-05 20:47:20] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:47:20] debug: Socket connected: user 1
+[2026-05-05 20:47:20] debug: Socket connected: user 1
+[2026-05-05 20:48:25] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:25] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:26] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:26] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:26] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:26] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:26] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:26] debug: Socket connected: user 1
+[2026-05-05 20:48:38] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:38] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:38] debug: Socket connected: user 1
+[2026-05-05 20:48:38] debug: Socket connected: user 1
+[2026-05-05 20:48:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:39] debug: Socket connected: user 1
+[2026-05-05 20:48:39] debug: Socket connected: user 1
+[2026-05-05 20:48:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:48:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:48:40] debug: Socket connected: user 1
+[2026-05-05 20:50:25] debug: GET /api/notifications — ::1
+[2026-05-05 20:50:25] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:50:25] debug: Socket connected: user 1
+[2026-05-05 20:50:25] debug: Socket connected: user 1
+[2026-05-05 20:50:57] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 20:50:57] debug: GET /api/reports/overdue — ::1
+[2026-05-05 20:50:59] debug: GET /api/audit — ::1
+[2026-05-05 20:51:05] debug: GET /api/tasks — ::1
+[2026-05-05 20:51:09] debug: GET /api/users/org-tree — ::1
+[2026-05-05 20:51:15] debug: GET /api/users — ::1
+[2026-05-05 20:52:35] debug: GET /api/users — ::1
+[2026-05-05 20:52:44] debug: GET /api/users/org-tree — ::1
+[2026-05-05 20:52:49] debug: GET /api/users/org-tree — ::1
+[2026-05-05 20:52:50] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 20:52:50] debug: GET /api/reports/overdue — ::1
+[2026-05-05 20:52:59] debug: GET /api/audit — ::1
+[2026-05-05 20:53:20] debug: GET /api/auth/profile — ::1
+[2026-05-05 20:53:31] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:53:43] debug: GET /api/tasks — ::1
+[2026-05-05 20:53:45] debug: GET /api/users — ::1
+[2026-05-05 20:53:45] debug: GET /api/tasks/categories — ::1
+[2026-05-05 20:53:52] debug: GET /api/users — ::1
+[2026-05-05 20:53:52] debug: GET /api/tasks/categories — ::1
+[2026-05-05 20:54:42] debug: GET /api/users/org-tree — ::1
+[2026-05-05 20:54:43] debug: GET /api/users — ::1
+[2026-05-05 20:56:07] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:56:39] debug: GET /api/notifications — ::1
+[2026-05-05 20:56:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:56:39] debug: Socket connected: user 1
+[2026-05-05 20:56:39] debug: Socket connected: user 1
+[2026-05-05 20:57:09] debug: POST /api/auth/logout — ::1
+[2026-05-05 20:57:09] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 20:57:47] debug: POST /api/auth/login — ::1
+[2026-05-05 20:57:48] debug: GET /api/notifications — ::1
+[2026-05-05 20:57:48] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 20:57:48] debug: Socket connected: user 1
+[2026-05-05 20:58:02] debug: GET /api/users — ::1
+[2026-05-05 20:58:40] debug: GET /api/notifications — ::1
+[2026-05-05 20:58:40] debug: Socket connected: user 1
+[2026-05-05 20:58:40] debug: Socket connected: user 1
+[2026-05-05 20:59:06] debug: GET /api/users — ::1
+[2026-05-05 20:59:34] debug: GET /api/users — ::1
+[2026-05-05 20:59:56] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 20:59:56] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:00:00] debug: 🕐 Running overdue task check...
+[2026-05-05 21:00:35] debug: GET /api/audit — ::1
+[2026-05-05 21:00:50] debug: GET /api/users — ::1
+[2026-05-05 21:01:17] debug: GET /api/notifications — ::1
+[2026-05-05 21:01:17] debug: Socket connected: user 1
+[2026-05-05 21:01:17] debug: Socket connected: user 1
+[2026-05-05 21:01:36] debug: GET /api/notifications — ::1
+[2026-05-05 21:01:36] debug: Socket connected: user 1
+[2026-05-05 21:01:36] debug: Socket connected: user 1
+[2026-05-05 21:04:36] debug: GET /api/notifications — ::1
+[2026-05-05 21:04:36] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:04:37] debug: Socket connected: user 1
+[2026-05-05 21:04:37] debug: Socket connected: user 1
+[2026-05-05 21:04:45] debug: GET /api/users — ::1
+[2026-05-05 21:05:15] debug: GET /api/notifications — ::1
+[2026-05-05 21:05:15] debug: Socket connected: user 1
+[2026-05-05 21:05:15] debug: Socket connected: user 1
+[2026-05-05 21:05:34] debug: GET /api/notifications — ::1
+[2026-05-05 21:05:34] debug: GET /api/users — ::1
+[2026-05-05 21:05:34] debug: Socket connected: user 1
+[2026-05-05 21:05:34] debug: Socket connected: user 1
+[2026-05-05 21:05:53] debug: GET /api/notifications — ::1
+[2026-05-05 21:05:53] debug: Socket connected: user 1
+[2026-05-05 21:05:53] debug: Socket connected: user 1
+[2026-05-05 21:06:23] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:06:31] debug: GET /api/users — ::1
+[2026-05-05 21:07:01] debug: GET /api/audit — ::1
+[2026-05-05 21:07:05] debug: GET /api/notifications — ::1
+[2026-05-05 21:07:05] debug: Socket connected: user 1
+[2026-05-05 21:07:06] debug: Socket connected: user 1
+[2026-05-05 21:07:26] debug: GET /api/users — ::1
+[2026-05-05 21:07:45] debug: GET /api/notifications — ::1
+[2026-05-05 21:07:45] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:07:45] debug: Socket connected: user 1
+[2026-05-05 21:07:45] debug: Socket connected: user 1
+[2026-05-05 21:07:53] debug: GET /api/users — ::1
+[2026-05-05 21:08:16] debug: GET /api/tasks — ::1
+[2026-05-05 21:08:33] debug: GET /api/users — ::1
+[2026-05-05 21:08:57] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:08:57] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:10:16] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:16] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:10:16] debug: Socket connected: user 1
+[2026-05-05 21:10:16] debug: Socket connected: user 1
+[2026-05-05 21:10:16] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:10:18] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:18] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:18] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:18] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:10:18] debug: GET /api/settings — ::1
+[2026-05-05 21:10:18] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:18] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: Socket connected: user 1
+[2026-05-05 21:10:18] debug: GET /api/notifications — ::1
+[2026-05-05 21:10:18] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:10:50] debug: GET /api/users — ::1
+[2026-05-05 21:11:20] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:20] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:11:20] debug: Socket connected: user 1
+[2026-05-05 21:11:20] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:11:20] debug: Socket connected: user 1
+[2026-05-05 21:11:21] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:21] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:21] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:22] debug: GET /api/settings — ::1
+[2026-05-05 21:11:22] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:11:22] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:11:22] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: GET /api/notifications — ::1
+[2026-05-05 21:11:22] debug: GET /api/users — ::1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:22] debug: Socket connected: user 1
+[2026-05-05 21:11:23] debug: GET /api/departments — ::1
+[2026-05-05 21:12:21] debug: POST /api/users — ::1
+[2026-05-05 21:12:22] debug: GET /api/users — ::1
+[2026-05-05 21:12:30] debug: GET /api/settings — ::1
+[2026-05-05 21:12:45] debug: PUT /api/settings/app_name — ::1
+[2026-05-05 21:12:45] debug: PUT /api/settings/default_lang — ::1
+[2026-05-05 21:12:45] debug: PUT /api/settings/alert_before_days — ::1
+[2026-05-05 21:12:45] debug: PUT /api/settings/max_failed_logins — ::1
+[2026-05-05 21:12:45] debug: PUT /api/settings/lockout_minutes — ::1
+[2026-05-05 21:13:46] debug: GET /api/users — ::1
+[2026-05-05 21:13:46] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:13:47] debug: POST /api/auth/refresh — ::1
+[2026-05-05 21:13:47] debug: GET /api/users — ::1
+[2026-05-05 21:13:48] debug: GET /api/departments — ::1
+[2026-05-05 21:14:01] debug: GET /api/settings — ::1
+[2026-05-05 21:14:56] debug: GET /api/audit — ::1
+[2026-05-05 21:14:58] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:14:58] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:15:00] debug: 🕐 Running overdue task check...
+[2026-05-05 21:15:02] debug: GET /api/users — ::1
+[2026-05-05 21:15:07] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:15:10] debug: GET /api/users — ::1
+[2026-05-05 21:15:11] debug: GET /api/departments — ::1
+[2026-05-05 21:16:35] debug: POST /api/users — ::1
+[2026-05-05 21:16:35] debug: GET /api/users — ::1
+[2026-05-05 21:16:38] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:16:44] debug: GET /api/users — ::1
+[2026-05-05 21:16:47] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:16:47] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:16:49] debug: GET /api/audit — ::1
+[2026-05-05 21:16:50] debug: GET /api/settings — ::1
+[2026-05-05 21:17:02] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:17:05] debug: GET /api/tasks — ::1
+[2026-05-05 21:17:07] debug: GET /api/users — ::1
+[2026-05-05 21:17:07] debug: GET /api/tasks/categories — ::1
+[2026-05-05 21:18:38] debug: POST /api/tasks — ::1
+[2026-05-05 21:18:39] debug: GET /api/tasks — ::1
+[2026-05-05 21:18:45] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:18:51] debug: GET /api/tasks — ::1
+[2026-05-05 21:18:52] debug: GET /api/tasks/2 — ::1
+[2026-05-05 21:19:07] debug: GET /api/users — ::1
+[2026-05-05 21:19:52] debug: POST /api/auth/logout — ::1
+[2026-05-05 21:20:11] debug: GET /api/users/5 — ::1
+[2026-05-05 21:20:11] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:11] debug: GET /api/departments — ::1
+[2026-05-05 21:20:11] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:19] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:20:19] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:24] debug: GET /api/auth/profile — ::1
+[2026-05-05 21:20:24] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 21:20:28] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:20:28] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:29] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:20:29] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:29] debug: GET /api/tasks — ::1
+[2026-05-05 21:20:29] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:33] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:20:33] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:34] debug: GET /api/notifications — ::1
+[2026-05-05 21:20:34] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:39] debug: PATCH /api/notifications/1/read — ::1
+[2026-05-05 21:20:39] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:40] debug: PATCH /api/notifications/1/read — ::1
+[2026-05-05 21:20:40] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:20:40] debug: PATCH /api/notifications/1/read — ::1
+[2026-05-05 21:20:40] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:21:01] debug: GET /api/users — ::1
+[2026-05-05 21:21:01] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:21:12] debug: POST /api/auth/logout — ::1
+[2026-05-05 21:21:12] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+[2026-05-05 21:21:25] debug: POST /api/auth/login — ::1
+[2026-05-05 21:21:26] debug: GET /api/notifications — ::1
+[2026-05-05 21:21:26] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:21:26] debug: Socket connected: user 1
+[2026-05-05 21:21:32] debug: GET /api/users — ::1
+[2026-05-05 21:21:34] debug: GET /api/users/5 — ::1
+[2026-05-05 21:21:34] debug: GET /api/departments — ::1
+[2026-05-05 21:23:45] debug: GET /api/notifications — ::1
+[2026-05-05 21:23:45] debug: GET /api/users/5 — ::1
+[2026-05-05 21:23:45] debug: GET /api/departments — ::1
+[2026-05-05 21:23:45] debug: GET /api/users — ::1
+[2026-05-05 21:23:45] debug: Socket connected: user 1
+[2026-05-05 21:23:45] debug: Socket connected: user 1
+[2026-05-05 21:24:08] debug: GET /api/notifications — ::1
+[2026-05-05 21:24:08] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:24:08] debug: Socket connected: user 1
+[2026-05-05 21:24:08] debug: Socket connected: user 1
+[2026-05-05 21:24:17] debug: GET /api/users — ::1
+[2026-05-05 21:24:24] debug: GET /api/departments — ::1
+[2026-05-05 21:24:24] debug: GET /api/users — ::1
+[2026-05-05 21:25:33] debug: POST /api/users — ::1
+[2026-05-05 21:25:34] debug: GET /api/users — ::1
+[2026-05-05 21:25:54] debug: POST /api/auth/logout — ::1
+[2026-05-05 21:26:19] debug: POST /api/auth/login — ::1
+[2026-05-05 21:26:48] debug: POST /api/auth/change-password — ::1
+[2026-05-05 21:26:49] error: Error: كلمة المرور الحالية غير صحيحة / Current password incorrect
+    at Object.changePassword (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\auth\auth.service.ts:124:23)
+    at async changePassword (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\auth\auth.controller.ts:40:22)
+[2026-05-05 21:27:05] debug: GET /api/notifications — ::1
+[2026-05-05 21:27:05] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:27:05] debug: Socket connected: user 6
+[2026-05-05 21:27:05] debug: Socket connected: user 6
+[2026-05-05 21:28:04] debug: GET /api/users — ::1
+[2026-05-05 21:28:04] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:07] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:28:07] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:28:08] debug: GET /api/users — ::1
+[2026-05-05 21:28:08] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:09] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 21:28:09] debug: GET /api/reports/overdue — ::1
+[2026-05-05 21:28:14] debug: GET /api/users — ::1
+[2026-05-05 21:28:14] error: Error: Forbidden: insufficient permissions
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:72:19
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:46:5)
+[2026-05-05 21:28:16] debug: POST /api/auth/logout — ::1
+[2026-05-05 21:28:28] debug: POST /api/auth/login — ::1
+[2026-05-05 21:28:29] debug: GET /api/notifications — ::1
+[2026-05-05 21:28:29] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:28:29] debug: Socket connected: user 1
+[2026-05-05 21:28:35] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:28:38] debug: GET /api/users — ::1
+[2026-05-05 21:28:41] debug: GET /api/users/5 — ::1
+[2026-05-05 21:28:41] debug: GET /api/users — ::1
+[2026-05-05 21:28:41] debug: GET /api/departments — ::1
+[2026-05-05 21:28:51] debug: PUT /api/users/5 — ::1
+[2026-05-05 21:28:51] error: Prisma error: 
+Invalid `prisma.user.update()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:36
+
+  102   phone: string; departmentId: number; roleId: number;
+  103   managerId: number; isActive: boolean; profilePhoto: string; preferredLang: string;
+  104 }>) {
+→ 105   const user = await prisma.user.update({
+          where: {
+            id: 5
+          },
+          data: {
+            id: 5,
+            ~~
+            employeeCode: "EMP-2026-9051",
+            fullName: "mohamud mohamed",
+            fullNameAr: "محمود محمد",
+            username: "بندق",
+            email: "mh.abdel1997@gmail.com",
+            phone: null,
+            departmentId: 3,
+            roleId: 4,
+            managerId: 1,
+            isActive: true,
+            isFirstLogin: true,
+            failedLoginCount: 0,
+            lockedUntil: null,
+            profilePhoto: null,
+            preferredLang: "ar",
+            createdAt: "2026-05-05T18:16:35.806Z",
+            updatedAt: "2026-05-05T18:16:35.806Z",
+            lastLoginAt: null,
+            role: {
+              id: 4,
+              name: "SUPERVISOR",
+              nameAr: "مشرف",
+              level: 4
+            },
+            department: {
+              id: 3,
+              name: "Finance",
+              nameAr: "المالية",
+              code: "DEP-FIN",
+              parentId: null,
+              managerId: null,
+              isActive: true,
+              createdAt: "2026-05-05T17:12:39.899Z",
+              updatedAt: "2026-05-05T17:12:39.899Z"
+            },
+            manager: null,
+            subordinates: [],
+            tasksAssigned: [
+              {
+                id: 2,
+                taskCode: "TSK-2026-23294",
+                title: "تحليل اوراق الدفع الاهلى الكويتى",
+                titleAr: "تحليل اوراق الدفع الاهلى الكويتى",
+                description: "تحليل اوراق الدفع الاهلى الكويتى",
+                categoryId: 3,
+                priority: "URGENT",
+                status: "NEW",
+                assignedToId: 5,
+                createdById: 1,
+                startDate: "2026-05-04T21:00:00.000Z",
+                dueDate: null,
+                completedDate: null,
+                progressPercent: 0,
+                createdAt: "2026-05-05T18:18:38.945Z",
+                updatedAt: "2026-05-05T18:18:38.945Z",
+                category: {
+                  id: 3,
+                  name: "Finance",
+                  nameAr: "مالية",
+                  color: "#F18F01",
+                  icon: "attach_money"
+                }
+              }
+            ],
+        ?   passwordHash?: String | StringFieldUpdateOperationsInput,
+        ?   managedDepts?: DepartmentUpdateManyWithoutManagerNestedInput,
+        ?   tasksCreated?: TaskUpdateManyWithoutCreatedByNestedInput,
+        ?   taskComments?: TaskCommentUpdateManyWithoutUserNestedInput,
+        ?   statusChanges?: TaskStatusHistoryUpdateManyWithoutChangedByNestedInput,
+        ?   notifications?: NotificationUpdateManyWithoutReceiverUserNestedInput,
+        ?   sentNotifications?: NotificationUpdateManyWithoutSenderUserNestedInput,
+        ?   auditLogs?: AuditLogUpdateManyWithoutUserNestedInput,
+        ?   transferHistory?: EmployeeTransferUpdateManyWithoutUserNestedInput
+          },
+          include: {
+            role: true,
+            department: true
+          }
+        })
+
+Unknown argument `id`. Available options are marked with ?.
+[2026-05-05 21:28:51] error: PrismaClientValidationError: 
+Invalid `prisma.user.update()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:36
+
+  102   phone: string; departmentId: number; roleId: number;
+  103   managerId: number; isActive: boolean; profilePhoto: string; preferredLang: string;
+  104 }>) {
+→ 105   const user = await prisma.user.update({
+          where: {
+            id: 5
+          },
+          data: {
+            id: 5,
+            ~~
+            employeeCode: "EMP-2026-9051",
+            fullName: "mohamud mohamed",
+            fullNameAr: "محمود محمد",
+            username: "بندق",
+            email: "mh.abdel1997@gmail.com",
+            phone: null,
+            departmentId: 3,
+            roleId: 4,
+            managerId: 1,
+            isActive: true,
+            isFirstLogin: true,
+            failedLoginCount: 0,
+            lockedUntil: null,
+            profilePhoto: null,
+            preferredLang: "ar",
+            createdAt: "2026-05-05T18:16:35.806Z",
+            updatedAt: "2026-05-05T18:16:35.806Z",
+            lastLoginAt: null,
+            role: {
+              id: 4,
+              name: "SUPERVISOR",
+              nameAr: "مشرف",
+              level: 4
+            },
+            department: {
+              id: 3,
+              name: "Finance",
+              nameAr: "المالية",
+              code: "DEP-FIN",
+              parentId: null,
+              managerId: null,
+              isActive: true,
+              createdAt: "2026-05-05T17:12:39.899Z",
+              updatedAt: "2026-05-05T17:12:39.899Z"
+            },
+            manager: null,
+            subordinates: [],
+            tasksAssigned: [
+              {
+                id: 2,
+                taskCode: "TSK-2026-23294",
+                title: "تحليل اوراق الدفع الاهلى الكويتى",
+                titleAr: "تحليل اوراق الدفع الاهلى الكويتى",
+                description: "تحليل اوراق الدفع الاهلى الكويتى",
+                categoryId: 3,
+                priority: "URGENT",
+                status: "NEW",
+                assignedToId: 5,
+                createdById: 1,
+                startDate: "2026-05-04T21:00:00.000Z",
+                dueDate: null,
+                completedDate: null,
+                progressPercent: 0,
+                createdAt: "2026-05-05T18:18:38.945Z",
+                updatedAt: "2026-05-05T18:18:38.945Z",
+                category: {
+                  id: 3,
+                  name: "Finance",
+                  nameAr: "مالية",
+                  color: "#F18F01",
+                  icon: "attach_money"
+                }
+              }
+            ],
+        ?   passwordHash?: String | StringFieldUpdateOperationsInput,
+        ?   managedDepts?: DepartmentUpdateManyWithoutManagerNestedInput,
+        ?   tasksCreated?: TaskUpdateManyWithoutCreatedByNestedInput,
+        ?   taskComments?: TaskCommentUpdateManyWithoutUserNestedInput,
+        ?   statusChanges?: TaskStatusHistoryUpdateManyWithoutChangedByNestedInput,
+        ?   notifications?: NotificationUpdateManyWithoutReceiverUserNestedInput,
+        ?   sentNotifications?: NotificationUpdateManyWithoutSenderUserNestedInput,
+        ?   auditLogs?: AuditLogUpdateManyWithoutUserNestedInput,
+        ?   transferHistory?: EmployeeTransferUpdateManyWithoutUserNestedInput
+          },
+          include: {
+            role: true,
+            department: true
+          }
+        })
+
+Unknown argument `id`. Available options are marked with ?.
+    at throwValidationException (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async Object.update (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:105:18)
+    at async update (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.controller.ts:47:20)
+[2026-05-05 21:29:01] debug: GET /api/users/org-tree — ::1
+[2026-05-05 21:29:09] debug: GET /api/tasks — ::1
+[2026-05-05 21:29:11] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:29:13] debug: GET /api/users — ::1
+[2026-05-05 21:29:15] debug: GET /api/users/5 — ::1
+[2026-05-05 21:29:15] debug: GET /api/users — ::1
+[2026-05-05 21:29:15] debug: GET /api/departments — ::1
+[2026-05-05 21:29:23] debug: POST /api/auth/logout — ::1
+[2026-05-05 21:29:48] debug: PUT /api/users/5 — ::1
+[2026-05-05 21:29:48] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:29:56] debug: PUT /api/users/5 — ::1
+[2026-05-05 21:29:56] error: Error: No token provided
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:24:13)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:30:00] debug: 🕐 Running overdue task check...
+[2026-05-05 21:32:06] info: ✅ Database connected successfully
+[2026-05-05 21:32:06] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:06] info: ⏰ Schedulers started
+[2026-05-05 21:32:06] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:06] info: 📡 Environment: development
+[2026-05-05 21:32:07] debug: Socket connected: user 1
+[2026-05-05 21:32:08] debug: Socket connected: user 1
+[2026-05-05 21:32:16] info: ✅ Database connected successfully
+[2026-05-05 21:32:16] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:16] info: ⏰ Schedulers started
+[2026-05-05 21:32:16] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:16] info: 📡 Environment: development
+[2026-05-05 21:32:16] debug: Socket connected: user 1
+[2026-05-05 21:32:17] debug: Socket connected: user 1
+[2026-05-05 21:32:26] info: ✅ Database connected successfully
+[2026-05-05 21:32:26] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:26] info: ⏰ Schedulers started
+[2026-05-05 21:32:26] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:26] info: 📡 Environment: development
+[2026-05-05 21:32:26] debug: Socket connected: user 1
+[2026-05-05 21:32:27] debug: Socket connected: user 1
+[2026-05-05 21:32:37] info: ✅ Database connected successfully
+[2026-05-05 21:32:37] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:37] info: ⏰ Schedulers started
+[2026-05-05 21:32:37] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:37] info: 📡 Environment: development
+[2026-05-05 21:32:37] debug: Socket connected: user 1
+[2026-05-05 21:32:38] debug: Socket connected: user 1
+[2026-05-05 21:32:48] info: ✅ Database connected successfully
+[2026-05-05 21:32:48] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:48] info: ⏰ Schedulers started
+[2026-05-05 21:32:48] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:48] info: 📡 Environment: development
+[2026-05-05 21:32:49] debug: Socket connected: user 1
+[2026-05-05 21:32:50] debug: Socket connected: user 1
+[2026-05-05 21:32:57] info: ✅ Database connected successfully
+[2026-05-05 21:32:57] info: 🔌 Socket.IO initialized
+[2026-05-05 21:32:57] info: ⏰ Schedulers started
+[2026-05-05 21:32:57] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:32:57] info: 📡 Environment: development
+[2026-05-05 21:32:57] debug: Socket connected: user 1
+[2026-05-05 21:32:59] debug: Socket connected: user 1
+[2026-05-05 21:35:50] info: ✅ Database connected successfully
+[2026-05-05 21:35:50] info: 🔌 Socket.IO initialized
+[2026-05-05 21:35:50] info: ⏰ Schedulers started
+[2026-05-05 21:35:50] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 21:35:50] info: 📡 Environment: development
+[2026-05-05 21:37:05] debug: POST /api/auth/login — ::1
+[2026-05-05 21:37:07] debug: GET /api/notifications — ::1
+[2026-05-05 21:37:07] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:37:07] debug: Socket connected: user 1
+[2026-05-05 21:37:07] debug: Socket connected: user 1
+[2026-05-05 21:37:22] debug: GET /api/users — ::1
+[2026-05-05 21:37:30] debug: GET /api/users/1 — ::1
+[2026-05-05 21:37:30] debug: GET /api/departments — ::1
+[2026-05-05 21:37:30] debug: GET /api/users — ::1
+[2026-05-05 21:37:38] debug: GET /api/users — ::1
+[2026-05-05 21:37:46] debug: GET /api/users/6 — ::1
+[2026-05-05 21:37:46] debug: GET /api/departments — ::1
+[2026-05-05 21:37:46] debug: GET /api/users — ::1
+[2026-05-05 21:40:43] debug: GET /api/notifications — ::1
+[2026-05-05 21:40:43] debug: GET /api/users/6 — ::1
+[2026-05-05 21:40:43] debug: GET /api/departments — ::1
+[2026-05-05 21:40:43] debug: GET /api/users — ::1
+[2026-05-05 21:40:43] debug: Socket connected: user 1
+[2026-05-05 21:40:43] debug: Socket connected: user 1
+[2026-05-05 21:40:44] debug: GET /api/notifications — ::1
+[2026-05-05 21:40:44] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:40:44] debug: Socket connected: user 1
+[2026-05-05 21:40:44] debug: Socket connected: user 1
+[2026-05-05 21:45:00] debug: 🕐 Running overdue task check...
+[2026-05-05 21:46:19] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:46:20] debug: GET /api/users — ::1
+[2026-05-05 21:46:24] debug: GET /api/users/5 — ::1
+[2026-05-05 21:46:24] debug: GET /api/users — ::1
+[2026-05-05 21:46:24] debug: GET /api/departments — ::1
+[2026-05-05 21:46:39] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:46:43] debug: GET /api/notifications — ::1
+[2026-05-05 21:46:44] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:46:44] debug: Socket connected: user 1
+[2026-05-05 21:46:44] debug: Socket connected: user 1
+[2026-05-05 21:46:46] debug: GET /api/users — ::1
+[2026-05-05 21:46:48] debug: GET /api/users/5 — ::1
+[2026-05-05 21:46:48] debug: GET /api/users — ::1
+[2026-05-05 21:46:48] debug: GET /api/departments — ::1
+[2026-05-05 21:47:32] debug: GET /api/tasks — ::1
+[2026-05-05 21:47:45] debug: GET /api/users — ::1
+[2026-05-05 21:47:45] debug: GET /api/tasks/categories — ::1
+[2026-05-05 21:48:05] debug: POST /api/tasks — ::1
+[2026-05-05 21:48:05] debug: GET /api/tasks — ::1
+[2026-05-05 21:48:08] debug: GET /api/tasks/3 — ::1
+[2026-05-05 21:48:15] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 21:58:04] debug: POST /api/auth/login — ::1
+[2026-05-05 21:58:05] debug: POST /api/users — ::1
+[2026-05-05 21:58:05] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 21:58:32] debug: POST /api/auth/login — ::1
+[2026-05-05 21:58:51] debug: POST /api/auth/login — ::1
+[2026-05-05 21:58:51] debug: POST /api/users — ::1
+[2026-05-05 21:58:51] debug: DELETE /api/users/7 — ::1
+[2026-05-05 21:58:51] debug: POST /api/tasks — ::1
+[2026-05-05 21:58:51] debug: DELETE /api/tasks/4 — ::1
+[2026-05-05 22:00:00] debug: 🕐 Running overdue task check...
+[2026-05-05 22:01:23] debug: GET /api/users — ::1
+[2026-05-05 22:01:23] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:01:23] debug: POST /api/auth/refresh — ::1
+[2026-05-05 22:01:23] debug: GET /api/users — ::1
+[2026-05-05 22:01:25] debug: GET /api/users/5 — ::1
+[2026-05-05 22:01:25] debug: GET /api/users — ::1
+[2026-05-05 22:01:25] debug: GET /api/departments — ::1
+[2026-05-05 22:01:35] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:01:37] debug: GET /api/tasks — ::1
+[2026-05-05 22:01:41] debug: GET /api/tasks/3 — ::1
+[2026-05-05 22:05:51] info: ✅ Database connected successfully
+[2026-05-05 22:05:51] info: 🔌 Socket.IO initialized
+[2026-05-05 22:05:51] info: ⏰ Schedulers started
+[2026-05-05 22:05:51] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:05:51] info: 📡 Environment: development
+[2026-05-05 22:06:45] debug: POST /api/auth/login — ::1
+[2026-05-05 22:06:46] debug: GET /api/notifications — ::1
+[2026-05-05 22:06:46] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:06:46] debug: Socket connected: user 1
+[2026-05-05 22:06:46] debug: Socket connected: user 1
+[2026-05-05 22:06:48] debug: GET /api/users — ::1
+[2026-05-05 22:06:51] debug: GET /api/users — ::1
+[2026-05-05 22:06:51] debug: GET /api/users/4 — ::1
+[2026-05-05 22:06:51] debug: GET /api/departments — ::1
+[2026-05-05 22:06:56] debug: DELETE /api/users/4 — ::1
+[2026-05-05 22:06:56] debug: GET /api/users — ::1
+[2026-05-05 22:06:58] debug: GET /api/users — ::1
+[2026-05-05 22:06:58] debug: GET /api/users/5 — ::1
+[2026-05-05 22:06:58] debug: GET /api/departments — ::1
+[2026-05-05 22:07:01] debug: DELETE /api/users/5 — ::1
+[2026-05-05 22:07:01] error: Prisma error: 
+Invalid `prisma.user.delete()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:171:31
+
+  168 await prisma.notification.deleteMany({ where: { OR: [{ receiverId: id }, { senderId: id }] } });
+  169 
+  170 // Delete user
+→ 171 await prisma.user.delete(
+Foreign key constraint violated on the foreign key
+[2026-05-05 22:07:01] error: Error: Cannot delete this user because they are linked to tasks, comments, or other records. Deactivate them instead.
+    at Object.delete (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:175:15)
+    at async delete (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.controller.ts:86:20)
+[2026-05-05 22:07:06] debug: GET /api/users — ::1
+[2026-05-05 22:07:14] debug: GET /api/tasks — ::1
+[2026-05-05 22:07:18] debug: GET /api/tasks/3 — ::1
+[2026-05-05 22:07:20] debug: DELETE /api/tasks/3 — ::1
+[2026-05-05 22:07:21] debug: GET /api/notifications — ::1
+[2026-05-05 22:07:21] debug: GET /api/tasks — ::1
+[2026-05-05 22:07:21] debug: Socket connected: user 1
+[2026-05-05 22:07:21] debug: Socket connected: user 1
+[2026-05-05 22:07:22] debug: GET /api/tasks/2 — ::1
+[2026-05-05 22:07:26] debug: DELETE /api/tasks/2 — ::1
+[2026-05-05 22:07:26] debug: Socket connected: user 1
+[2026-05-05 22:07:26] debug: GET /api/notifications — ::1
+[2026-05-05 22:07:26] debug: GET /api/tasks — ::1
+[2026-05-05 22:07:26] debug: Socket connected: user 1
+[2026-05-05 22:07:28] debug: GET /api/users — ::1
+[2026-05-05 22:07:29] debug: GET /api/users — ::1
+[2026-05-05 22:07:29] debug: GET /api/users/5 — ::1
+[2026-05-05 22:07:29] debug: GET /api/departments — ::1
+[2026-05-05 22:07:32] debug: DELETE /api/users/5 — ::1
+[2026-05-05 22:07:32] debug: GET /api/users — ::1
+[2026-05-05 22:07:34] debug: GET /api/departments — ::1
+[2026-05-05 22:07:34] debug: GET /api/users — ::1
+[2026-05-05 22:08:35] debug: POST /api/users — ::1
+[2026-05-05 22:08:36] debug: GET /api/users — ::1
+[2026-05-05 22:08:43] debug: POST /api/auth/logout — ::1
+[2026-05-05 22:08:55] debug: POST /api/auth/login — ::1
+[2026-05-05 22:09:23] debug: POST /api/auth/change-password — ::1
+[2026-05-05 22:09:24] debug: GET /api/notifications — ::1
+[2026-05-05 22:09:24] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:09:24] debug: Socket connected: user 8
+[2026-05-05 22:09:32] debug: GET /api/tasks — ::1
+[2026-05-05 22:09:34] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:09:39] debug: GET /api/notifications — ::1
+[2026-05-05 22:09:44] debug: POST /api/auth/logout — ::1
+[2026-05-05 22:12:17] info: ✅ Database connected successfully
+[2026-05-05 22:12:17] info: 🔌 Socket.IO initialized
+[2026-05-05 22:12:17] info: ⏰ Schedulers started
+[2026-05-05 22:12:17] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:12:17] info: 📡 Environment: development
+[2026-05-05 22:12:21] debug: Socket connected: user 1
+[2026-05-05 22:12:56] info: ✅ Database connected successfully
+[2026-05-05 22:12:56] info: 🔌 Socket.IO initialized
+[2026-05-05 22:12:56] info: ⏰ Schedulers started
+[2026-05-05 22:12:56] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:12:56] info: 📡 Environment: development
+[2026-05-05 22:12:56] debug: Socket connected: user 1
+[2026-05-05 22:13:40] info: ✅ Database connected successfully
+[2026-05-05 22:13:40] info: 🔌 Socket.IO initialized
+[2026-05-05 22:13:40] info: ⏰ Schedulers started
+[2026-05-05 22:13:40] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:13:40] info: 📡 Environment: development
+[2026-05-05 22:13:40] debug: Socket connected: user 1
+[2026-05-05 22:15:00] debug: 🕐 Running overdue task check...
+[2026-05-05 22:15:33] debug: POST /api/auth/login — ::1
+[2026-05-05 22:15:34] debug: GET /api/settings/roles/permissions — ::1
+[2026-05-05 22:15:34] debug: PUT /api/settings/roles/1/permissions/11 — ::1
+[2026-05-05 22:15:34] debug: POST /api/users — ::1
+[2026-05-05 22:15:34] debug: POST /api/users — ::1
+[2026-05-05 22:15:35] debug: POST /api/users — ::1
+[2026-05-05 22:15:35] debug: POST /api/tasks — ::1
+[2026-05-05 22:15:35] debug: POST /api/tasks — ::1
+[2026-05-05 22:15:35] debug: POST /api/tasks — ::1
+[2026-05-05 22:15:35] debug: POST /api/auth/login — ::1
+[2026-05-05 22:15:36] debug: POST /api/auth/login — ::1
+[2026-05-05 22:15:36] debug: POST /api/auth/login — ::1
+[2026-05-05 22:15:37] debug: GET /api/tasks — ::1
+[2026-05-05 22:15:37] debug: GET /api/tasks — ::1
+[2026-05-05 22:15:37] debug: GET /api/tasks — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/tasks/5 — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/tasks/6 — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/tasks/7 — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/users/11 — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/users/10 — ::1
+[2026-05-05 22:15:37] debug: DELETE /api/users/9 — ::1
+[2026-05-05 22:16:23] debug: POST /api/auth/login — ::1
+[2026-05-05 22:16:24] debug: GET /api/notifications — ::1
+[2026-05-05 22:16:24] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:16:24] debug: Socket connected: user 1
+[2026-05-05 22:16:24] debug: Socket connected: user 1
+[2026-05-05 22:16:27] debug: GET /api/settings — ::1
+[2026-05-05 22:16:27] debug: GET /api/settings/roles/permissions — ::1
+[2026-05-05 22:17:12] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:17:17] debug: GET /api/tasks — ::1
+[2026-05-05 22:17:20] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:17:27] debug: GET /api/users — ::1
+[2026-05-05 22:17:31] debug: GET /api/users — ::1
+[2026-05-05 22:17:31] debug: GET /api/users/6 — ::1
+[2026-05-05 22:17:31] debug: GET /api/departments — ::1
+[2026-05-05 22:17:35] debug: DELETE /api/users/6 — ::1
+[2026-05-05 22:17:35] debug: GET /api/users — ::1
+[2026-05-05 22:17:36] debug: GET /api/departments — ::1
+[2026-05-05 22:17:36] debug: GET /api/users — ::1
+[2026-05-05 22:17:36] debug: GET /api/users/2 — ::1
+[2026-05-05 22:17:38] debug: DELETE /api/users/2 — ::1
+[2026-05-05 22:17:38] debug: GET /api/users — ::1
+[2026-05-05 22:17:40] debug: GET /api/users/3 — ::1
+[2026-05-05 22:17:40] debug: GET /api/departments — ::1
+[2026-05-05 22:17:40] debug: GET /api/users — ::1
+[2026-05-05 22:17:43] debug: DELETE /api/users/3 — ::1
+[2026-05-05 22:17:43] debug: GET /api/users — ::1
+[2026-05-05 22:17:44] debug: GET /api/departments — ::1
+[2026-05-05 22:17:44] debug: GET /api/users — ::1
+[2026-05-05 22:17:44] debug: GET /api/users/1 — ::1
+[2026-05-05 22:18:07] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:18:13] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:30:00] debug: 🕐 Running overdue task check...
+[2026-05-05 22:45:00] debug: 🕐 Running overdue task check...
+[2026-05-05 22:46:27] info: ✅ Database connected successfully
+[2026-05-05 22:46:27] info: 🔌 Socket.IO initialized
+[2026-05-05 22:46:27] info: ⏰ Schedulers started
+[2026-05-05 22:46:27] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:46:27] info: 📡 Environment: development
+[2026-05-05 22:46:28] debug: Socket connected: user 1
+[2026-05-05 22:46:28] debug: Socket connected: user 1
+[2026-05-05 22:46:50] debug: GET /api/notifications — ::1
+[2026-05-05 22:46:50] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:46:50] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:46:50] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 22:46:50] debug: POST /api/auth/refresh — ::1
+[2026-05-05 22:46:50] debug: POST /api/auth/refresh — ::1
+[2026-05-05 22:46:50] debug: Socket connected: user 1
+[2026-05-05 22:46:50] debug: Socket connected: user 1
+[2026-05-05 22:46:50] debug: GET /api/notifications — ::1
+[2026-05-05 22:46:50] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:48:54] debug: GET /api/reports/departments-summary — ::1
+[2026-05-05 22:48:54] debug: GET /api/reports/overdue — ::1
+[2026-05-05 22:49:00] debug: GET /api/audit — ::1
+[2026-05-05 22:50:56] info: ✅ Database connected successfully
+[2026-05-05 22:50:56] info: 🔌 Socket.IO initialized
+[2026-05-05 22:50:56] info: ⏰ Schedulers started
+[2026-05-05 22:50:56] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 22:50:56] info: 📡 Environment: development
+[2026-05-05 22:50:56] debug: Socket connected: user 1
+[2026-05-05 22:50:58] debug: Socket connected: user 1
+[2026-05-05 22:51:22] debug: GET /api/notifications — ::1
+[2026-05-05 22:51:22] debug: GET /api/audit — ::1
+[2026-05-05 22:51:22] debug: Socket connected: user 1
+[2026-05-05 22:51:22] debug: Socket connected: user 1
+[2026-05-05 22:51:58] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:52:00] debug: GET /api/tasks — ::1
+[2026-05-05 22:52:02] debug: GET /api/tasks/1 — ::1
+[2026-05-05 22:52:11] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:52:16] debug: GET /api/notifications — ::1
+[2026-05-05 22:52:17] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:52:26] debug: GET /api/tasks — ::1
+[2026-05-05 22:52:32] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:52:36] debug: GET /api/users/1 — ::1
+[2026-05-05 22:52:36] debug: GET /api/departments — ::1
+[2026-05-05 22:52:36] debug: GET /api/users — ::1
+[2026-05-05 22:52:42] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:52:46] debug: GET /api/tasks — ::1
+[2026-05-05 22:52:48] debug: GET /api/tasks/1 — ::1
+[2026-05-05 22:52:50] debug: DELETE /api/tasks/1 — ::1
+[2026-05-05 22:52:51] debug: GET /api/notifications — ::1
+[2026-05-05 22:52:51] debug: GET /api/tasks — ::1
+[2026-05-05 22:52:51] debug: Socket connected: user 1
+[2026-05-05 22:52:51] debug: Socket connected: user 1
+[2026-05-05 22:52:53] debug: GET /api/tasks/dashboard — ::1
+[2026-05-05 22:52:56] debug: GET /api/tasks — ::1
+[2026-05-05 22:52:57] debug: GET /api/users/org-tree — ::1
+[2026-05-05 22:52:58] debug: GET /api/users — ::1
+[2026-05-05 22:53:02] debug: GET /api/users — ::1
+[2026-05-05 22:53:02] debug: GET /api/users/8 — ::1
+[2026-05-05 22:53:02] debug: GET /api/departments — ::1
+[2026-05-05 22:53:08] debug: DELETE /api/users/8 — ::1
+[2026-05-05 22:53:08] debug: GET /api/users — ::1
+[2026-05-05 22:53:10] debug: GET /api/audit — ::1
+[2026-05-05 22:53:17] debug: DELETE /api/audit — ::1
+[2026-05-05 22:53:17] debug: GET /api/audit — ::1
+[2026-05-05 22:53:24] debug: DELETE /api/audit — ::1
+[2026-05-05 22:53:24] debug: GET /api/audit — ::1
+[2026-05-05 22:53:27] debug: GET /api/settings — ::1
+[2026-05-05 22:53:27] debug: GET /api/settings/roles/permissions — ::1
+[2026-05-05 23:00:00] debug: 🕐 Running overdue task check...
+[2026-05-05 23:05:04] debug: GET /api/notifications — ::1
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:04] debug: GET /api/settings — ::1
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:04] debug: GET /api/settings/roles/permissions — ::1
+[2026-05-05 23:05:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:05:05] debug: POST /api/auth/refresh — ::1
+[2026-05-05 23:05:05] debug: POST /api/auth/refresh — ::1
+[2026-05-05 23:05:05] debug: Socket connected: user 1
+[2026-05-05 23:05:05] debug: POST /api/auth/refresh — ::1
+[2026-05-05 23:05:05] debug: Socket connected: user 1
+[2026-05-05 23:05:05] debug: GET /api/notifications — ::1
+[2026-05-05 23:05:05] debug: GET /api/settings/roles/permissions — ::1
+[2026-05-05 23:05:05] debug: GET /api/settings — ::1
+[2026-05-05 23:15:00] debug: 🕐 Running overdue task check...
+[2026-05-05 23:20:34] info: ✅ Database connected successfully
+[2026-05-05 23:20:34] info: 🔌 Socket.IO initialized
+[2026-05-05 23:20:34] info: ⏰ Schedulers started
+[2026-05-05 23:20:34] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 23:20:34] info: 📡 Environment: development
+[2026-05-05 23:20:34] debug: Socket connected: user 1
+[2026-05-05 23:20:35] debug: Socket connected: user 1
+[2026-05-05 23:20:55] info: ✅ Database connected successfully
+[2026-05-05 23:20:55] info: 🔌 Socket.IO initialized
+[2026-05-05 23:20:55] info: ⏰ Schedulers started
+[2026-05-05 23:20:55] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-05 23:20:55] info: 📡 Environment: development
+[2026-05-05 23:20:55] debug: Socket connected: user 1
+[2026-05-05 23:20:56] debug: Socket connected: user 1
+[2026-05-05 23:22:22] debug: GET /api/users — ::1
+[2026-05-05 23:22:22] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:49:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-05 23:22:22] debug: POST /api/auth/refresh — ::1
+[2026-05-05 23:22:22] debug: GET /api/users — ::1
+[2026-05-05 23:22:23] debug: GET /api/users — ::1
+[2026-05-05 23:22:23] debug: GET /api/users/1 — ::1
+[2026-05-05 23:22:23] debug: GET /api/departments — ::1
+[2026-05-05 23:30:00] debug: 🕐 Running overdue task check...
