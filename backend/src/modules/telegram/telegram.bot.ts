@@ -7,11 +7,38 @@ const pendingAuth = new Map<number, string>(); // chatId -> username (waiting fo
 const awaitingUsername = new Set<number>();    // chatIds waiting for username input
 const sessionState = new Map<number, string>(); // chatId -> current state e.g. 'awaiting_task_code'
 
+// Singleton guard - prevent multiple bot instances
+let botInstance: TelegramBot | null = null;
+
 export function initTelegramBot() {
   const token = process.env.TELEGRAM_BOT_TOKEN || '7808940555:AAFvtJAdJFaaqV47_htRkRvdb97ub0duC_c';
   if (!token) return;
+  if (botInstance) {
+    console.log('Telegram Bot already initialized, skipping...');
+    return;
+  }
 
-  const bot = new TelegramBot(token, { polling: true });
+  // Start with polling disabled, delete any stale webhook first, then start polling
+  const bot = new TelegramBot(token, { polling: false });
+  botInstance = bot;
+
+  // Delete webhook and start polling cleanly
+  bot.deleteWebhook().then(() => {
+    bot.startPolling({ restart: false });
+    console.log('Telegram Bot polling started cleanly.');
+  }).catch((err: any) => {
+    console.error('Failed to delete webhook, starting polling anyway:', err.message);
+    bot.startPolling({ restart: false });
+  });
+
+  // Handle polling errors gracefully (409 Conflict, etc.)
+  bot.on('polling_error', (err: any) => {
+    if (err.code === 'ETELEGRAM' && err.message && err.message.includes('409')) {
+      console.warn('⚠️ Telegram polling conflict (409) - another instance may be running. Will retry...');
+    } else {
+      console.error('Telegram polling error:', err.message || err);
+    }
+  });
 
   // ── /start command ────────────────────────────────────────
   bot.onText(/\/start/, async (msg) => {
