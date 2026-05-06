@@ -204,10 +204,20 @@ export function initTelegramBot() {
       const stats = await getSystemStats();
       await bot.sendMessage(chatId, `📊 إجمالي المهام: ${stats.totalTasks} | المكتملة: ${stats.completedTasks} | المتأخرة: ${stats.overdueTasks} | نسبة الإنجاز: ${stats.completionRate}%`);
     } else if (lower.includes('موظف') || lower.includes('موظفين')) {
-      // Trigger employee menu
-      bot.emit('callback_query', { id: '0', message: { chat: { id: chatId } }, data: 'menu_employees' } as any);
+      const employees = await prisma.user.findMany({ where: { isActive: true }, include: { role: true, department: true }, orderBy: { fullNameAr: 'asc' } });
+      const buttons = employees.slice(0, 20).map(emp => ([{ text: `👤 ${emp.fullNameAr} (${emp.role.nameAr || emp.role.name})`, callback_data: `emp_${emp.id}` }]));
+      buttons.push([{ text: '🔙 القائمة الرئيسية', callback_data: 'main_menu' }]);
+      await bot.sendMessage(chatId, `👥 *قائمة الموظفين النشطين (${employees.length})*\nاختر موظفاً:`, { parse_mode: 'Markdown', reply_markup: { inline_keyboard: buttons } });
     } else if (lower.includes('متأخر') || lower.includes('تأخير')) {
-      bot.emit('callback_query', { id: '0', message: { chat: { id: chatId } }, data: 'menu_overdue' } as any);
+      const overdue = await getOverdueTasks();
+      if (overdue.length === 0) {
+        await bot.sendMessage(chatId, '🎉 ممتاز! لا توجد مهام متأخرة حالياً.');
+      } else {
+        let msg = `⚠️ *المهام المتأخرة (${overdue.length})*\n\n`;
+        overdue.slice(0, 10).forEach((t, i) => { const days = Math.floor((Date.now() - new Date(t.dueDate!).getTime()) / 86400000); msg += `${i+1}. *${t.taskCode}* - ${t.titleAr || t.title}\n   👤 ${t.assignedTo.fullNameAr} | تأخر ${days} أيام\n\n`; });
+        await bot.sendMessage(chatId, msg, { parse_mode: 'Markdown' });
+      }
+      await sendMainMenu(bot, chatId);
     } else {
       await sendMainMenu(bot, chatId, 'يمكنك استخدام القائمة أدناه أو اسألني مباشرة:');
     }
@@ -297,7 +307,7 @@ async function showTaskByCode(bot: TelegramBot, chatId: number, code: string) {
     `⏰ تاريخ الانتهاء: *${dueDate}*\n`;
 
   if (isOverdue) msg += `🚨 متأخرة بـ *${daysDiff}* ${daysDiff === 1 ? 'يوم' : 'أيام'}!\n`;
-  if (task.progress !== undefined && task.progress !== null) msg += `📈 نسبة الإنجاز: *${task.progress}%*\n`;
+  if (task.progressPercent !== undefined && task.progressPercent !== null) msg += `📈 نسبة الإنجاز: *${task.progressPercent}%*\n`;
 
   msg += `\n👤 *المسند إليه:*\n`;
   msg += `   الاسم: ${task.assignedTo.fullNameAr}\n`;
@@ -305,8 +315,8 @@ async function showTaskByCode(bot: TelegramBot, chatId: number, code: string) {
 
   if (task.createdBy) msg += `\n🖊️ أنشأها: ${task.createdBy.fullNameAr}\n`;
   if (task.category) msg += `📂 التصنيف: ${task.category.nameAr || task.category.name}\n`;
-  if (task.descriptionAr || task.description) {
-    const desc = task.descriptionAr || task.description || '';
+  if (task.description) {
+    const desc = task.description || '';
     msg += `\n📄 الوصف:\n_${desc.slice(0, 200)}${desc.length > 200 ? '...' : ''}_`;
   }
 
@@ -329,11 +339,11 @@ async function showEmployeeDetails(bot: TelegramBot, chatId: number, empId: numb
     include: {
       role: true,
       department: true,
-      _count: { select: { assignedTasks: true } }
     }
   });
   if (!emp) return;
 
+  const totalCount = await prisma.task.count({ where: { assignedToId: empId } });
   const completedCount = await prisma.task.count({ where: { assignedToId: empId, status: 'COMPLETED' } });
   const overdueCount = await prisma.task.count({
     where: { assignedToId: empId, dueDate: { lt: new Date() }, status: { not: 'COMPLETED' } }
@@ -343,7 +353,7 @@ async function showEmployeeDetails(bot: TelegramBot, chatId: number, empId: numb
     `👤 *${emp.fullNameAr}*\n` +
     `🏷️ المنصب: ${emp.role.nameAr || emp.role.name}\n` +
     `🏢 القسم: ${emp.department?.nameAr || emp.department?.name || 'غير محدد'}\n` +
-    `📋 إجمالي المهام: ${emp._count.assignedTasks}\n` +
+    `📋 إجمالي المهام: ${totalCount}\n` +
     `✅ المكتملة: ${completedCount}\n` +
     `⚠️ المتأخرة: ${overdueCount}\n` +
     `📧 البريد: ${emp.email || 'غير محدد'}`;
