@@ -23,7 +23,7 @@ export function initTelegramBot() {
   botInstance = bot;
 
   // Delete webhook and start polling cleanly
-  bot.deleteWebhook().then(() => {
+  bot.deleteWebHook().then(() => {
     bot.startPolling({ restart: false });
     console.log('Telegram Bot polling started cleanly.');
   }).catch((err: any) => {
