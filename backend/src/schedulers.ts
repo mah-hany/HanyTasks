@@ -2,8 +2,19 @@ import cron from 'node-cron';
 import prisma from './prisma/client';
 import { notificationService } from './modules/notifications/notification.service';
 import { logger } from './utils/logger';
+import https from 'https';
 
 export function startSchedulers() {
+  // ── Keep-Alive: ping self every 14 min to prevent Render free tier from sleeping ──
+  const SELF_URL = process.env.APP_URL || 'https://hanytasks.onrender.com';
+  cron.schedule('*/14 * * * *', () => {
+    https.get(`${SELF_URL}/api/health`, (res) => {
+      logger.debug(`🏓 Keep-alive ping → ${res.statusCode}`);
+    }).on('error', (e) => {
+      logger.warn('Keep-alive ping failed:', e.message);
+    });
+  });
+
   // Run every 15 minutes — check for overdue tasks
   cron.schedule('*/15 * * * *', async () => {
     logger.debug('🕐 Running overdue task check...');
@@ -17,7 +28,6 @@ export function startSchedulers() {
       });
 
       for (const task of overdueTasks) {
-        // Check if overdue notification already sent today
         const recentNotif = await prisma.notification.findFirst({
           where: {
             taskId: task.id,
@@ -36,7 +46,6 @@ export function startSchedulers() {
             message: `Task "${task.title}" is overdue!`,
             messageAr: `المهمة "${task.titleAr || task.title}" تجاوزت الموعد النهائي!`,
           });
-          // Notify creator too
           await notificationService.create({
             receiverId: task.createdById,
             taskId: task.id,
@@ -87,5 +96,5 @@ export function startSchedulers() {
     }
   });
 
-  logger.info('⏰ Schedulers started');
+  logger.info('⏰ Schedulers started (with keep-alive ping every 14 min)');
 }

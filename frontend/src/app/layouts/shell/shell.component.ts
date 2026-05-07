@@ -113,13 +113,13 @@ interface NavItem {
             <mat-icon>notifications_outlined</mat-icon>
           </button>
 
-          <!-- Theme toggle (hidden on small mobile) -->
-          <button class="header-btn desktop-only" (click)="toggleDark()" [matTooltip]="'Dark Mode'">
+          <!-- Theme toggle - visible on ALL screen sizes -->
+          <button class="header-btn" (click)="toggleDark()" [matTooltip]="isDark() ? 'Light Mode' : 'Dark Mode'">
             <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
 
-          <!-- Lang toggle (hidden on small mobile) -->
-          <button class="header-btn lang-btn desktop-only" (click)="toggleLang()">
+          <!-- Lang toggle - visible on ALL screen sizes -->
+          <button class="header-btn lang-btn" (click)="toggleLang()">
             {{ currentLang() === 'ar' ? 'EN' : 'ع' }}
           </button>
         </header>
