@@ -58,6 +58,10 @@ export const routes: Routes = [
         path: 'templates',
         loadComponent: () => import('./features/templates/templates.component').then(m => m.TemplatesComponent),
       },
+      {
+        path: 'leaderboard',
+        loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

@@ -7,6 +7,7 @@ exports.taskService = void 0;
 const client_1 = __importDefault(require("../../prisma/client"));
 const errorHandler_1 = require("../../middleware/errorHandler");
 const notification_service_1 = require("../notifications/notification.service");
+const email_service_1 = require("../email/email.service");
 function generateTaskCode() {
     const year = new Date().getFullYear();
     const rand = String(Math.floor(Math.random() * 90000) + 10000);
@@ -125,7 +126,7 @@ exports.taskService = {
         await client_1.default.taskStatusHistory.create({
             data: { taskId: task.id, toStatus: 'NEW', changedById: data.createdById },
         });
-        // Notify assignee
+        // Notify assignee (in-app)
         await notification_service_1.notificationService.create({
             receiverId: data.assignedToId,
             senderId: data.createdById,
@@ -136,6 +137,15 @@ exports.taskService = {
             message: `Task "${task.title}" has been assigned to you`,
             messageAr: `تم إسناد المهمة "${task.titleAr || task.title}" إليك`,
         });
+        // Send email notification
+        const assignee = await client_1.default.user.findUnique({ where: { id: data.assignedToId } });
+        if (assignee?.email) {
+            (0, email_service_1.sendEmail)({
+                to: assignee.email,
+                subject: `📋 مهمة جديدة: ${task.titleAr || task.title}`,
+                html: (0, email_service_1.taskAssignedEmail)(task.titleAr || task.title, task.taskCode, assignee.fullNameAr || assignee.fullName, data.dueDate ? new Date(data.dueDate).toLocaleDateString('ar-EG') : undefined),
+            }).catch(() => { }); // fire-and-forget
+        }
         return task;
     },
     async updateStatus(taskId, newStatus, userId, note) {
@@ -152,7 +162,7 @@ exports.taskService = {
         await client_1.default.taskStatusHistory.create({
             data: { taskId, fromStatus: task.status, toStatus: newStatus, changedById: userId, note },
         });
-        // Notify creator when completed or submitted
+        // Notify + award points on completion
         if (newStatus === 'COMPLETED' || newStatus === 'UNDER_REVIEW') {
             await notification_service_1.notificationService.create({
                 receiverId: task.createdById,
@@ -164,6 +174,17 @@ exports.taskService = {
                 message: `Task "${task.title}" status changed to ${newStatus}`,
                 messageAr: `تغيرت حالة المهمة "${task.titleAr || task.title}" إلى ${newStatus}`,
             });
+            // Award gamification points on completion
+            if (newStatus === 'COMPLETED') {
+                const now = new Date();
+                const isOnTime = task.dueDate && task.dueDate >= now;
+                const isEarly = task.dueDate && (task.dueDate.getTime() - now.getTime()) > 24 * 60 * 60 * 1000;
+                const basePoints = 10;
+                const bonus = isEarly ? 5 : isOnTime ? 2 : 0;
+                await client_1.default.userPoint.create({
+                    data: { userId: task.assignedToId, points: basePoints + bonus, reason: isEarly ? 'EARLY' : isOnTime ? 'ON_TIME' : 'TASK_COMPLETED', taskId },
+                });
+            }
         }
         if (newStatus === 'REVISION_REQUIRED') {
             await notification_service_1.notificationService.create({

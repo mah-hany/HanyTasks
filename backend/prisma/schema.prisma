@@ -106,6 +106,8 @@ model User {
   sentNotifications Notification[] @relation("NotifSender")
   auditLogs        AuditLog[]
   transferHistory  EmployeeTransfer[]
+  timeEntries      TimeEntry[]
+  points           UserPoint[]
 
   @@map("tbl_Users")
 }
@@ -166,6 +168,8 @@ model Task {
   attachments     TaskAttachment[]
   notifications   Notification[]
   checklist       TaskChecklist[]
+  timeEntries     TimeEntry[]
+  tags            TaskTag[]
 
   @@map("tbl_Tasks")
 }
@@ -295,6 +299,65 @@ model TaskTemplate {
   updatedAt       DateTime  @updatedAt
 
   @@map("tbl_TaskTemplates")
+}
+
+// ─────────────────────────────────────────
+//  TIME TRACKING
+// ─────────────────────────────────────────
+model TimeEntry {
+  id        Int       @id @default(autoincrement())
+  taskId    Int
+  userId    Int
+  startTime DateTime
+  endTime   DateTime?
+  duration  Int?      // minutes
+  note      String?
+  createdAt DateTime  @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tbl_TimeEntries")
+}
+
+// ─────────────────────────────────────────
+//  TASK TAGS
+// ─────────────────────────────────────────
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  nameAr    String?
+  color     String    @default("#6366f1")
+  taskTags  TaskTag[]
+
+  @@map("tbl_Tags")
+}
+
+model TaskTag {
+  taskId Int
+  tagId  Int
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([taskId, tagId])
+  @@map("tbl_TaskTags")
+}
+
+// ─────────────────────────────────────────
+//  GAMIFICATION — USER POINTS
+// ─────────────────────────────────────────
+model UserPoint {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  points      Int
+  reason      String   // TASK_COMPLETED | ON_TIME | EARLY | STREAK
+  taskId      Int?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("tbl_UserPoints")
 }
 
 // ─────────────────────────────────────────

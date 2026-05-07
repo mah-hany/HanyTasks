@@ -16,11 +16,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LangService } from '../../../core/services/lang.service';
+import { TimeTrackerComponent } from './time-tracker.component';
 
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, TranslateModule, DatePipe],
+  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, TranslateModule, DatePipe, TimeTrackerComponent],
   template: `
     <div class="page-container fade-in">
       <div *ngIf="loading()" class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
@@ -187,8 +188,11 @@ import { LangService } from '../../../core/services/lang.service';
             </div>
           </div>
 
-          <!-- Right: Comments + Attachments -->
+          <!-- Right: Time Tracker + Comments + Attachments -->
           <div class="detail-side">
+            <!-- Time Tracker -->
+            <app-time-tracker></app-time-tracker>
+
             <!-- Comments -->
             <div class="tf-card comments-card">
               <h3>{{ 'TASKS.COMMENTS' | translate }} ({{ task()?.comments?.length }})</h3>

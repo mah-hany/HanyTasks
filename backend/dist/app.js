@@ -21,6 +21,8 @@ const report_routes_1 = __importDefault(require("./modules/reports/report.routes
 const audit_routes_1 = __importDefault(require("./modules/audit/audit.routes"));
 const settings_routes_1 = __importDefault(require("./modules/settings/settings.routes"));
 const export_routes_1 = __importDefault(require("./modules/export/export.routes"));
+const time_routes_1 = __importDefault(require("./modules/time/time.routes"));
+const gamification_routes_1 = __importDefault(require("./modules/gamification/gamification.routes"));
 const telegram_bot_1 = require("./modules/telegram/telegram.bot");
 const app = (0, express_1.default)();
 // ── Security Headers (Helmet) ──────────────────────────────
@@ -80,6 +82,8 @@ app.use('/api/reports', report_routes_1.default);
 app.use('/api/audit', audit_routes_1.default);
 app.use('/api/settings', settings_routes_1.default);
 app.use('/api/export', export_routes_1.default);
+app.use('/api/time', time_routes_1.default);
+app.use('/api/gamification', gamification_routes_1.default);
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
 app.post('/api/telegram/webhook', (req, res, next) => {

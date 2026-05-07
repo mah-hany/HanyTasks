@@ -2,6 +2,7 @@ import prisma from '../../prisma/client';
 import { AppError } from '../../middleware/errorHandler';
 import { TaskStatus, TaskPriority } from '../../types/enums';
 import { notificationService } from '../notifications/notification.service';
+import { sendEmail, taskAssignedEmail } from '../email/email.service';
 
 function generateTaskCode(): string {
   const year = new Date().getFullYear();
@@ -132,7 +133,7 @@ export const taskService = {
       data: { taskId: task.id, toStatus: 'NEW', changedById: data.createdById },
     });
 
-    // Notify assignee
+    // Notify assignee (in-app)
     await notificationService.create({
       receiverId: data.assignedToId,
       senderId: data.createdById,
@@ -143,6 +144,21 @@ export const taskService = {
       message: `Task "${task.title}" has been assigned to you`,
       messageAr: `تم إسناد المهمة "${task.titleAr || task.title}" إليك`,
     });
+
+    // Send email notification
+    const assignee = await prisma.user.findUnique({ where: { id: data.assignedToId } });
+    if (assignee?.email) {
+      sendEmail({
+        to: assignee.email,
+        subject: `📋 مهمة جديدة: ${task.titleAr || task.title}`,
+        html: taskAssignedEmail(
+          task.titleAr || task.title,
+          task.taskCode,
+          assignee.fullNameAr || assignee.fullName,
+          data.dueDate ? new Date(data.dueDate).toLocaleDateString('ar-EG') : undefined,
+        ),
+      }).catch(() => {}); // fire-and-forget
+    }
 
     return task;
   },
@@ -163,7 +179,7 @@ export const taskService = {
       data: { taskId, fromStatus: task.status, toStatus: newStatus, changedById: userId, note },
     });
 
-    // Notify creator when completed or submitted
+    // Notify + award points on completion
     if (newStatus === 'COMPLETED' || newStatus === 'UNDER_REVIEW') {
       await notificationService.create({
         receiverId: task.createdById,
@@ -175,6 +191,19 @@ export const taskService = {
         message: `Task "${task.title}" status changed to ${newStatus}`,
         messageAr: `تغيرت حالة المهمة "${task.titleAr || task.title}" إلى ${newStatus}`,
       });
+
+      // Award gamification points on completion
+      if (newStatus === 'COMPLETED') {
+        const now = new Date();
+        const isOnTime = task.dueDate && task.dueDate >= now;
+        const isEarly  = task.dueDate && (task.dueDate.getTime() - now.getTime()) > 24 * 60 * 60 * 1000;
+        const basePoints = 10;
+        const bonus = isEarly ? 5 : isOnTime ? 2 : 0;
+
+        await prisma.userPoint.create({
+          data: { userId: task.assignedToId, points: basePoints + bonus, reason: isEarly ? 'EARLY' : isOnTime ? 'ON_TIME' : 'TASK_COMPLETED', taskId },
+        });
+      }
     }
 
     if (newStatus === 'REVISION_REQUIRED') {

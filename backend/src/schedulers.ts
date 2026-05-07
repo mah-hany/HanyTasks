@@ -1,11 +1,12 @@
 import cron from 'node-cron';
 import prisma from './prisma/client';
 import { notificationService } from './modules/notifications/notification.service';
+import { sendWeeklyReports } from './modules/email/email.service';
 import { logger } from './utils/logger';
 import https from 'https';
 
 export function startSchedulers() {
-  // ── Keep-Alive: ping self every 14 min to prevent Render free tier from sleeping ──
+  // ── Keep-Alive: ping self every 14 min ────────────────────
   const SELF_URL = process.env.APP_URL || 'https://hanytasks.onrender.com';
   cron.schedule('*/14 * * * *', () => {
     https.get(`${SELF_URL}/api/health`, (res) => {
@@ -15,7 +16,7 @@ export function startSchedulers() {
     });
   });
 
-  // Run every 15 minutes — check for overdue tasks
+  // ── Every 15 min: check overdue tasks ─────────────────────
   cron.schedule('*/15 * * * *', async () => {
     logger.debug('🕐 Running overdue task check...');
     try {
@@ -62,7 +63,7 @@ export function startSchedulers() {
     }
   });
 
-  // Run daily at 8:00 AM — check tasks due in 1, 3, 7 days
+  // ── Daily at 8 AM: due-date reminders (1, 3, 7 days) ──────
   cron.schedule('0 8 * * *', async () => {
     logger.debug('📅 Running due-date reminder check...');
     try {
@@ -70,13 +71,10 @@ export function startSchedulers() {
         const target = new Date();
         target.setDate(target.getDate() + days);
         const start = new Date(target.setHours(0, 0, 0, 0));
-        const end = new Date(target.setHours(23, 59, 59, 999));
+        const end   = new Date(target.setHours(23, 59, 59, 999));
 
         const tasks = await prisma.task.findMany({
-          where: {
-            status: { in: ['NEW', 'IN_PROGRESS'] },
-            dueDate: { gte: start, lte: end },
-          },
+          where: { status: { in: ['NEW', 'IN_PROGRESS'] }, dueDate: { gte: start, lte: end } },
         });
 
         for (const task of tasks) {
@@ -96,5 +94,16 @@ export function startSchedulers() {
     }
   });
 
-  logger.info('⏰ Schedulers started (with keep-alive ping every 14 min)');
+  // ── Weekly: email reports every Sunday 7 AM ───────────────
+  cron.schedule('0 7 * * 0', async () => {
+    logger.info('📧 Sending weekly email reports...');
+    try {
+      await sendWeeklyReports();
+      logger.info('✅ Weekly reports sent');
+    } catch (err) {
+      logger.error('Weekly email error:', err);
+    }
+  });
+
+  logger.info('⏰ Schedulers started: keep-alive + overdue + reminders + weekly email');
 }

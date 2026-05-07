@@ -80,10 +80,10 @@ export declare const userService: {
             description: string | null;
             title: string;
             titleAr: string | null;
-            taskCode: string;
-            categoryId: number | null;
             priority: string;
             assignedToId: number;
+            taskCode: string;
+            categoryId: number | null;
             createdById: number;
             startDate: Date | null;
             dueDate: Date | null;
