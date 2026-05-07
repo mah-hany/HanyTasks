@@ -13,6 +13,7 @@ const https_1 = __importDefault(require("https"));
 const pendingAuth = new Map();
 const awaitingUsername = new Set();
 const sessionState = new Map();
+const sessionData = new Map(); // multi-step form data
 let bot = null;
 function isAdmin(user) { return user?.role?.level <= 2; }
 /** Called from app.ts to register the webhook route */
@@ -64,6 +65,7 @@ async function initTelegramBot() {
         console.log('✅ Telegram Bot polling started (dev mode).');
     }
     registerHandlers(bot);
+    registerStatusHandler(bot);
 }
 /** Express route handler — called from app.ts for POST /api/telegram/webhook */
 function handleTelegramWebhook(req, res) {
@@ -138,6 +140,23 @@ function registerHandlers(b) {
         else if (data === 'admin_search' || data === 'my_search') {
             sessionState.set(chatId, 'awaiting_task_code');
             await b.sendMessage(chatId, '🔍 أدخل كود المهمة (مثال: TSK-2026-001):');
+        }
+        else if (data === 'create_task') {
+            if (!isAdmin(user)) {
+                await b.sendMessage(chatId, '🔒 صلاحية المديرين فقط.');
+                return;
+            }
+            sessionState.set(chatId, 'ct_title');
+            sessionData.set(chatId, {});
+            await b.sendMessage(chatId, '📝 *إنشاء مهمة جديدة*\n\nأدخل عنوان المهمة بالعربية:', { parse_mode: 'Markdown' });
+        }
+        else if (data === 'update_status') {
+            sessionState.set(chatId, 'us_code');
+            await b.sendMessage(chatId, '🔄 أدخل كود المهمة لتغيير حالتها:');
+        }
+        else if (data === 'add_comment') {
+            sessionState.set(chatId, 'ac_code');
+            await b.sendMessage(chatId, '💬 أدخل كود المهمة لإضافة تعليق:');
         }
         else if (data === 'admin_depts') {
             const depts = await client_1.default.department.findMany({ include: { _count: { select: { users: true } } } });
@@ -215,7 +234,123 @@ function registerHandlers(b) {
             await showTaskByCode(b, chatId, text, user);
             return;
         }
+        // ── Multi-step: Create Task ───────────────────────────────
+        const st = sessionState.get(chatId);
+        if (st?.startsWith('ct_')) {
+            const d = sessionData.get(chatId) || {};
+            if (st === 'ct_title') {
+                d.titleAr = text;
+                sessionData.set(chatId, d);
+                sessionState.set(chatId, 'ct_assignee');
+                await b.sendMessage(chatId, '👤 أدخل كود الموظف المسند إليه (مثال: EMP-2026-001):');
+            }
+            else if (st === 'ct_assignee') {
+                const emp = await client_1.default.user.findFirst({ where: { employeeCode: { equals: text.trim(), mode: 'insensitive' } } });
+                if (!emp) {
+                    await b.sendMessage(chatId, '❌ كود الموظف غير موجود. أعد الإدخال:');
+                    return;
+                }
+                d.assignedToId = emp.id;
+                d.assigneeName = emp.fullNameAr;
+                sessionData.set(chatId, d);
+                sessionState.set(chatId, 'ct_due');
+                await b.sendMessage(chatId, `✅ الموظف: *${emp.fullNameAr}*\n📅 أدخل تاريخ الاستحقاق (YYYY-MM-DD) أو أرسل - لتخطيه:`, { parse_mode: 'Markdown' });
+            }
+            else if (st === 'ct_due') {
+                d.dueDate = text.trim() === '-' ? undefined : text.trim();
+                sessionState.delete(chatId);
+                sessionData.delete(chatId);
+                // Create task
+                const yr = new Date().getFullYear();
+                const code = `TSK-${yr}-${Math.floor(Math.random() * 90000) + 10000}`;
+                try {
+                    const task = await client_1.default.task.create({
+                        data: {
+                            taskCode: code, title: d.titleAr, titleAr: d.titleAr,
+                            priority: 'MEDIUM', status: 'NEW',
+                            assignedToId: d.assignedToId, createdById: user.id,
+                            dueDate: d.dueDate ? new Date(d.dueDate) : undefined,
+                        },
+                    });
+                    await b.sendMessage(chatId, `✅ *تم إنشاء المهمة بنجاح!*\n🔖 الكود: *${task.taskCode}*\n📝 ${task.titleAr}\n👤 مسندة إلى: ${d.assigneeName}`, { parse_mode: 'Markdown' });
+                }
+                catch {
+                    await b.sendMessage(chatId, '❌ حدث خطأ أثناء إنشاء المهمة.');
+                }
+                await sendMenu(b, chatId, user);
+            }
+            return;
+        }
+        // ── Multi-step: Update Status ─────────────────────────────
+        if (st?.startsWith('us_')) {
+            if (st === 'us_code') {
+                const task = await client_1.default.task.findFirst({ where: { taskCode: { equals: text.trim(), mode: 'insensitive' } } });
+                if (!task) {
+                    await b.sendMessage(chatId, '❌ كود غير موجود.');
+                    return;
+                }
+                if (!isAdmin(user) && task.assignedToId !== user.id) {
+                    await b.sendMessage(chatId, '🔒 ليست مهمتك.');
+                    return;
+                }
+                sessionData.set(chatId, { taskId: task.id, taskCode: task.taskCode });
+                sessionState.set(chatId, 'us_status');
+                await b.sendMessage(chatId, `📋 *${task.taskCode}* - اختر الحالة الجديدة:`, {
+                    parse_mode: 'Markdown',
+                    reply_markup: { inline_keyboard: [
+                            [{ text: '🔄 قيد التنفيذ', callback_data: 'set_status_IN_PROGRESS' }],
+                            [{ text: '👀 تحت المراجعة', callback_data: 'set_status_UNDER_REVIEW' }],
+                            [{ text: '✅ مكتملة', callback_data: 'set_status_COMPLETED' }],
+                        ] },
+                });
+            }
+            return;
+        }
+        // ── Multi-step: Add Comment ───────────────────────────────
+        if (st?.startsWith('ac_')) {
+            if (st === 'ac_code') {
+                const task = await client_1.default.task.findFirst({ where: { taskCode: { equals: text.trim(), mode: 'insensitive' } } });
+                if (!task) {
+                    await b.sendMessage(chatId, '❌ كود غير موجود.');
+                    return;
+                }
+                sessionData.set(chatId, { taskId: task.id, taskCode: task.taskCode });
+                sessionState.set(chatId, 'ac_text');
+                await b.sendMessage(chatId, `💬 أدخل نص التعليق على المهمة *${task.taskCode}*:`, { parse_mode: 'Markdown' });
+            }
+            else if (st === 'ac_text') {
+                const d = sessionData.get(chatId);
+                sessionState.delete(chatId);
+                sessionData.delete(chatId);
+                await client_1.default.taskComment.create({ data: { taskId: d.taskId, userId: user.id, commentText: text } });
+                await b.sendMessage(chatId, `✅ تم إضافة التعليق على *${d.taskCode}*`, { parse_mode: 'Markdown' });
+                await sendMenu(b, chatId, user);
+            }
+            return;
+        }
         await sendMenu(b, chatId, user, 'استخدم القائمة:');
+    });
+}
+// Handle set_status callbacks (registered via callback_query)
+function registerStatusHandler(b) {
+    b.on('callback_query', async (query) => {
+        const data = query.data || '';
+        if (!data.startsWith('set_status_'))
+            return;
+        const chatId = query.message.chat.id;
+        await b.answerCallbackQuery(query.id);
+        const newStatus = data.replace('set_status_', '');
+        const d = sessionData.get(chatId);
+        if (!d?.taskId)
+            return;
+        sessionState.delete(chatId);
+        sessionData.delete(chatId);
+        const user = await getUser(chatId);
+        await client_1.default.task.update({ where: { id: d.taskId }, data: { status: newStatus, completedDate: newStatus === 'COMPLETED' ? new Date() : null } });
+        await client_1.default.taskStatusHistory.create({ data: { taskId: d.taskId, toStatus: newStatus, changedById: user.id, note: 'تحديث عبر تيليجرام' } });
+        const labels = { IN_PROGRESS: '🔄 قيد التنفيذ', UNDER_REVIEW: '👀 تحت المراجعة', COMPLETED: '✅ مكتملة' };
+        await b.sendMessage(chatId, `✅ تم تحديث حالة *${d.taskCode}* إلى ${labels[newStatus] || newStatus}`, { parse_mode: 'Markdown' });
+        await sendMenu(b, chatId, user);
     });
 }
 // ── Send role-based menu ──────────────────────────────────────
@@ -231,6 +366,9 @@ async function sendMenu(b, chatId, user, caption) {
                     [{ text: '👥 قائمة الموظفين', callback_data: 'admin_employees' }],
                     [{ text: '🔍 بحث عن مهمة', callback_data: 'admin_search' }],
                     [{ text: '🏢 الأقسام', callback_data: 'admin_depts' }],
+                    [{ text: '➕ إنشاء مهمة', callback_data: 'create_task' }],
+                    [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
+                    [{ text: '💬 إضافة تعليق', callback_data: 'add_comment' }],
                 ] }
         });
     }
@@ -242,6 +380,8 @@ async function sendMenu(b, chatId, user, caption) {
                     [{ text: '📋 مهامي', callback_data: 'my_tasks' }],
                     [{ text: '⚠️ مهامي المتأخرة', callback_data: 'my_overdue' }],
                     [{ text: '🔍 بحث عن مهمة', callback_data: 'my_search' }],
+                    [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
+                    [{ text: '💬 إضافة تعليق', callback_data: 'add_comment' }],
                 ] }
         });
     }
