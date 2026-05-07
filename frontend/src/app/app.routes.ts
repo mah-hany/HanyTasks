@@ -50,6 +50,14 @@ export const routes: Routes = [
         path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),
       },
+      {
+        path: 'calendar',
+        loadComponent: () => import('./features/calendar/calendar.component').then(m => m.CalendarComponent),
+      },
+      {
+        path: 'templates',
+        loadComponent: () => import('./features/templates/templates.component').then(m => m.TemplatesComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

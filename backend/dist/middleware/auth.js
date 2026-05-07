@@ -16,7 +16,10 @@ async function authenticate(req, _res, next) {
             throw new errorHandler_1.AppError('No token provided', 401);
         }
         const token = authHeader.split(' ')[1];
-        const payload = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET);
+        const JWT_SECRET = process.env.JWT_SECRET;
+        if (!JWT_SECRET)
+            throw new errorHandler_1.AppError('Server misconfigured', 500);
+        const payload = jsonwebtoken_1.default.verify(token, JWT_SECRET);
         const user = await client_1.default.user.findUnique({
             where: { id: payload.sub },
             include: { role: true },

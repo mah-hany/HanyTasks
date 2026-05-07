@@ -11,6 +11,7 @@ export declare const taskController: {
     addComment(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     addAttachment(req: AuthRequest, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined>;
     getDashboard(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    getCalendar(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     getCategories(_req: Request, res: Response, next: NextFunction): Promise<void>;
     delete(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
 };

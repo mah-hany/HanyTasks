@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -28,7 +29,7 @@ const STATUS_COLUMNS = [
 @Component({
   selector: 'app-tasks-list',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule,
+  imports: [CommonModule, DatePipe, RouterLink, FormsModule, MatIconModule, MatButtonModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
     MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule],
   template: `
@@ -49,6 +50,11 @@ const STATUS_COLUMNS = [
               <mat-icon>list</mat-icon>
             </button>
           </div>
+          <!-- Export CSV -->
+          <button mat-stroked-button (click)="exportCsv()" [matTooltip]="isAr() ? 'تصدير CSV' : 'Export CSV'">
+            <mat-icon>download</mat-icon>
+            {{ isAr() ? 'تصدير' : 'Export' }}
+          </button>
           <!-- New Task -->
           <button mat-raised-button color="primary" (click)="openNewTask()" *ngIf="canCreate()">
             <mat-icon>add</mat-icon>
@@ -283,6 +289,7 @@ export class TasksListComponent implements OnInit {
     private authService: AuthService,
     private langService: LangService,
     private dialog: MatDialog,
+    private snack: MatSnackBar,
     private route: ActivatedRoute,
   ) {}
 
@@ -328,6 +335,24 @@ export class TasksListComponent implements OnInit {
       panelClass: 'task-dialog',
     });
     ref.afterClosed().subscribe(result => { if (result) this.loadTasks(); });
+  }
+
+  exportCsv() {
+    const filters: any = {};
+    if (this.filterStatus)   filters.status   = this.filterStatus;
+    if (this.filterPriority) filters.priority = this.filterPriority;
+    this.taskService.exportTasksCsv(filters).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tasks-${new Date().toISOString().split('T')[0]}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.snack.open(this.isAr() ? 'تم تصدير المهام بنجاح' : 'Tasks exported successfully', '✓', { duration: 2500 });
+      },
+      error: () => this.snack.open(this.isAr() ? 'حدث خطأ' : 'Export failed', 'X'),
+    });
   }
 
   getInitial(name?: string): string { return name ? name.charAt(0).toUpperCase() : '?'; }

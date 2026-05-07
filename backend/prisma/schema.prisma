@@ -165,6 +165,7 @@ model Task {
   comments        TaskComment[]
   attachments     TaskAttachment[]
   notifications   Notification[]
+  checklist       TaskChecklist[]
 
   @@map("tbl_Tasks")
 }
@@ -256,6 +257,44 @@ model AuditLog {
   user User? @relation(fields: [userId], references: [id])
 
   @@map("tbl_AuditLog")
+}
+
+// ─────────────────────────────────────────
+//  TASK CHECKLIST (Sub-tasks)
+// ─────────────────────────────────────────
+model TaskChecklist {
+  id          Int       @id @default(autoincrement())
+  taskId      Int
+  text        String
+  textAr      String?
+  isCompleted Boolean   @default(false)
+  sortOrder   Int       @default(0)
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("tbl_TaskChecklists")
+}
+
+// ─────────────────────────────────────────
+//  TASK TEMPLATES
+// ─────────────────────────────────────────
+model TaskTemplate {
+  id              Int       @id @default(autoincrement())
+  name            String
+  nameAr          String?
+  description     String?
+  categoryId      Int?
+  priority        String    @default("MEDIUM")
+  defaultDuration Int?      // days
+  checklistItems  String?   // JSON array of {text, textAr}
+  isGlobal        Boolean   @default(false)
+  createdById     Int
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@map("tbl_TaskTemplates")
 }
 
 // ─────────────────────────────────────────

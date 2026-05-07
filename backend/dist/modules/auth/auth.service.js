@@ -57,8 +57,12 @@ exports.authService = {
                 ipAddress: ip, tableAffected: 'tbl_Users', recordId: user.id,
             },
         });
-        const accessToken = jsonwebtoken_1.default.sign({ sub: user.id, username: user.username, role: user.role.name }, process.env.JWT_SECRET, { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') });
-        const refreshToken = jsonwebtoken_1.default.sign({ sub: user.id }, process.env.JWT_REFRESH_SECRET, { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') });
+        const JWT_SECRET = process.env.JWT_SECRET;
+        const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+        if (!JWT_SECRET || !JWT_REFRESH_SECRET)
+            throw new Error('JWT secrets not configured');
+        const accessToken = jsonwebtoken_1.default.sign({ sub: user.id, username: user.username, role: user.role.name }, JWT_SECRET, { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') });
+        const refreshToken = jsonwebtoken_1.default.sign({ sub: user.id }, JWT_REFRESH_SECRET, { expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN || '7d') });
         return {
             accessToken,
             refreshToken,
@@ -79,7 +83,10 @@ exports.authService = {
     },
     async refresh(refreshToken) {
         try {
-            const payload = jsonwebtoken_1.default.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+            const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+            if (!JWT_REFRESH_SECRET)
+                throw new Error('JWT_REFRESH_SECRET not configured');
+            const payload = jsonwebtoken_1.default.verify(refreshToken, JWT_REFRESH_SECRET);
             const user = await client_1.default.user.findUnique({
                 where: { id: payload.sub },
                 include: { role: true },

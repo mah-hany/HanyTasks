@@ -441,6 +441,8 @@ export class ShellComponent implements OnInit {
     const items: NavItem[] = [
       { labelKey: 'NAV.DASHBOARD',    label: 'Dashboard',    icon: 'dashboard',      route: '/dashboard' },
       { labelKey: 'NAV.TASKS',        label: 'Tasks',        icon: 'task_alt',       route: '/tasks' },
+      { labelKey: 'NAV.CALENDAR',     label: 'Calendar',     icon: 'calendar_month', route: '/calendar' },
+      { labelKey: 'NAV.TEMPLATES',    label: 'Templates',    icon: 'content_copy',   route: '/templates' },
       { labelKey: 'NAV.ORG_CHART',    label: 'Org Chart',    icon: 'account_tree',   route: '/org-chart' },
     ];
     if (level <= 3) {

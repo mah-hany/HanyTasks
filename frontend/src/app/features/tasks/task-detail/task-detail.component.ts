@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
@@ -19,7 +20,7 @@ import { LangService } from '../../../core/services/lang.service';
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, TranslateModule, DatePipe],
+  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, TranslateModule, DatePipe],
   template: `
     <div class="page-container fade-in">
       <div *ngIf="loading()" class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
@@ -120,6 +121,51 @@ import { LangService } from '../../../core/services/lang.service';
               <div class="description-section" *ngIf="task()?.description">
                 <label>{{ 'COMMON.DESCRIPTION' | translate }}</label>
                 <p>{{ task()?.description }}</p>
+              </div>
+
+              <!-- Checklist -->
+              <div class="checklist-section">
+                <div class="checklist-header">
+                  <label>{{ isAr() ? '✅ قائمة التحقق' : '✅ Checklist' }}
+                    <span class="checklist-count" *ngIf="task()?.checklist?.length">
+                      {{ completedChecklistCount() }}/{{ task()?.checklist?.length }}
+                    </span>
+                  </label>
+                </div>
+
+                <!-- Progress bar for checklist -->
+                <div *ngIf="task()?.checklist?.length" class="tf-progress" style="height:6px;margin-bottom:12px">
+                  <div class="tf-progress__fill" [style.width]="checklistProgress() + '%'"></div>
+                </div>
+
+                <!-- Items -->
+                <div class="checklist-list">
+                  <div class="checklist-item" *ngFor="let item of task()?.checklist">
+                    <mat-checkbox
+                      [checked]="item.isCompleted"
+                      (change)="toggleChecklist(item, $event.checked)"
+                      [disabled]="!isAssignee() && !canReview()">
+                    </mat-checkbox>
+                    <span [class.completed-text]="item.isCompleted">
+                      {{ isAr() && item.textAr ? item.textAr : item.text }}
+                    </span>
+                    <button mat-icon-button style="width:24px;height:24px;margin-inline-start:auto"
+                      *ngIf="isAssignee() || canReview()"
+                      (click)="deleteChecklist(item.id)">
+                      <mat-icon style="font-size:14px">close</mat-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Add new item -->
+                <div class="add-checklist" *ngIf="isAssignee() || canReview()">
+                  <input class="checklist-input" [(ngModel)]="newChecklistText"
+                    [placeholder]="isAr() ? 'أضف بنداً جديداً...' : 'Add a checklist item...'"
+                    (keyup.enter)="addChecklist()">
+                  <button mat-icon-button color="primary" (click)="addChecklist()" [disabled]="!newChecklistText.trim()">
+                    <mat-icon>add_circle</mat-icon>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -224,6 +270,14 @@ import { LangService } from '../../../core/services/lang.service';
 
     .progress-section { padding: 16px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 16px; }
     .description-section { label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; } p { font-size: 14px; line-height: 1.7; } }
+    .checklist-section { padding: 16px 0; border-top: 1px solid var(--border-color); margin-top: 16px; }
+    .checklist-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; label { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; } }
+    .checklist-count { background: var(--color-primary-light); color: white; border-radius: 20px; padding: 1px 8px; font-size: 11px; font-weight: 700; }
+    .checklist-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .checklist-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; transition: background var(--transition); &:hover { background: var(--bg-main); } }
+    .completed-text { text-decoration: line-through; color: var(--text-muted); }
+    .add-checklist { display: flex; align-items: center; gap: 6px; }
+    .checklist-input { flex: 1; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; font-size: 13px; outline: none; background: var(--bg-main); color: var(--text-primary); transition: border-color var(--transition); &:focus { border-color: var(--color-primary-light); } }
 
     .timeline { display: flex; flex-direction: column; gap: 0; padding-top: 12px; }
     .timeline-item {
@@ -272,11 +326,14 @@ export class TaskDetailComponent implements OnInit {
   loading = signal(true);
   confirmDelete = signal(false);
   newComment = '';
+  newChecklistText = '';
   isAr = () => this.langService.getCurrentLang() === 'ar';
   canChangeStatus = () => true;
   canReview = () => this.authService.hasRoleLevel(3);
   isAssignee = () => this.task()?.assignedTo?.id === this.authService.currentUser()?.id;
   isOverdue = () => this.task()?.dueDate && new Date(this.task()?.dueDate) < new Date() && this.task()?.status !== 'COMPLETED';
+  completedChecklistCount = () => (this.task()?.checklist || []).filter((i: any) => i.isCompleted).length;
+  checklistProgress = () => { const l = this.task()?.checklist?.length || 0; return l ? Math.round(this.completedChecklistCount() / l * 100) : 0; };
 
   STATUS_COLORS: Record<string, string> = {
     NEW: '#94a3b8', IN_PROGRESS: '#3b82f6', UNDER_REVIEW: '#a855f7',
@@ -323,6 +380,37 @@ export class TaskDetailComponent implements OnInit {
       next: (res) => {
         this.task.update(t => ({ ...t, comments: [...t.comments, res.data] }));
         this.newComment = '';
+      },
+    });
+  }
+
+  addChecklist() {
+    if (!this.newChecklistText.trim()) return;
+    this.taskService.addChecklistItem(this.task().id, this.newChecklistText).subscribe({
+      next: (res) => {
+        this.task.update(t => ({ ...t, checklist: [...(t.checklist || []), res.data] }));
+        this.newChecklistText = '';
+      },
+    });
+  }
+
+  toggleChecklist(item: any, checked: boolean) {
+    this.taskService.toggleChecklistItem(this.task().id, item.id, checked).subscribe({
+      next: () => {
+        this.task.update(t => ({
+          ...t,
+          checklist: t.checklist.map((i: any) => i.id === item.id ? { ...i, isCompleted: checked } : i),
+          progressPercent: this.checklistProgress(),
+        }));
+      },
+    });
+  }
+
+  deleteChecklist(itemId: number) {
+    this.taskService.deleteChecklistItem(this.task().id, itemId).subscribe({
+      next: () => {
+        this.task.update(t => ({ ...t, checklist: t.checklist.filter((i: any) => i.id !== itemId) }));
+        this.snack.open(this.isAr() ? 'تم الحذف' : 'Deleted', '✓', { duration: 1500 });
       },
     });
   }

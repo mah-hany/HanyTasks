@@ -11,10 +11,13 @@ import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
 import departmentRoutes from './modules/departments/department.routes';
 import taskRoutes from './modules/tasks/task.routes';
+import templateRoutes from './modules/tasks/template.routes';
+import checklistRoutes from './modules/tasks/checklist.routes';
 import notificationRoutes from './modules/notifications/notification.routes';
 import reportRoutes from './modules/reports/report.routes';
 import auditRoutes from './modules/audit/audit.routes';
 import settingRoutes from './modules/settings/settings.routes';
+import exportRoutes from './modules/export/export.routes';
 import { handleTelegramWebhook } from './modules/telegram/telegram.bot';
 
 const app = express();
@@ -75,10 +78,12 @@ app.use('/api/auth',          authLimiter, authRoutes);   // strict limit on aut
 app.use('/api/users',         userRoutes);
 app.use('/api/departments',   departmentRoutes);
 app.use('/api/tasks',         taskRoutes);
+app.use('/api/templates',     templateRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reports',       reportRoutes);
 app.use('/api/audit',         auditRoutes);
 app.use('/api/settings',      settingRoutes);
+app.use('/api/export',        exportRoutes);
 
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
