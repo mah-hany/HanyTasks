@@ -10,29 +10,33 @@ exports.weeklyReportEmail = weeklyReportEmail;
 exports.sendWeeklyReports = sendWeeklyReports;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const client_1 = __importDefault(require("../../prisma/client"));
+// الإيميل الثابت للنظام
+const SYSTEM_EMAIL = 'gift.give.me.gift@gmail.com';
+const SYSTEM_NAME = 'Hany Tasks — نظام إدارة المهام';
 let transporter = null;
 function initEmailService() {
-    const host = process.env.SMTP_HOST;
-    const user = process.env.SMTP_USER;
     const pass = process.env.SMTP_PASS;
-    if (!host || !user || !pass) {
-        console.warn('⚠️  SMTP not configured — email notifications disabled');
+    if (!pass) {
+        console.warn('⚠️  SMTP_PASS not set — email notifications disabled');
         return;
     }
     transporter = nodemailer_1.default.createTransport({
-        host,
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: +(process.env.SMTP_PORT || 587),
-        secure: process.env.SMTP_PORT === '465',
-        auth: { user, pass },
+        secure: false, // TLS
+        auth: {
+            user: SYSTEM_EMAIL,
+            pass,
+        },
     });
-    console.log('✅ Email service initialized');
+    console.log(`✅ Email service initialized — sender: ${SYSTEM_EMAIL}`);
 }
 async function sendEmail(options) {
     if (!transporter)
         return;
     try {
         await transporter.sendMail({
-            from: `"Hany Tasks" <${process.env.SMTP_USER}>`,
+            from: `"${SYSTEM_NAME}" <${SYSTEM_EMAIL}>`,
             ...options,
         });
     }

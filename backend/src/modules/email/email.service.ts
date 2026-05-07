@@ -1,26 +1,31 @@
 import nodemailer from 'nodemailer';
 import prisma from '../../prisma/client';
 
+// الإيميل الثابت للنظام
+const SYSTEM_EMAIL = 'gift.give.me.gift@gmail.com';
+const SYSTEM_NAME  = 'Hany Tasks — نظام إدارة المهام';
+
 let transporter: nodemailer.Transporter | null = null;
 
 export function initEmailService() {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
-  if (!host || !user || !pass) {
-    console.warn('⚠️  SMTP not configured — email notifications disabled');
+  if (!pass) {
+    console.warn('⚠️  SMTP_PASS not set — email notifications disabled');
     return;
   }
 
   transporter = nodemailer.createTransport({
-    host,
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: +(process.env.SMTP_PORT || 587),
-    secure: process.env.SMTP_PORT === '465',
-    auth: { user, pass },
+    secure: false, // TLS
+    auth: {
+      user: SYSTEM_EMAIL,
+      pass,
+    },
   });
 
-  console.log('✅ Email service initialized');
+  console.log(`✅ Email service initialized — sender: ${SYSTEM_EMAIL}`);
 }
 
 export async function sendEmail(options: {
@@ -32,7 +37,7 @@ export async function sendEmail(options: {
   if (!transporter) return;
   try {
     await transporter.sendMail({
-      from: `"Hany Tasks" <${process.env.SMTP_USER}>`,
+      from: `"${SYSTEM_NAME}" <${SYSTEM_EMAIL}>`,
       ...options,
     });
   } catch (err: any) {
