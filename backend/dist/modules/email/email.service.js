@@ -11,7 +11,7 @@ exports.sendWeeklyReports = sendWeeklyReports;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const client_1 = __importDefault(require("../../prisma/client"));
 // الإيميل الثابت للنظام
-const SYSTEM_EMAIL = 'gift.give.me.gift@gmail.com';
+const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
 const SYSTEM_NAME = 'Hany Tasks — نظام إدارة المهام';
 let transporter = null;
 function initEmailService() {

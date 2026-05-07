@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import prisma from '../../prisma/client';
 
 // الإيميل الثابت للنظام
-const SYSTEM_EMAIL = 'gift.give.me.gift@gmail.com';
+const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
 const SYSTEM_NAME  = 'Hany Tasks — نظام إدارة المهام';
 
 let transporter: nodemailer.Transporter | null = null;
