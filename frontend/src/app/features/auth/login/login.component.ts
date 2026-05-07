@@ -28,9 +28,9 @@ import { LangService } from '../../../core/services/lang.service';
         <!-- Logo -->
         <div class="login-logo">
           <div class="logo-circle">
-            <mat-icon>task_alt</mat-icon>
+            <span class="logo-letters">HT</span>
           </div>
-          <h1>TaskFlow Pro</h1>
+          <h1>Hany Tasks</h1>
           <p>{{ 'APP_SUBTITLE' | translate }}</p>
         </div>
 
@@ -147,7 +147,7 @@ import { LangService } from '../../../core/services/lang.service';
         margin: 0 auto 16px;
         box-shadow: 0 8px 32px rgba(241,143,1,0.4);
         animation: pulse 2.5s ease-in-out infinite;
-        mat-icon { font-size: 36px; color: white; }
+        .logo-letters { font-size: 26px; font-weight: 900; color: white; letter-spacing: -2px; font-family: 'Inter', sans-serif; }
       }
       h1 { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
       p  { font-size: 14px; opacity: 0.7; }

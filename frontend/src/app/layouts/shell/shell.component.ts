@@ -35,10 +35,10 @@ interface NavItem {
 
         <div class="sidebar-logo">
           <div class="logo-icon">
-            <mat-icon>task_alt</mat-icon>
+            <span class="logo-monogram">HT</span>
           </div>
           <div class="logo-text" *ngIf="showLabels()">
-            <div class="logo-name">TaskFlow Pro</div>
+            <div class="logo-name">Hany Tasks</div>
             <div class="logo-sub">Enterprise ETS</div>
           </div>
         </div>
@@ -200,6 +200,11 @@ interface NavItem {
     .logo-text { overflow: hidden; }
     .logo-name { color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
     .logo-sub  { color: rgba(255,255,255,0.4); font-size: 10px; white-space: nowrap; }
+
+    .logo-monogram {
+      font-size: 16px; font-weight: 900; color: #fff; letter-spacing: -1px;
+      font-family: 'Inter', sans-serif;
+    }
 
     /* Nav */
     .sidebar-nav {
