@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, HostListener } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,31 +21,38 @@ interface NavItem {
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatBadgeModule, MatDividerModule, TranslateModule],
   template: `
-    <div class="app-wrapper" [class.collapsed]="sidebarCollapsed()">
+    <div class="app-wrapper" [class.rtl]="currentLang() === 'ar'">
+
       <!-- Mobile Overlay -->
-      <div class="mobile-overlay" *ngIf="mobileOpen()" (click)="mobileOpen.set(false)"></div>
+      <div class="mobile-overlay" [class.active]="mobileOpen()" (click)="closeMobile()"></div>
 
       <!-- Sidebar -->
-      <aside class="sidebar" [class.collapsed]="sidebarCollapsed()" [class.mobile-open]="mobileOpen()">
+      <aside class="sidebar" [class.collapsed]="sidebarCollapsed() && !isMobile()" [class.mobile-open]="mobileOpen()">
+        <!-- Close button on mobile -->
+        <button class="sidebar-close-btn" (click)="closeMobile()">
+          <mat-icon>close</mat-icon>
+        </button>
+
         <div class="sidebar-logo">
           <div class="logo-icon">
             <mat-icon>task_alt</mat-icon>
           </div>
-          <div class="logo-text" *ngIf="!sidebarCollapsed() || mobileOpen()">
+          <div class="logo-text" *ngIf="showLabels()">
             <div class="logo-name">TaskFlow Pro</div>
             <div class="logo-sub">Enterprise ETS</div>
           </div>
         </div>
 
         <nav class="sidebar-nav">
-          <div class="nav-section-title" *ngIf="!sidebarCollapsed() || mobileOpen()">{{ 'NAV.DASHBOARD' | translate }}</div>
+          <div class="nav-section-title" *ngIf="showLabels()">{{ 'NAV.DASHBOARD' | translate }}</div>
           <ng-container *ngFor="let item of navItems()">
-            <a class="nav-item" [routerLink]="item.route" routerLinkActive="active" (click)="mobileOpen.set(false)"
-               [matTooltip]="(sidebarCollapsed() && !mobileOpen()) ? (item.labelKey | translate) : ''"
+            <a class="nav-item" [routerLink]="item.route" routerLinkActive="active"
+               (click)="onNavClick()"
+               [matTooltip]="(!showLabels()) ? (item.labelKey | translate) : ''"
                matTooltipPosition="after">
               <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
-              <span class="nav-label" *ngIf="!sidebarCollapsed() || mobileOpen()">{{ item.labelKey | translate }}</span>
-              <span class="nav-badge" *ngIf="item.badge && item.badge > 0 && (!sidebarCollapsed() || mobileOpen())">{{ item.badge }}</span>
+              <span class="nav-label" *ngIf="showLabels()">{{ item.labelKey | translate }}</span>
+              <span class="nav-badge" *ngIf="item.badge && item.badge > 0 && showLabels()">{{ item.badge }}</span>
             </a>
           </ng-container>
         </nav>
@@ -56,21 +63,21 @@ interface NavItem {
               <img *ngIf="user()?.profilePhoto" [src]="user()?.profilePhoto" [alt]="user()?.fullName">
               <span *ngIf="!user()?.profilePhoto">{{ userInitial() }}</span>
             </div>
-            <div class="user-details" *ngIf="!sidebarCollapsed() || mobileOpen()">
+            <div class="user-details" *ngIf="showLabels()">
               <div class="user-name">{{ currentLang() === 'ar' ? user()?.fullNameAr : user()?.fullName }}</div>
               <div class="user-role">{{ currentLang() === 'ar' ? user()?.role?.nameAr : user()?.role?.name }}</div>
             </div>
-            <mat-icon style="color:rgba(255,255,255,0.4);font-size:16px" *ngIf="!sidebarCollapsed() || mobileOpen()">expand_less</mat-icon>
+            <mat-icon class="user-chevron" *ngIf="showLabels()">expand_less</mat-icon>
           </div>
           <mat-menu #userMenu="matMenu">
-            <button mat-menu-item [routerLink]="'/profile'" (click)="mobileOpen.set(false)">
+            <button mat-menu-item [routerLink]="'/profile'" (click)="onNavClick()">
               <mat-icon>person</mat-icon> <span>{{ 'NAV.PROFILE' | translate }}</span>
             </button>
-            <button mat-menu-item (click)="toggleLang(); mobileOpen.set(false)">
+            <button mat-menu-item (click)="toggleLang(); onNavClick()">
               <mat-icon>language</mat-icon>
               <span>{{ currentLang() === 'ar' ? 'English' : 'العربية' }}</span>
             </button>
-            <button mat-menu-item (click)="toggleDark(); mobileOpen.set(false)">
+            <button mat-menu-item (click)="toggleDark(); onNavClick()">
               <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
               <span>{{ isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
             </button>
@@ -84,31 +91,35 @@ interface NavItem {
       </aside>
 
       <!-- Main Area -->
-      <div class="main-area" [style.margin-inline-start]="sidebarCollapsed() ? 'var(--sidebar-collapsed)' : 'var(--sidebar-width)'">
+      <div class="main-area">
         <!-- Header -->
         <header class="app-header">
-          <button class="toggle-btn desktop-toggle" (click)="sidebarCollapsed.set(!sidebarCollapsed())">
-            <mat-icon>{{ sidebarCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
-          </button>
-          <button class="toggle-btn mobile-toggle" (click)="mobileOpen.set(true)">
+          <!-- Mobile hamburger -->
+          <button class="toggle-btn mobile-only" (click)="mobileOpen.set(true)" id="mobile-menu-btn">
             <mat-icon>menu</mat-icon>
+          </button>
+          <!-- Desktop collapse -->
+          <button class="toggle-btn desktop-only" (click)="sidebarCollapsed.set(!sidebarCollapsed())">
+            <mat-icon>{{ sidebarCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
           </button>
 
           <span class="header-spacer"></span>
 
           <!-- Notification Bell -->
-          <button class="header-btn" [routerLink]="'/notifications'" [matBadge]="unreadCount() || null"
-                  matBadgeColor="warn" matBadgeSize="small" [matTooltip]="'NAV.NOTIFICATIONS' | translate">
+          <button class="header-btn" [routerLink]="'/notifications'"
+                  [matBadge]="unreadCount() || null"
+                  matBadgeColor="warn" matBadgeSize="small"
+                  [matTooltip]="'NAV.NOTIFICATIONS' | translate">
             <mat-icon>notifications_outlined</mat-icon>
           </button>
 
-          <!-- Theme toggle -->
-          <button class="header-btn hide-mobile" (click)="toggleDark()" [matTooltip]="'Dark Mode'">
+          <!-- Theme toggle (hidden on small mobile) -->
+          <button class="header-btn desktop-only" (click)="toggleDark()" [matTooltip]="'Dark Mode'">
             <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
 
-          <!-- Lang toggle -->
-          <button class="header-btn lang-btn hide-mobile" (click)="toggleLang()">
+          <!-- Lang toggle (hidden on small mobile) -->
+          <button class="header-btn lang-btn desktop-only" (click)="toggleLang()">
             {{ currentLang() === 'ar' ? 'EN' : 'ع' }}
           </button>
         </header>
@@ -121,34 +132,193 @@ interface NavItem {
     </div>
   `,
   styles: [`
-    .app-wrapper { display: flex; min-height: 100vh; position: relative; }
+    :host { display: block; }
 
+    /* ── CSS Variables ── */
+    .app-wrapper {
+      --sidebar-w: 260px;
+      --sidebar-collapsed-w: 68px;
+      --header-h: 64px;
+      --transition: 0.25s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+      background: var(--bg-main);
+    }
+
+    /* ─────────── SIDEBAR ─────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--bg-sidebar, #0f172a);
+      display: flex;
+      flex-direction: column;
+      transition: width var(--transition), transform var(--transition);
+      overflow: hidden;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    .sidebar.collapsed {
+      width: var(--sidebar-collapsed-w);
+    }
+
+    .sidebar-close-btn {
+      display: none;
+      position: absolute;
+      top: 12px;
+      inset-inline-end: 12px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 8px;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Logo */
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: var(--color-primary, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      mat-icon { color: #fff; font-size: 22px; }
+    }
+
+    .logo-text { overflow: hidden; }
+    .logo-name { color: #fff; font-weight: 700; font-size: 14px; white-space: nowrap; }
+    .logo-sub  { color: rgba(255,255,255,0.4); font-size: 10px; white-space: nowrap; }
+
+    /* Nav */
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 8px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 4px 12px 8px;
+      white-space: nowrap;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      transition: all var(--transition);
+      white-space: nowrap;
+      cursor: pointer;
+
+      &:hover { background: rgba(255,255,255,0.08); color: #fff; }
+      &.active {
+        background: var(--color-primary, #f97316);
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(249,115,22,0.3);
+      }
+    }
+
+    .nav-icon { font-size: 20px; width: 20px; height: 20px; flex-shrink: 0; }
+    .nav-label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+    .nav-badge {
+      background: #ef4444; color: #fff;
+      font-size: 10px; font-weight: 700;
+      padding: 1px 6px; border-radius: 20px;
+      min-width: 18px; text-align: center;
+    }
+
+    /* Footer */
+    .sidebar-footer {
+      padding: 12px 8px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background var(--transition);
+      &:hover { background: rgba(255,255,255,0.08); }
+    }
+
+    .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-primary, #f97316);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      font-weight: 700; color: #fff; font-size: 14px;
+      img { width: 100%; height: 100%; object-fit: cover; }
+    }
+
+    .user-details { flex: 1; overflow: hidden; }
+    .user-name { color: #fff; font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .user-role { color: rgba(255,255,255,0.4); font-size: 11px; white-space: nowrap; }
+    .user-chevron { color: rgba(255,255,255,0.4); font-size: 16px; }
+
+    /* ─────────── MAIN AREA ─────────── */
     .main-area {
       flex: 1;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      transition: margin var(--transition);
-      width: 100%;
+      min-width: 0;
+      overflow: hidden;
     }
 
-    .page-content {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: hidden;
-      background: var(--bg-main);
+    /* Header */
+    .app-header {
+      height: var(--header-h);
+      background: var(--bg-card, #fff);
+      border-bottom: 1px solid var(--border-color, #e2e8f0);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
 
     .toggle-btn, .header-btn {
       background: none; border: none; cursor: pointer;
       width: 40px; height: 40px; border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
-      color: var(--text-secondary);
+      color: var(--text-secondary, #64748b);
       transition: all var(--transition);
       position: relative;
-
+      flex-shrink: 0;
       mat-icon { font-size: 22px; }
-      &:hover { background: var(--bg-main); color: var(--color-primary); }
+      &:hover { background: var(--bg-main, #f8fafc); color: var(--color-primary, #f97316); }
     }
 
     .lang-btn {
@@ -158,32 +328,84 @@ interface NavItem {
     }
 
     .header-spacer { flex: 1; }
-    .mobile-toggle { display: none; }
-    .mobile-overlay { display: none; }
 
+    /* Visibility helpers */
+    .mobile-only { display: none; }
+
+    /* Page content */
+    .page-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: var(--bg-main, #f8fafc);
+    }
+
+    /* Mobile overlay */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 999;
+      backdrop-filter: blur(3px);
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+    .mobile-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* ─────────── MOBILE ≤ 768px ─────────── */
     @media (max-width: 768px) {
-      .sidebar { 
-        transform: translateX(-100%); 
-        z-index: 1000; 
-        width: 280px !important;
-      }
-      .sidebar.mobile-open { transform: translateX(0); }
-      [dir="rtl"] .sidebar { transform: translateX(100%); }
-      [dir="rtl"] .sidebar.mobile-open { transform: translateX(0); }
-      
-      .main-area { margin-inline-start: 0 !important; width: 100%; }
-      .desktop-toggle { display: none; }
-      .mobile-toggle { display: flex; }
-      .hide-mobile { display: none; }
-      
-      .mobile-overlay {
-        display: block;
+      .app-wrapper { flex-direction: column; }
+
+      /* Sidebar: fixed, full-height, off-screen by default */
+      .sidebar {
         position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 999;
-        backdrop-filter: blur(4px);
+        top: 0;
+        inset-inline-start: 0;
+        height: 100vh;
+        width: 280px !important;
+        z-index: 1000;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 30px rgba(0,0,0,0.3);
       }
+
+      /* RTL: slide from right */
+      .app-wrapper.rtl .sidebar {
+        transform: translateX(100%);
+      }
+
+      .sidebar.mobile-open {
+        transform: translateX(0) !important;
+      }
+
+      .sidebar-close-btn {
+        display: flex;
+      }
+
+      /* Main: full width, no offset */
+      .main-area {
+        width: 100%;
+        min-height: 100vh;
+        margin-inline-start: 0 !important;
+      }
+
+      /* Header buttons visibility */
+      .mobile-only { display: flex; }
+      .desktop-only { display: none; }
+
+      /* Smaller header padding on mobile */
+      .app-header { padding: 0 12px; gap: 4px; }
+    }
+
+    /* ─────────── TABLET 769–1024px ─────────── */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .sidebar { width: var(--sidebar-collapsed-w) !important; }
+      .nav-label, .nav-badge, .logo-text, .nav-section-title, .user-details, .user-chevron { display: none !important; }
+      .logo-icon { margin: 0 auto; }
+      .user-info { justify-content: center; }
     }
   `],
 })
@@ -192,6 +414,7 @@ export class ShellComponent implements OnInit {
   mobileOpen = signal(false);
   isDark = signal(false);
   currentLang = signal<string>('ar');
+  isMobile = signal(false);
 
   user = computed(() => this.authService.currentUser());
   userInitial = computed(() => {
@@ -202,6 +425,11 @@ export class ShellComponent implements OnInit {
   });
 
   unreadCount = computed(() => this.notifService.unreadCount());
+
+  showLabels = computed(() => {
+    if (this.isMobile()) return true; // always show in mobile drawer
+    return !this.sidebarCollapsed();
+  });
 
   navItems = computed<NavItem[]>(() => {
     const level = this.user()?.role?.level ?? 5;
@@ -222,6 +450,14 @@ export class ShellComponent implements OnInit {
     return items;
   });
 
+  @HostListener('window:resize')
+  onResize() {
+    this.isMobile.set(window.innerWidth <= 768);
+    if (window.innerWidth > 768) {
+      this.mobileOpen.set(false);
+    }
+  }
+
   constructor(
     private authService: AuthService,
     private notifService: NotificationService,
@@ -231,14 +467,25 @@ export class ShellComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.isMobile.set(window.innerWidth <= 768);
+
     const lang = this.langService.getCurrentLang();
     this.currentLang.set(lang);
     this.isDark.set(document.body.classList.contains('dark-theme'));
     this.notifService.load().subscribe();
 
-    // Connect socket
     const user = this.authService.currentUser();
     if (user) this.notifService.connectSocket(user.id);
+  }
+
+  onNavClick() {
+    if (this.isMobile()) {
+      this.mobileOpen.set(false);
+    }
+  }
+
+  closeMobile() {
+    this.mobileOpen.set(false);
   }
 
   toggleLang() {

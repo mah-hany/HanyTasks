@@ -1,6 +1,7 @@
 import TelegramBot from 'node-telegram-bot-api';
 import prisma from '../../prisma/client';
 import bcrypt from 'bcryptjs';
+import https from 'https';
 
 // State machine for conversations
 const pendingAuth = new Map<number, string>(); // chatId -> username (waiting for password)
@@ -10,35 +11,60 @@ const sessionState = new Map<number, string>(); // chatId -> current state e.g. 
 // Singleton guard - prevent multiple bot instances
 let botInstance: TelegramBot | null = null;
 
-export function initTelegramBot() {
+/** Delete any registered Telegram webhook via raw HTTPS before starting polling */
+function deleteWebhookRaw(token: string): Promise<void> {
+  return new Promise((resolve) => {
+    const url = `https://api.telegram.org/bot${token}/deleteWebhook?drop_pending_updates=true`;
+    https.get(url, (res) => {
+      let data = '';
+      res.on('data', (chunk) => data += chunk);
+      res.on('end', () => {
+        console.log('Webhook deleted:', data);
+        resolve();
+      });
+    }).on('error', (e) => {
+      console.warn('Could not delete webhook (will continue):', e.message);
+      resolve();
+    });
+  });
+}
+
+export async function initTelegramBot() {
   const token = process.env.TELEGRAM_BOT_TOKEN || '7808940555:AAFvtJAdJFaaqV47_htRkRvdb97ub0duC_c';
-  if (!token) return;
-  if (botInstance) {
-    console.log('Telegram Bot already initialized, skipping...');
-    return;
-  }
+  if (!token) { console.warn('No TELEGRAM_BOT_TOKEN set'); return; }
+  if (botInstance) { console.log('Telegram Bot already initialized.'); return; }
 
-  // Start with polling disabled, delete any stale webhook first, then start polling
-  const bot = new TelegramBot(token, { polling: false });
-  botInstance = bot;
+  try {
+    // Step 1: Delete any old webhook first (raw HTTPS - most reliable)
+    await deleteWebhookRaw(token);
 
-  // Delete webhook and start polling cleanly
-  bot.deleteWebHook().then(() => {
-    bot.startPolling({ restart: false });
-    console.log('Telegram Bot polling started cleanly.');
-  }).catch((err: any) => {
-    console.error('Failed to delete webhook, starting polling anyway:', err.message);
-    bot.startPolling({ restart: false });
-  });
+    // Step 2: Create bot with polling enabled
+    const bot = new TelegramBot(token, {
+      polling: {
+        interval: 1000,
+        autoStart: true,
+        params: { timeout: 10, allowed_updates: ['message', 'callback_query'] }
+      }
+    });
 
-  // Handle polling errors gracefully (409 Conflict, etc.)
-  bot.on('polling_error', (err: any) => {
-    if (err.code === 'ETELEGRAM' && err.message && err.message.includes('409')) {
-      console.warn('⚠️ Telegram polling conflict (409) - another instance may be running. Will retry...');
-    } else {
-      console.error('Telegram polling error:', err.message || err);
-    }
-  });
+    botInstance = bot;
+    console.log('✅ Telegram Bot initialized and polling started.');
+
+    // Handle polling errors gracefully
+    bot.on('polling_error', (err: any) => {
+      const msg = err.message || String(err);
+      if (msg.includes('409')) {
+        console.warn('⚠️ Telegram 409 conflict - stopping bot and restarting in 5s...');
+        bot.stopPolling().then(() => {
+          botInstance = null;
+          setTimeout(() => initTelegramBot(), 5000);
+        });
+      } else if (msg.includes('EFATAL') || msg.includes('ECONNRESET')) {
+        console.warn('⚠️ Telegram connection reset, will auto-retry...');
+      } else {
+        console.error('Telegram polling error:', msg);
+      }
+    });
 
   // ── /start command ────────────────────────────────────────
   bot.onText(/\/start/, async (msg) => {
@@ -258,7 +284,12 @@ export function initTelegramBot() {
     await showTaskByCode(bot, chatId, match![1].trim());
   });
 
-  console.log('Telegram Bot initialized and polling...');
+  } catch (err: any) {
+    console.error('❌ Failed to initialize Telegram bot:', err.message || err);
+    botInstance = null;
+    // Retry after 10 seconds
+    setTimeout(() => initTelegramBot(), 10000);
+  }
 }
 
 // ── Helper: Send Main Menu ─────────────────────────────────
