@@ -40,8 +40,8 @@ function deleteWebhook(token: string): Promise<void> {
 }
 
 export async function initTelegramBot() {
-  const token = process.env.TELEGRAM_BOT_TOKEN || '7808940555:AAFvtJAdJFaaqV47_htRkRvdb97ub0duC_c';
-  if (!token) { console.warn('No TELEGRAM_BOT_TOKEN'); return; }
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) { console.warn('⚠️  TELEGRAM_BOT_TOKEN not set — bot disabled'); return; }
 
   const isProduction = process.env.NODE_ENV === 'production';
   const appUrl = process.env.APP_URL || 'https://hanytasks.onrender.com';

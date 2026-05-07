@@ -65,8 +65,9 @@ export const authService = {
       },
     });
 
-    const JWT_SECRET = process.env.JWT_SECRET || 'SuperSecretTaskFlow2026!';
-    const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'SuperRefreshTaskFlow2026!';
+    const JWT_SECRET = process.env.JWT_SECRET;
+    const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+    if (!JWT_SECRET || !JWT_REFRESH_SECRET) throw new Error('JWT secrets not configured');
 
     const accessToken = jwt.sign(
       { sub: user.id, username: user.username, role: user.role.name },
@@ -101,7 +102,8 @@ export const authService = {
 
   async refresh(refreshToken: string) {
     try {
-      const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'SuperRefreshTaskFlow2026!';
+      const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+      if (!JWT_REFRESH_SECRET) throw new Error('JWT_REFRESH_SECRET not configured');
       const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as any;
       const user = await prisma.user.findUnique({
         where: { id: payload.sub },
@@ -111,7 +113,7 @@ export const authService = {
 
       const accessToken = jwt.sign(
         { sub: user.id, username: user.username, role: user.role.name },
-        process.env.JWT_SECRET || 'SuperSecretTaskFlow2026!',
+        process.env.JWT_SECRET!,
         { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as any }
       );
       return { accessToken };

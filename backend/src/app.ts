@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { requestLogger } from './middleware/requestLogger';
 import { errorHandler } from './middleware/errorHandler';
@@ -17,33 +19,59 @@ import { handleTelegramWebhook } from './modules/telegram/telegram.bot';
 
 const app = express();
 
-// ── Middleware ────────────────────────────────────────────
+// ── Security Headers (Helmet) ──────────────────────────────
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow uploads to be served
+}));
+
+// ── CORS ──────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, callback) => {
     const allowed = [
       'http://localhost:4200',
       'https://hany-tasks.vercel.app',
     ];
-    // Allow any vercel.app preview URL or no origin (mobile apps, curl, etc.)
     if (!origin || allowed.includes(origin) || /\.vercel\.app$/.test(origin)) {
       callback(null, true);
     } else {
-      callback(null, true); // Allow all for now during setup
+      callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 }));
 
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+// ── Global Rate Limiter ────────────────────────────────────
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 300,                  // max 300 requests per IP per 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many requests, please try again later.' },
+});
+
+// ── Strict Rate Limiter for Auth ───────────────────────────
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,                   // max 20 login attempts per IP per 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many login attempts, please try again in 15 minutes.' },
+});
+
+app.use(globalLimiter);
+app.use(express.json({ limit: '10mb' }));   // reduced from 50mb
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(requestLogger);
 
-// Static files (uploads)
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+// Static files (uploads) — no directory listing
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
+  index: false,
+  dotfiles: 'deny',
+}));
 
 // ── API Routes ────────────────────────────────────────────
-app.use('/api/auth',          authRoutes);
+app.use('/api/auth',          authLimiter, authRoutes);   // strict limit on auth
 app.use('/api/users',         userRoutes);
 app.use('/api/departments',   departmentRoutes);
 app.use('/api/tasks',         taskRoutes);
@@ -52,12 +80,26 @@ app.use('/api/reports',       reportRoutes);
 app.use('/api/audit',         auditRoutes);
 app.use('/api/settings',      settingRoutes);
 
-// Telegram Webhook
-app.post('/api/telegram/webhook', handleTelegramWebhook);
+// ── Telegram Webhook (secret token validation) ─────────────
+const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
+app.post('/api/telegram/webhook', (req, res, next) => {
+  if (WEBHOOK_SECRET) {
+    const incoming = req.headers['x-telegram-bot-api-secret-token'];
+    if (incoming !== WEBHOOK_SECRET) {
+      return res.sendStatus(403);
+    }
+  }
+  next();
+}, handleTelegramWebhook);
 
 // Health check
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date(), app: 'TaskFlow Pro API' });
+});
+
+// 404 handler
+app.use((_req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
 });
 
 // Error handler (must be last)
