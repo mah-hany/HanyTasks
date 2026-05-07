@@ -35,10 +35,23 @@ import { LangService } from '../../../core/services/lang.service';
             <h1>{{ isAr() && task()?.titleAr ? task()?.titleAr : task()?.title }}</h1>
             <p>{{ task()?.taskCode }}</p>
           </div>
-          <div style="display:flex;gap:8px">
-            <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(1)" (click)="deleteTask()" style="margin-inline-end: 8px;">
-              <mat-icon>delete</mat-icon> {{ isAr() ? 'حذف المهمة' : 'Delete Task' }}
-            </button>
+          <div style="display:flex;gap:8px;align-items:center">
+            <!-- Inline Delete Confirmation -->
+            <ng-container *ngIf="!confirmDelete(); else confirmDeleteTpl">
+              <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(2)" (click)="confirmDelete.set(true)">
+                <mat-icon>delete</mat-icon> {{ isAr() ? 'حذف المهمة' : 'Delete Task' }}
+              </button>
+            </ng-container>
+            <ng-template #confirmDeleteTpl>
+              <span style="font-size:13px;color:#dc2626;font-weight:600">{{ isAr() ? 'تأكيد الحذف؟' : 'Confirm delete?' }}</span>
+              <button mat-raised-button color="warn" (click)="deleteTask()">
+                <mat-icon>check</mat-icon> {{ isAr() ? 'نعم، احذف' : 'Yes, Delete' }}
+              </button>
+              <button mat-stroked-button (click)="confirmDelete.set(false)">
+                {{ isAr() ? 'إلغاء' : 'Cancel' }}
+              </button>
+            </ng-template>
+
             <button mat-stroked-button [matMenuTriggerFor]="statusMenu" *ngIf="canChangeStatus()">
               <mat-icon>edit</mat-icon> {{ isAr() ? 'تغيير الحالة' : 'Change Status' }}
             </button>
@@ -257,6 +270,7 @@ import { LangService } from '../../../core/services/lang.service';
 export class TaskDetailComponent implements OnInit {
   task = signal<any>(null);
   loading = signal(true);
+  confirmDelete = signal(false);
   newComment = '';
   isAr = () => this.langService.getCurrentLang() === 'ar';
   canChangeStatus = () => true;
@@ -357,19 +371,17 @@ export class TaskDetailComponent implements OnInit {
   }
 
   deleteTask() {
-    if (confirm(this.isAr() ? 'هل أنت متأكد من حذف هذه المهمة؟' : 'Are you sure you want to delete this task?')) {
-      this.taskService.delete(this.task().id).subscribe({
-        next: (res) => {
-          if (res.success) {
-            this.snack.open(this.isAr() ? 'تم الحذف بنجاح' : 'Deleted successfully', 'OK', { duration: 3000 });
-            // Cannot inject router properly here without breaking the constructor line numbers, wait, we don't have Router injected!
-            window.location.href = '/tasks';
-          }
-        },
-        error: (err) => {
-          this.snack.open(err.error?.message || 'Error occurred', 'OK', { duration: 3000 });
+    this.taskService.delete(this.task().id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.snack.open(this.isAr() ? 'تم الحذف بنجاح' : 'Deleted successfully', 'OK', { duration: 3000 });
+          window.location.href = '/tasks';
         }
-      });
-    }
+      },
+      error: (err) => {
+        this.confirmDelete.set(false);
+        this.snack.open(err.error?.message || 'Error occurred', 'OK', { duration: 3000 });
+      }
+    });
   }
 }
