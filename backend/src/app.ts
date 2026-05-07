@@ -13,6 +13,7 @@ import notificationRoutes from './modules/notifications/notification.routes';
 import reportRoutes from './modules/reports/report.routes';
 import auditRoutes from './modules/audit/audit.routes';
 import settingRoutes from './modules/settings/settings.routes';
+import { handleTelegramWebhook } from './modules/telegram/telegram.bot';
 
 const app = express();
 
@@ -50,6 +51,9 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/reports',       reportRoutes);
 app.use('/api/audit',         auditRoutes);
 app.use('/api/settings',      settingRoutes);
+
+// Telegram Webhook
+app.post('/api/telegram/webhook', handleTelegramWebhook);
 
 // Health check
 app.get('/api/health', (_req, res) => {
