@@ -8,14 +8,14 @@ const SYSTEM_NAME  = 'Hany Tasks — نظام إدارة المهام';
 let brevoApiKey: string | null = null;
 
 export function initEmailService() {
-  brevoApiKey = process.env.BREVO_API_KEY || null;
+  brevoApiKey = process.env.BREVO_API_KEY?.trim() || null;
 
   if (!brevoApiKey) {
     logger.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
     return;
   }
 
-  logger.info(`✅ Email service initialized (Brevo HTTP API)`);
+  logger.info(`✅ Email service initialized (Brevo HTTP API) - Key starts with: ${brevoApiKey.substring(0, 10)}...`);
 }
 
 export async function sendEmail(options: {
