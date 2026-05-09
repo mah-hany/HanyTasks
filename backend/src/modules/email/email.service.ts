@@ -136,7 +136,7 @@ export function weeklyReportEmail(employeeName: string, stats: {
 
 // ── Weekly Report Scheduler (called from schedulers.ts) ──────
 export async function sendWeeklyReports() {
-  if (!transporter) return;
+  if (!brevoApiKey) return;
 
   const users = await prisma.user.findMany({
     where: { isActive: true, email: { not: '' } },

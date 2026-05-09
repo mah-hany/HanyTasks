@@ -8,6 +8,41 @@ const auth_1 = require("../../middleware/auth");
 const client_1 = __importDefault(require("../../prisma/client"));
 const router = (0, express_1.Router)();
 router.use(auth_1.authenticate);
+// ── Get active timer for current user (MUST be before /:taskId) ─
+router.get('/active/me', async (req, res, next) => {
+    try {
+        const active = await client_1.default.timeEntry.findFirst({
+            where: { userId: req.user.id, endTime: null },
+            include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
+        });
+        res.json({ success: true, data: active });
+    }
+    catch (e) {
+        next(e);
+    }
+});
+// ── Get time report per user (MUST be before /:taskId) ──────
+router.get('/report/user/:userId', async (req, res, next) => {
+    try {
+        const entries = await client_1.default.timeEntry.findMany({
+            where: { userId: +req.params.userId, endTime: { not: null } },
+            include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
+            orderBy: { startTime: 'desc' },
+        });
+        const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
+        const byTask = entries.reduce((acc, e) => {
+            const key = e.task.taskCode;
+            if (!acc[key])
+                acc[key] = { task: e.task, minutes: 0 };
+            acc[key].minutes += e.duration || 0;
+            return acc;
+        }, {});
+        res.json({ success: true, data: { entries, totalMinutes, byTask: Object.values(byTask) } });
+    }
+    catch (e) {
+        next(e);
+    }
+});
 // ── Start timer ──────────────────────────────────────────────
 router.post('/:taskId/start', async (req, res, next) => {
     try {
@@ -61,41 +96,6 @@ router.get('/:taskId', async (req, res, next) => {
         });
         const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
         res.json({ success: true, data: entries, totalMinutes });
-    }
-    catch (e) {
-        next(e);
-    }
-});
-// ── Get active timer for current user ───────────────────────
-router.get('/active/me', async (req, res, next) => {
-    try {
-        const active = await client_1.default.timeEntry.findFirst({
-            where: { userId: req.user.id, endTime: null },
-            include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
-        });
-        res.json({ success: true, data: active });
-    }
-    catch (e) {
-        next(e);
-    }
-});
-// ── Get time report per user ─────────────────────────────────
-router.get('/report/user/:userId', async (req, res, next) => {
-    try {
-        const entries = await client_1.default.timeEntry.findMany({
-            where: { userId: +req.params.userId, endTime: { not: null } },
-            include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
-            orderBy: { startTime: 'desc' },
-        });
-        const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
-        const byTask = entries.reduce((acc, e) => {
-            const key = e.task.taskCode;
-            if (!acc[key])
-                acc[key] = { task: e.task, minutes: 0 };
-            acc[key].minutes += e.duration || 0;
-            return acc;
-        }, {});
-        res.json({ success: true, data: { entries, totalMinutes, byTask: Object.values(byTask) } });
     }
     catch (e) {
         next(e);

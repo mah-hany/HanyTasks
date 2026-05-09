@@ -8,40 +8,48 @@ exports.sendEmail = sendEmail;
 exports.taskAssignedEmail = taskAssignedEmail;
 exports.weeklyReportEmail = weeklyReportEmail;
 exports.sendWeeklyReports = sendWeeklyReports;
-const nodemailer_1 = __importDefault(require("nodemailer"));
 const client_1 = __importDefault(require("../../prisma/client"));
-// الإيميل الثابت للنظام
+// إيميلك الذي ستقوم بتأكيده في Brevo
 const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
 const SYSTEM_NAME = 'Hany Tasks — نظام إدارة المهام';
-let transporter = null;
+let brevoApiKey = null;
 function initEmailService() {
-    const pass = process.env.SMTP_PASS;
-    if (!pass) {
-        console.warn('⚠️  SMTP_PASS not set — email notifications disabled');
+    brevoApiKey = process.env.BREVO_API_KEY || null;
+    if (!brevoApiKey) {
+        console.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
         return;
     }
-    transporter = nodemailer_1.default.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: +(process.env.SMTP_PORT || 587),
-        secure: false, // TLS
-        auth: {
-            user: SYSTEM_EMAIL,
-            pass,
-        },
-    });
-    console.log(`✅ Email service initialized — sender: ${SYSTEM_EMAIL}`);
+    console.log(`✅ Email service initialized (Brevo HTTP API)`);
 }
 async function sendEmail(options) {
-    if (!transporter)
+    if (!brevoApiKey)
         return;
     try {
-        await transporter.sendMail({
-            from: `"${SYSTEM_NAME}" <${SYSTEM_EMAIL}>`,
-            ...options,
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'api-key': brevoApiKey,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { name: SYSTEM_NAME, email: SYSTEM_EMAIL },
+                to: [{ email: options.to }],
+                subject: options.subject,
+                htmlContent: options.html,
+                textContent: options.text
+            })
         });
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Brevo API Error:', errorData);
+        }
+        else {
+            console.log(`📧 Email sent successfully to ${options.to} via Brevo`);
+        }
     }
     catch (err) {
-        console.error('Email send failed:', err.message);
+        console.error('Email send failed (Network/Catch):', err.message);
     }
 }
 // ── Email Templates ──────────────────────────────────────────
@@ -124,7 +132,7 @@ function weeklyReportEmail(employeeName, stats) {
 }
 // ── Weekly Report Scheduler (called from schedulers.ts) ──────
 async function sendWeeklyReports() {
-    if (!transporter)
+    if (!brevoApiKey)
         return;
     const users = await client_1.default.user.findMany({
         where: { isActive: true, email: { not: '' } },

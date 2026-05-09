@@ -177,8 +177,9 @@ exports.taskService = {
             // Award gamification points on completion
             if (newStatus === 'COMPLETED') {
                 const now = new Date();
-                const isOnTime = task.dueDate && task.dueDate >= now;
-                const isEarly = task.dueDate && (task.dueDate.getTime() - now.getTime()) > 24 * 60 * 60 * 1000;
+                const isLate = !task.dueDate || task.dueDate < now;
+                const isEarly = !isLate && task.dueDate && (task.dueDate.getTime() - now.getTime()) > 24 * 60 * 60 * 1000;
+                const isOnTime = !isLate && !isEarly;
                 const basePoints = 10;
                 const bonus = isEarly ? 5 : isOnTime ? 2 : 0;
                 await client_1.default.userPoint.create({

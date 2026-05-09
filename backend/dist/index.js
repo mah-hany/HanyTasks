@@ -10,6 +10,7 @@ const socket_1 = require("./socket");
 const logger_1 = require("./utils/logger");
 const schedulers_1 = require("./schedulers");
 const telegram_bot_1 = require("./modules/telegram/telegram.bot");
+const email_service_1 = require("./modules/email/email.service");
 const client_1 = __importDefault(require("./prisma/client"));
 const PORT = process.env.PORT || 5000;
 async function bootstrap() {
@@ -17,6 +18,8 @@ async function bootstrap() {
         // Test DB connection
         await client_1.default.$connect();
         logger_1.logger.info('✅ Database connected successfully');
+        // Initialize email service
+        (0, email_service_1.initEmailService)();
         const httpServer = (0, http_1.createServer)(app_1.default);
         (0, socket_1.initSocket)(httpServer);
         (0, schedulers_1.startSchedulers)();

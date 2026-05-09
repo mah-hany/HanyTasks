@@ -14,8 +14,8 @@ export declare const taskService: {
         userRoleLevel?: number;
     }): Promise<({
         _count: {
-            attachments: number;
             comments: number;
+            attachments: number;
         };
         category: {
             id: number;
@@ -44,10 +44,10 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
-        priority: string;
         assignedToId: number;
         taskCode: string;
         categoryId: number | null;
+        priority: string;
         createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
@@ -62,16 +62,6 @@ export declare const taskService: {
             color: string;
             icon: string;
         } | null;
-        attachments: {
-            id: number;
-            taskId: number;
-            fileName: string;
-            fileUrl: string;
-            fileSize: number;
-            fileType: string;
-            uploadedById: number;
-            uploadedAt: Date;
-        }[];
         assignedTo: {
             role: {
                 level: number;
@@ -149,6 +139,16 @@ export declare const taskService: {
             commentText: string;
             isManagerNote: boolean;
         })[];
+        attachments: {
+            id: number;
+            taskId: number;
+            fileName: string;
+            fileUrl: string;
+            fileSize: number;
+            fileType: string;
+            uploadedById: number;
+            uploadedAt: Date;
+        }[];
     } & {
         id: number;
         createdAt: Date;
@@ -157,10 +157,10 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
-        priority: string;
         assignedToId: number;
         taskCode: string;
         categoryId: number | null;
+        priority: string;
         createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
@@ -239,10 +239,10 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
-        priority: string;
         assignedToId: number;
         taskCode: string;
         categoryId: number | null;
+        priority: string;
         createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
@@ -257,10 +257,10 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
-        priority: string;
         assignedToId: number;
         taskCode: string;
         categoryId: number | null;
+        priority: string;
         createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
@@ -275,10 +275,10 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
-        priority: string;
         assignedToId: number;
         taskCode: string;
         categoryId: number | null;
+        priority: string;
         createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
@@ -336,10 +336,10 @@ export declare const taskService: {
             description: string | null;
             title: string;
             titleAr: string | null;
-            priority: string;
             assignedToId: number;
             taskCode: string;
             categoryId: number | null;
+            priority: string;
             createdById: number;
             startDate: Date | null;
             dueDate: Date | null;
