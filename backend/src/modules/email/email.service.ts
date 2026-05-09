@@ -17,8 +17,8 @@ export function initEmailService() {
 
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: +(process.env.SMTP_PORT || 587),
-    secure: false, // TLS
+    port: +(process.env.SMTP_PORT || 465),
+    secure: true, // SSL (Port 465 requires secure: true)
     auth: {
       user: SYSTEM_EMAIL,
       pass,

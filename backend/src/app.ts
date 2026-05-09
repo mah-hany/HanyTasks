@@ -82,8 +82,8 @@ app.get('/api/test-email', async (req, res) => {
     const nodemailer = require('nodemailer');
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: +(process.env.SMTP_PORT || 587),
-      secure: false, // TLS
+      port: +(process.env.SMTP_PORT || 465),
+      secure: true, // SSL
       auth: {
         user: 'mh.abdel.karim1997@gmail.com',
         pass: process.env.SMTP_PASS,
