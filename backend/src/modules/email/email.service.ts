@@ -1,4 +1,5 @@
 import prisma from '../../prisma/client';
+import { logger } from '../../utils/logger';
 
 // إيميلك الذي ستقوم بتأكيده في Brevo
 const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
@@ -10,11 +11,11 @@ export function initEmailService() {
   brevoApiKey = process.env.BREVO_API_KEY || null;
 
   if (!brevoApiKey) {
-    console.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
+    logger.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
     return;
   }
 
-  console.log(`✅ Email service initialized (Brevo HTTP API)`);
+  logger.info(`✅ Email service initialized (Brevo HTTP API)`);
 }
 
 export async function sendEmail(options: {
@@ -43,12 +44,12 @@ export async function sendEmail(options: {
     
     if (!response.ok) {
       const errorData = await response.json();
-      console.error('Brevo API Error:', errorData);
+      logger.error(`Brevo API Error: ${JSON.stringify(errorData)}`);
     } else {
-      console.log(`📧 Email sent successfully to ${options.to} via Brevo`);
+      logger.info(`📧 Email sent successfully to ${options.to} via Brevo`);
     }
   } catch (err: any) {
-    console.error('Email send failed (Network/Catch):', err.message);
+    logger.error(`Email send failed (Network/Catch): ${err.message}`);
   }
 }
 

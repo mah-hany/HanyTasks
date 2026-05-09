@@ -77,6 +77,22 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 
 // ── API Routes ────────────────────────────────────────────
 
+app.get('/api/test-brevo', async (req, res) => {
+  try {
+    const { sendEmail } = await import('./modules/email/email.service');
+    const logger = require('./utils/logger').logger;
+    logger.info('Manually triggering Brevo test email...');
+    await sendEmail({
+      to: 'mh.abdel.karim1997@gmail.com',
+      subject: 'Live Brevo Diagnostic',
+      html: '<h1>If you receive this, Brevo is working perfectly!</h1>'
+    });
+    res.json({ success: true, message: 'Check the logs using /api/logs for Brevo response.' });
+  } catch (err: any) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
 app.get('/api/logs', (req, res) => {
   try {
     const fs = require('fs');
