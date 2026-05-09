@@ -9,6 +9,7 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getAll(filters: any = {})        { return this.http.get<any>(this.url, { params: filters }); }
+  getAssignable()                  { return this.http.get<any>(`${this.url}/assignable`); }
   getById(id: number)              { return this.http.get<any>(`${this.url}/${id}`); }
   getOrgTree()                     { return this.http.get<any>(`${this.url}/org-tree`); }
   create(data: any)                { return this.http.post<any>(this.url, data); }

@@ -80,6 +80,7 @@ app.use('/api/auth',          authLimiter, authRoutes);   // strict limit on aut
 app.use('/api/users',         userRoutes);
 app.use('/api/departments',   departmentRoutes);
 app.use('/api/tasks',         taskRoutes);
+app.use('/api/tasks',         checklistRoutes);  // checklist sub-routes (/:taskId/checklist)
 app.use('/api/templates',     templateRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/reports',       reportRoutes);

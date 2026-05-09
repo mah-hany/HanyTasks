@@ -7,6 +7,38 @@ import prisma from '../../prisma/client';
 const router = Router();
 router.use(authenticate);
 
+// ── Get active timer for current user (MUST be before /:taskId) ─
+router.get('/active/me', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const active = await prisma.timeEntry.findFirst({
+      where: { userId: req.user!.id, endTime: null },
+      include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
+    });
+    res.json({ success: true, data: active });
+  } catch (e) { next(e); }
+});
+
+// ── Get time report per user (MUST be before /:taskId) ──────
+router.get('/report/user/:userId', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const entries = await prisma.timeEntry.findMany({
+      where: { userId: +req.params.userId, endTime: { not: null } },
+      include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
+      orderBy: { startTime: 'desc' },
+    });
+
+    const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
+    const byTask = entries.reduce((acc: any, e) => {
+      const key = e.task.taskCode;
+      if (!acc[key]) acc[key] = { task: e.task, minutes: 0 };
+      acc[key].minutes += e.duration || 0;
+      return acc;
+    }, {});
+
+    res.json({ success: true, data: { entries, totalMinutes, byTask: Object.values(byTask) } });
+  } catch (e) { next(e); }
+});
+
 // ── Start timer ──────────────────────────────────────────────
 router.post('/:taskId/start', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -59,38 +91,6 @@ router.get('/:taskId', async (req: AuthRequest, res: Response, next: NextFunctio
 
     const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
     res.json({ success: true, data: entries, totalMinutes });
-  } catch (e) { next(e); }
-});
-
-// ── Get active timer for current user ───────────────────────
-router.get('/active/me', async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const active = await prisma.timeEntry.findFirst({
-      where: { userId: req.user!.id, endTime: null },
-      include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
-    });
-    res.json({ success: true, data: active });
-  } catch (e) { next(e); }
-});
-
-// ── Get time report per user ─────────────────────────────────
-router.get('/report/user/:userId', async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const entries = await prisma.timeEntry.findMany({
-      where: { userId: +req.params.userId, endTime: { not: null } },
-      include: { task: { select: { id: true, taskCode: true, title: true, titleAr: true } } },
-      orderBy: { startTime: 'desc' },
-    });
-
-    const totalMinutes = entries.reduce((sum, e) => sum + (e.duration || 0), 0);
-    const byTask = entries.reduce((acc: any, e) => {
-      const key = e.task.taskCode;
-      if (!acc[key]) acc[key] = { task: e.task, minutes: 0 };
-      acc[key].minutes += e.duration || 0;
-      return acc;
-    }, {});
-
-    res.json({ success: true, data: { entries, totalMinutes, byTask: Object.values(byTask) } });
   } catch (e) { next(e); }
 });
 

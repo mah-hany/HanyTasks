@@ -5,6 +5,7 @@ import { initSocket } from './socket';
 import { logger } from './utils/logger';
 import { startSchedulers } from './schedulers';
 import { initTelegramBot } from './modules/telegram/telegram.bot';
+import { initEmailService } from './modules/email/email.service';
 import prisma from './prisma/client';
 
 const PORT = process.env.PORT || 5000;
@@ -14,6 +15,9 @@ async function bootstrap() {
     // Test DB connection
     await prisma.$connect();
     logger.info('✅ Database connected successfully');
+
+    // Initialize email service
+    initEmailService();
 
     const httpServer = createServer(app);
     initSocket(httpServer);

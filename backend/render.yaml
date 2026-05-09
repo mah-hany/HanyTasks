@@ -12,9 +12,19 @@ services:
         value: 5000
       - key: DATABASE_URL
         sync: false
+      - key: DIRECT_URL
+        sync: false
       - key: TELEGRAM_BOT_TOKEN
         sync: false
+      - key: TELEGRAM_WEBHOOK_SECRET
+        sync: false
       - key: JWT_SECRET
-        value: SuperSecretTaskFlow2026!
+        sync: false         # Set this in the Render dashboard — never hardcode!
+      - key: JWT_REFRESH_SECRET
+        sync: false         # Set this in the Render dashboard — never hardcode!
+      - key: SMTP_PASS
+        sync: false
       - key: FRONTEND_URL
         sync: false
+      - key: APP_URL
+        value: https://hanytasks.onrender.com

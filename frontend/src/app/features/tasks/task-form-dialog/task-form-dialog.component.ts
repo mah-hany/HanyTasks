@@ -179,7 +179,7 @@ export class TaskFormDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getAll({ isActive: true }).subscribe(res => { if (res.success) this.users.set(res.data); });
+    this.userService.getAssignable().subscribe(res => { if (res.success) this.users.set(res.data); });
     this.taskService.getCategories().subscribe(res => { if (res.success) this.categories.set(res.data); });
   }
 
