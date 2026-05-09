@@ -1,31 +1,22 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import prisma from '../../prisma/client';
 
-// الإيميل الثابت للنظام
-const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
+// إيميل الإرسال المجاني من Resend
+const FROM_EMAIL = 'onboarding@resend.dev';
 const SYSTEM_NAME  = 'Hany Tasks — نظام إدارة المهام';
 
-let transporter: nodemailer.Transporter | null = null;
+let resend: Resend | null = null;
 
 export function initEmailService() {
-  const pass = process.env.SMTP_PASS;
+  const apiKey = process.env.RESEND_API_KEY;
 
-  if (!pass) {
-    console.warn('⚠️  SMTP_PASS not set — email notifications disabled');
+  if (!apiKey) {
+    console.warn('⚠️  RESEND_API_KEY not set — email notifications disabled');
     return;
   }
 
-  transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: +(process.env.SMTP_PORT || 465),
-    secure: true, // SSL (Port 465 requires secure: true)
-    auth: {
-      user: SYSTEM_EMAIL,
-      pass,
-    },
-  });
-
-  console.log(`✅ Email service initialized — sender: ${SYSTEM_EMAIL}`);
+  resend = new Resend(apiKey);
+  console.log(`✅ Email service initialized (Resend HTTP API)`);
 }
 
 export async function sendEmail(options: {
@@ -34,14 +25,23 @@ export async function sendEmail(options: {
   html: string;
   text?: string;
 }) {
-  if (!transporter) return;
+  if (!resend) return;
   try {
-    await transporter.sendMail({
-      from: `"${SYSTEM_NAME}" <${SYSTEM_EMAIL}>`,
-      ...options,
+    const { data, error } = await resend.emails.send({
+      from: `${SYSTEM_NAME} <${FROM_EMAIL}>`,
+      to: options.to,
+      subject: options.subject,
+      html: options.html,
+      text: options.text || '',
     });
+    
+    if (error) {
+      console.error('Resend API Error:', error);
+    } else {
+      console.log(`📧 Email sent successfully to ${options.to} (ID: ${data?.id})`);
+    }
   } catch (err: any) {
-    console.error('Email send failed:', err.message);
+    console.error('Email send failed (Network/Catch):', err.message);
   }
 }
 

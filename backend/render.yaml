@@ -22,7 +22,7 @@ services:
         sync: false         # Set this in the Render dashboard — never hardcode!
       - key: JWT_REFRESH_SECRET
         sync: false         # Set this in the Render dashboard — never hardcode!
-      - key: SMTP_PASS
+      - key: RESEND_API_KEY
         sync: false
       - key: FRONTEND_URL
         sync: false
