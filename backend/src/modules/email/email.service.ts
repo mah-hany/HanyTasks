@@ -1,22 +1,20 @@
-import { Resend } from 'resend';
 import prisma from '../../prisma/client';
 
-// إيميل الإرسال المجاني من Resend
-const FROM_EMAIL = 'onboarding@resend.dev';
+// إيميلك الذي ستقوم بتأكيده في Brevo
+const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
 const SYSTEM_NAME  = 'Hany Tasks — نظام إدارة المهام';
 
-let resend: Resend | null = null;
+let brevoApiKey: string | null = null;
 
 export function initEmailService() {
-  const apiKey = process.env.RESEND_API_KEY;
+  brevoApiKey = process.env.BREVO_API_KEY || null;
 
-  if (!apiKey) {
-    console.warn('⚠️  RESEND_API_KEY not set — email notifications disabled');
+  if (!brevoApiKey) {
+    console.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
     return;
   }
 
-  resend = new Resend(apiKey);
-  console.log(`✅ Email service initialized (Resend HTTP API)`);
+  console.log(`✅ Email service initialized (Brevo HTTP API)`);
 }
 
 export async function sendEmail(options: {
@@ -25,20 +23,29 @@ export async function sendEmail(options: {
   html: string;
   text?: string;
 }) {
-  if (!resend) return;
+  if (!brevoApiKey) return;
   try {
-    const { data, error } = await resend.emails.send({
-      from: `${SYSTEM_NAME} <${FROM_EMAIL}>`,
-      to: options.to,
-      subject: options.subject,
-      html: options.html,
-      text: options.text || '',
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': brevoApiKey,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { name: SYSTEM_NAME, email: SYSTEM_EMAIL },
+        to: [{ email: options.to }],
+        subject: options.subject,
+        htmlContent: options.html,
+        textContent: options.text
+      })
     });
     
-    if (error) {
-      console.error('Resend API Error:', error);
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Brevo API Error:', errorData);
     } else {
-      console.log(`📧 Email sent successfully to ${options.to} (ID: ${data?.id})`);
+      console.log(`📧 Email sent successfully to ${options.to} via Brevo`);
     }
   } catch (err: any) {
     console.error('Email send failed (Network/Catch):', err.message);
