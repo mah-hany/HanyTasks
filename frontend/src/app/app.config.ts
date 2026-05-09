@@ -40,6 +40,6 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    { provide: MAT_DATE_LOCALE, useValue: 'ar-EG' },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },  // Western numerals (1,2,3) — ar-EG breaks mobile layout
   ],
 };
