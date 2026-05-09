@@ -76,6 +76,36 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 }));
 
 // ── API Routes ────────────────────────────────────────────
+
+app.get('/api/test-email', async (req, res) => {
+  try {
+    const nodemailer = require('nodemailer');
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: +(process.env.SMTP_PORT || 587),
+      secure: false, // TLS
+      auth: {
+        user: 'mh.abdel.karim1997@gmail.com',
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    try {
+      const info = await transporter.sendMail({
+        from: '"Hany Tasks Diagnostic" <mh.abdel.karim1997@gmail.com>',
+        to: 'mh.abdel.karim1997@gmail.com',
+        subject: 'Live Email Diagnostic Test',
+        text: 'If you see this, email is working.',
+      });
+      res.json({ success: true, info });
+    } catch (e: any) {
+      res.json({ success: false, error: e.message, code: e.code, command: e.command });
+    }
+  } catch (e: any) {
+    res.json({ success: false, wrapperError: e.message });
+  }
+});
+
 app.use('/api/auth',          authLimiter, authRoutes);   // strict limit on auth
 app.use('/api/users',         userRoutes);
 app.use('/api/departments',   departmentRoutes);
