@@ -77,6 +77,23 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 
 // ── API Routes ────────────────────────────────────────────
 
+app.get('/api/logs', (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const logPath = path.join(process.cwd(), 'logs', 'combined.log');
+    if (fs.existsSync(logPath)) {
+      const logs = fs.readFileSync(logPath, 'utf8');
+      const lines = logs.split('\n').slice(-50); // Get last 50 lines
+      res.send(`<pre>${lines.join('\n')}</pre>`);
+    } else {
+      res.send('No logs file found.');
+    }
+  } catch (err: any) {
+    res.send(`Error reading logs: ${err.message}`);
+  }
+});
+
 app.use('/api/auth',          authLimiter, authRoutes);   // strict limit on auth
 app.use('/api/users',         userRoutes);
 app.use('/api/departments',   departmentRoutes);
