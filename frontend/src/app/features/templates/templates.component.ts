@@ -160,7 +160,7 @@ import { AuthService } from '../../core/services/auth.service';
 
         <div class="form-footer">
           <button mat-button (click)="closeForm()">{{ isAr() ? 'إلغاء' : 'Cancel' }}</button>
-          <button mat-raised-button color="primary" (click)="saveTemplate()" [disabled]="!form.name">
+          <button mat-raised-button color="primary" (click)="saveTemplate()" [disabled]="!form.name && !form.nameAr">
             <mat-icon>save</mat-icon> {{ isAr() ? 'حفظ' : 'Save' }}
           </button>
         </div>
@@ -253,7 +253,10 @@ export class TemplatesComponent implements OnInit {
   removeChecklistItem(i: number) { this.form.checklistItems.splice(i, 1); }
 
   saveTemplate() {
-    const payload = { ...this.form, checklistItems: this.form.checklistItems.filter((i: any) => i.text.trim()) };
+    if (!this.form.name && this.form.nameAr) {
+      this.form.name = this.form.nameAr;
+    }
+    const payload = { ...this.form, checklistItems: this.form.checklistItems.filter((i: any) => i.text.trim() || i.textAr?.trim()) };
     const req = this.editing() ? this.taskService.updateTemplate(this.editing().id, payload) : this.taskService.createTemplate(payload);
     req.subscribe({
       next: () => { this.snack.open(this.isAr() ? 'تم الحفظ' : 'Saved', '✓', { duration: 2000 }); this.closeForm(); this.load(); },
