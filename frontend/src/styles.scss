@@ -319,12 +319,16 @@ h1, h2, h3, h4, h5, h6 {
 // ── Page Layout ────────────────────────────────────────
 .page-container {
   padding: 24px;
+  min-height: calc(100vh - var(--header-h, 64px)); /* fill full visible area */
+  display: flex;
+  flex-direction: column;
 
   .page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+    flex-shrink: 0;
 
     .page-title {
       h1 { font-size: 22px; font-weight: 800; color: var(--text-primary); }

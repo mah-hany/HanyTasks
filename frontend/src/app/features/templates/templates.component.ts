@@ -1,6 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -93,8 +93,9 @@ import { AuthService } from '../../core/services/auth.service';
             <button mat-icon-button color="warn" (click)="deleteTemplate(t.id)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
               <mat-icon>delete</mat-icon>
             </button>
+          </div>
+        </div>
       </div>
-    </div>
 
     <!-- Create/Edit Form Dialog (inline) -->
     <div class="form-overlay" *ngIf="showForm()">
@@ -169,9 +170,16 @@ import { AuthService } from '../../core/services/auth.service';
   `,
   styles: [`
     .templates-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      align-content: start; /* prevents cards from stretching to fill height */
     }
-    .template-card { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .template-card {
+      padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      &:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+    }
     .template-header { display: flex; gap: 12px; align-items: flex-start; }
     .template-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .template-name { font-size: 15px; font-weight: 700; }
@@ -183,8 +191,14 @@ import { AuthService } from '../../core/services/auth.service';
     .checklist-more { font-size: 11px; color: var(--text-muted); padding-left: 20px; }
     .template-actions { display: flex; gap: 8px; align-items: center; margin-top: auto; }
     .use-btn { flex: 1; }
-    .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); mat-icon { font-size: 64px; opacity: 0.2; } h3 { margin: 16px 0 8px; font-size: 18px; } p { font-size: 14px; margin-bottom: 24px; } }
-    .loading-center { display: flex; justify-content: center; padding: 60px; }
+    .empty-state {
+      text-align: center; padding: 100px 24px; color: var(--text-muted);
+      grid-column: 1 / -1; /* span full grid width */
+      mat-icon { font-size: 72px; opacity: 0.15; display: block; margin: 0 auto; }
+      h3 { margin: 20px 0 8px; font-size: 20px; font-weight: 700; }
+      p { font-size: 14px; margin-bottom: 24px; }
+    }
+    .loading-center { display: flex; justify-content: center; padding: 60px; grid-column: 1 / -1; }
     
     .form-overlay { 
       position: fixed; inset: 0; z-index: 200; 
@@ -192,22 +206,33 @@ import { AuthService } from '../../core/services/auth.service';
       padding: 20px;
     }
     .form-backdrop {
-      position: absolute; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+      position: absolute; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px);
     }
     .form-drawer {
       position: relative; z-index: 201;
-      width: 520px; max-width: 100%; max-height: 100%;
+      width: 540px; max-width: calc(100vw - 40px);
+      height: min(90vh, 720px);   /* ← KEY FIX: explicit height so flex:1 works on form-body */
       display: flex; flex-direction: column;
       padding: 0; overflow: hidden;
-      animation: scaleIn 0.2s ease-out;
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+      animation: scaleIn 0.22s cubic-bezier(.34,1.56,.64,1);
     }
     @keyframes scaleIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from { transform: scale(0.92); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
     }
-    .form-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 0; flex-shrink: 0; }
-    .form-body { padding: 16px 24px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1; }
-    .form-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 16px 24px 20px; flex-shrink: 0; border-top: 1px solid var(--border-color); }
+    .form-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 24px 16px; flex-shrink: 0;
+      border-bottom: 1px solid var(--border-color);
+      h3 { font-size: 16px; font-weight: 700; margin: 0; }
+    }
+    .form-body {
+      padding: 16px 24px; display: flex; flex-direction: column;
+      gap: 12px; overflow-y: auto; flex: 1; min-height: 0; /* min-height:0 is essential for flex scroll */
+    }
+    .form-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 24px 18px; flex-shrink: 0; border-top: 1px solid var(--border-color); }
     .checklist-editor { label { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 8px; } }
     .checklist-edit-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .inline-input { flex: 1; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 10px; font-size: 13px; outline: none; background: var(--bg-main); color: var(--text-primary); transition: border-color 0.2s; &:focus { border-color: var(--color-primary-light); } }
@@ -228,6 +253,7 @@ export class TemplatesComponent implements OnInit {
     private langService: LangService,
     private authService: AuthService,
     private snack: MatSnackBar,
+    private router: Router,
   ) {}
 
   ngOnInit() { this.load(); }
@@ -254,7 +280,11 @@ export class TemplatesComponent implements OnInit {
 
   saveTemplate() {
     if (!this.form.name && this.form.nameAr) {
-      this.form.name = this.form.nameAr;
+      this.form.name = this.form.nameAr; // fallback: use Arabic name as English name
+    }
+    if (!this.form.name && !this.form.nameAr) {
+      this.snack.open(this.isAr() ? 'يجب إدخال اسم القالب' : 'Template name is required', 'X', { duration: 3000 });
+      return;
     }
     const payload = { ...this.form, checklistItems: this.form.checklistItems.filter((i: any) => i.text.trim() || i.textAr?.trim()) };
     const req = this.editing() ? this.taskService.updateTemplate(this.editing().id, payload) : this.taskService.createTemplate(payload);
@@ -272,10 +302,7 @@ export class TemplatesComponent implements OnInit {
   }
 
   useTemplate(t: any) {
-    const msg = this.isAr() ? `سيتم فتح نموذج إنشاء مهمة جديدة من قالب "${t.nameAr || t.name}"` : `Opening new task form from template "${t.name}"`;
-    this.snack.open(msg, '✓', { duration: 3000 });
-    // Navigate to tasks with templateId query param
-    window.location.href = `/tasks?templateId=${t.id}`;
+    this.router.navigate(['/tasks'], { queryParams: { templateId: t.id } });
   }
 
   getChecklistItems(t: any): any[] {
