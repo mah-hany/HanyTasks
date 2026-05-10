@@ -1,6 +1,7 @@
 import { Router, Response, NextFunction } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth';
 import prisma from '../../prisma/client';
+import type { Prisma } from '@prisma/client';
 
 const router = Router();
 router.use(authenticate);
@@ -20,12 +21,12 @@ const TRANSITIONS: Record<string, { to: string; maxLevel: number; commentRequire
   RETURNED:     [{ to: 'UNDER_REVIEW', maxLevel: 4 }],
 };
 
-const INCLUDE = {
+const INCLUDE: Prisma.TaskExtractInclude = {
   contractor: true,
   project:    true,
   task:       { select: { id: true, taskCode: true, title: true, titleAr: true } },
   createdBy:  { select: { id: true, fullName: true, fullNameAr: true } },
-  comments:   { where: { isReturnNote: true }, orderBy: { commentDate: 'desc' as const } },
+  comments:   { where: { isReturnNote: true }, orderBy: { commentDate: 'desc' } },
 };
 
 // GET all extracts (filtered + paginated)

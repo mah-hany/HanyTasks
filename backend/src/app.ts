@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { requestLogger } from './middleware/requestLogger';
 import { errorHandler } from './middleware/errorHandler';
+import { authenticate as _auth, authorizeLevel as _authLevel } from './middleware/auth';
 
 // Routes
 import authRoutes from './modules/auth/auth.routes';
@@ -82,7 +83,6 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 // ── API Routes ────────────────────────────────────────────
 
 // ── Debug endpoints (SUPERADMIN only — authenticated) ──────
-import { authenticate as _auth, authorizeLevel as _authLevel } from './middleware/auth';
 
 app.get('/api/test-brevo', _auth, _authLevel(1), async (req, res) => {
   try {
