@@ -2112,3 +2112,116 @@ Argument `id` is missing.
 [2026-05-10 19:40:48] debug: Socket disconnected: user 1
 [2026-05-10 19:40:48] debug: Socket disconnected: user 1
 [2026-05-10 19:45:00] debug: 🕐 Running overdue task check...
+[2026-05-10 19:54:16] debug: POST /api/auth/login — ::1
+[2026-05-10 19:54:20] debug: GET /api/notifications — ::1
+[2026-05-10 19:54:20] debug: GET /api/tasks — ::1
+[2026-05-10 19:54:20] debug: GET /api/chat/conversations — ::1
+[2026-05-10 19:54:20] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 19:54:20] debug: GET /api/chat/users — ::1
+[2026-05-10 19:54:20] debug: GET /api/tasks/dashboard — ::1
+[2026-05-10 19:54:20] debug: Socket connected: user 1 → FngvZPQPL9X1fN8vAAAP
+[2026-05-10 19:54:20] debug: Socket connected: user 1 → Nx25CnZwhCJoSHc_AAAQ
+[2026-05-10 19:54:20] debug: Socket connected: user 1 → yFuMIkRhC4esvhmBAAAR
+[2026-05-10 19:54:28] debug: GET /api/templates — ::1
+[2026-05-10 19:57:07] debug: Socket disconnected: user 1
+[2026-05-10 19:57:07] debug: Socket disconnected: user 1
+[2026-05-10 19:57:07] debug: Socket disconnected: user 1
+[2026-05-10 19:57:08] debug: GET /api/notifications — ::1
+[2026-05-10 19:57:08] debug: GET /api/tasks — ::1
+[2026-05-10 19:57:08] debug: GET /api/chat/conversations — ::1
+[2026-05-10 19:57:08] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 19:57:08] debug: GET /api/chat/users — ::1
+[2026-05-10 19:57:08] debug: GET /api/templates — ::1
+[2026-05-10 19:57:08] debug: Socket connected: user 1 → H4YKit_p4bZAB5NtAAAV
+[2026-05-10 19:57:08] debug: Socket connected: user 1 → 2cpePaB9SjsHQmGZAAAW
+[2026-05-10 19:57:08] debug: Socket connected: user 1 → d6qySB607IBGZU_SAAAX
+[2026-05-10 19:57:22] debug: GET /api/tasks/dashboard — ::1
+[2026-05-10 19:57:30] debug: GET /api/templates — ::1
+[2026-05-10 19:57:35] debug: Socket disconnected: user 1
+[2026-05-10 19:57:35] debug: Socket disconnected: user 1
+[2026-05-10 19:57:35] debug: Socket disconnected: user 1
+[2026-05-10 19:57:36] debug: GET /api/notifications — ::1
+[2026-05-10 19:57:36] debug: GET /api/tasks — ::1
+[2026-05-10 19:57:36] debug: GET /api/chat/conversations — ::1
+[2026-05-10 19:57:36] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 19:57:36] debug: GET /api/chat/users — ::1
+[2026-05-10 19:57:36] debug: GET /api/templates — ::1
+[2026-05-10 19:57:36] debug: Socket connected: user 1 → K6KHRjitmNG5yT4EAAAb
+[2026-05-10 19:57:36] debug: Socket connected: user 1 → yWsnzgTiFRSKEWW_AAAc
+[2026-05-10 19:57:36] debug: Socket connected: user 1 → sOPCbnGQPODyniWMAAAd
+[2026-05-10 19:58:35] info: ✅ Database connected successfully
+[2026-05-10 19:59:09] debug: GET /api/notifications — ::1
+[2026-05-10 19:59:09] debug: GET /api/tasks — ::1
+[2026-05-10 19:59:09] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 19:59:09] debug: GET /api/chat/conversations — ::1
+[2026-05-10 19:59:09] debug: GET /api/chat/users — ::1
+[2026-05-10 19:59:09] debug: GET /api/templates — ::1
+[2026-05-10 19:59:09] debug: Socket connected: user 1 → kq5c_SpCxIWsK8aQAAAh
+[2026-05-10 19:59:10] debug: Socket connected: user 1 → USso4b5WeSTgjapJAAAi
+[2026-05-10 19:59:10] debug: Socket connected: user 1 → ky7YXhtObyyXarucAAAj
+[2026-05-10 19:59:59] debug: Socket disconnected: user 1
+[2026-05-10 19:59:59] debug: Socket disconnected: user 1
+[2026-05-10 19:59:59] debug: Socket disconnected: user 1
+[2026-05-10 20:00:00] debug: GET /api/notifications — ::1
+[2026-05-10 20:00:00] debug: GET /api/tasks — ::1
+[2026-05-10 20:00:00] debug: GET /api/chat/conversations — ::1
+[2026-05-10 20:00:00] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 20:00:00] debug: GET /api/chat/users — ::1
+[2026-05-10 20:00:00] debug: GET /api/templates — ::1
+[2026-05-10 20:00:00] debug: Socket connected: user 1 → AHjtkcJbYPAFZGihAAAn
+[2026-05-10 20:00:00] debug: Socket connected: user 1 → 7RckXtJdrZWjxsgeAAAo
+[2026-05-10 20:00:00] debug: Socket connected: user 1 → ojlDvptPXY7gUnu0AAAp
+[2026-05-10 20:00:00] debug: 🕐 Running overdue task check...
+[2026-05-10 20:00:30] debug: Socket disconnected: user 1
+[2026-05-10 20:00:30] debug: Socket disconnected: user 1
+[2026-05-10 20:00:30] debug: Socket disconnected: user 1
+[2026-05-10 20:00:30] debug: GET /api/notifications — ::1
+[2026-05-10 20:00:30] debug: GET /api/tasks — ::1
+[2026-05-10 20:00:30] debug: GET /api/chat/conversations — ::1
+[2026-05-10 20:00:30] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 20:00:30] debug: GET /api/chat/users — ::1
+[2026-05-10 20:00:30] debug: GET /api/users — ::1
+[2026-05-10 20:00:31] debug: Socket connected: user 1 → z7SmXZYbB5a8Qc5IAAAt
+[2026-05-10 20:00:31] debug: Socket connected: user 1 → alyV_Dsim8zW-cUSAAAu
+[2026-05-10 20:00:31] debug: Socket connected: user 1 → 7O341CL1A2bFJ5R5AAAv
+[2026-05-10 20:00:32] debug: GET /api/tasks — ::1
+[2026-05-10 20:00:39] debug: GET /api/users/assignable — ::1
+[2026-05-10 20:00:39] debug: GET /api/tasks/categories — ::1
+[2026-05-10 20:00:45] debug: Socket disconnected: user 1
+[2026-05-10 20:00:45] debug: Socket disconnected: user 1
+[2026-05-10 20:00:45] debug: Socket disconnected: user 1
+[2026-05-10 20:00:46] debug: GET /api/notifications — ::1
+[2026-05-10 20:00:46] debug: GET /api/tasks — ::1
+[2026-05-10 20:00:46] debug: GET /api/chat/conversations — ::1
+[2026-05-10 20:00:46] debug: GET /api/chat/unread-count — ::1
+[2026-05-10 20:00:46] debug: GET /api/chat/users — ::1
+[2026-05-10 20:00:46] debug: GET /api/templates — ::1
+[2026-05-10 20:00:46] debug: Socket connected: user 1 → kSld_-5B1zKvz1dHAAAz
+[2026-05-10 20:00:46] debug: Socket connected: user 1 → UqBn6hhlCfB2vM29AAA0
+[2026-05-10 20:00:46] debug: Socket connected: user 1 → EOiSF9_miwSQ9gBXAAA1
+[2026-05-10 20:15:00] debug: 🕐 Running overdue task check...
+[2026-05-10 20:15:54] info: ✅ Database connected successfully
+[2026-05-10 20:15:54] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-10 20:15:54] info: 🔌 Socket.IO initialized
+[2026-05-10 20:15:54] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-10 20:15:54] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-10 20:15:54] info: 📡 Environment: development
+[2026-05-10 20:15:54] info: ✅ Database connected successfully
+[2026-05-10 20:15:54] debug: Socket connected: user 1 → Pa4S530snaykd9exAAAC
+[2026-05-10 20:15:54] debug: Socket connected: user 1 → WItL_4xdwiQlt_8jAAAD
+[2026-05-10 20:15:54] debug: Socket connected: user 1 → cuH8I946C7SfSmafAAAF
+[2026-05-10 20:15:54] debug: Socket connected: user 1 → GpLkNUGC9UdpKEzfAAAH
+[2026-05-10 20:15:55] debug: Socket connected: user 1 → bMNHmZ74uqSAH4gIAAAJ
+[2026-05-10 20:16:11] info: ✅ Database connected successfully
+[2026-05-10 20:16:12] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-10 20:16:12] info: 🔌 Socket.IO initialized
+[2026-05-10 20:16:12] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-10 20:16:12] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-10 20:16:12] info: 📡 Environment: development
+[2026-05-10 20:16:12] info: ✅ Database connected successfully
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → o_6x6DjX6OOy0ET0AAAB
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → RO3FExUJeGSjeidiAAAD
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → 9B0pD3ceg0oAVTOzAAAF
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → 7o0taRr2YQvMIeElAAAH
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → GZ-xkQIx9hyB4lnoAAAJ
+[2026-05-10 20:16:12] debug: Socket connected: user 1 → Z5QUtEZ9qIWKG8SVAAAL

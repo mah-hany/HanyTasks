@@ -836,3 +836,284 @@ Foreign key constraint violated on the foreign key
     at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
     at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
     at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:04] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\auth.ts:51:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\middleware\requestLogger.ts:6:3)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-10 19:40:07] error: Prisma error: 
+Invalid `prisma.user.findUnique()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:39:36
+
+  36 },
+  37 
+  38 async getById(id: number) {
+→ 39   const user = await prisma.user.findUnique({
+         where: {
+       +   id: Int
+         },
+         include: {
+           role: true,
+           department: true,
+           manager: {
+             select: {
+               id: true,
+               fullName: true,
+               fullNameAr: true,
+               employeeCode: true
+             }
+           },
+           subordinates: {
+             select: {
+               id: true,
+               fullName: true,
+               fullNameAr: true,
+               employeeCode: true
+             }
+           },
+           tasksAssigned: {
+             where: {
+               status: {
+                 not: "COMPLETED"
+               }
+             },
+             include: {
+               category: true
+             },
+             take: 10
+           }
+         }
+       })
+
+Argument `id` is missing.
+[2026-05-10 19:40:07] error: PrismaClientValidationError: 
+Invalid `prisma.user.findUnique()` invocation in
+C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:39:36
+
+  36 },
+  37 
+  38 async getById(id: number) {
+→ 39   const user = await prisma.user.findUnique({
+         where: {
+       +   id: Int
+         },
+         include: {
+           role: true,
+           department: true,
+           manager: {
+             select: {
+               id: true,
+               fullName: true,
+               fullNameAr: true,
+               employeeCode: true
+             }
+           },
+           subordinates: {
+             select: {
+               id: true,
+               fullName: true,
+               fullNameAr: true,
+               employeeCode: true
+             }
+           },
+           tasksAssigned: {
+             where: {
+               status: {
+                 not: "COMPLETED"
+               }
+             },
+             include: {
+               category: true
+             },
+             take: 10
+           }
+         }
+       })
+
+Argument `id` is missing.
+    at throwValidationException (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\core\errorRendering\throwValidationException.ts:45:9)
+    at ei.handleRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:202:7)
+    at ei.handleAndLogRequestError (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async Object.getById (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.service.ts:39:18)
+    at async getById (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\src\modules\users\user.controller.ts:33:20)

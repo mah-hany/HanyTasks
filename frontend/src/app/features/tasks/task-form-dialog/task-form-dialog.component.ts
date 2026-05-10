@@ -181,17 +181,41 @@ export class TaskFormDialogComponent implements OnInit {
   ngOnInit() {
     this.userService.getAssignable().subscribe(res => { if (res.success) this.users.set(res.data); });
     this.taskService.getCategories().subscribe(res => { if (res.success) this.categories.set(res.data); });
+
+    if (this.data?.template) {
+      const t = this.data.template;
+      let dueDate = null;
+      if (t.defaultDuration) {
+        const d = new Date();
+        d.setDate(d.getDate() + t.defaultDuration);
+        dueDate = d;
+      }
+      this.form.patchValue({
+        title: t.name,
+        titleAr: t.nameAr,
+        description: t.description,
+        priority: t.priority,
+        categoryId: null, // Templates don't currently have categoryId in frontend schema, but could in future
+        startDate: new Date(),
+        dueDate: dueDate
+      });
+    }
   }
 
   submit() {
     if (this.form.invalid) return;
     this.saving.set(true);
     const val = this.form.value;
-    this.taskService.create({
+    const payload: any = {
       ...val,
       startDate: val.startDate?.toISOString(),
       dueDate: val.dueDate?.toISOString(),
-    }).subscribe({
+    };
+    if (this.data?.template?.id) {
+      payload.templateId = this.data.template.id;
+    }
+
+    this.taskService.create(payload).subscribe({
       next: () => {
         this.saving.set(false);
         this.snack.open(this.isAr() ? 'تم إنشاء المهمة' : 'Task created!', '✓', { duration: 3000 });

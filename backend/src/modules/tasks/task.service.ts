@@ -101,6 +101,7 @@ export const taskService = {
     title: string; titleAr?: string; description?: string;
     categoryId?: number; priority: TaskPriority; assignedToId: number;
     createdById: number; startDate?: string; dueDate?: string;
+    templateId?: number;
   }) {
     let taskCode: string;
     let attempts = 0;

@@ -410,6 +410,17 @@ export class TasksListComponent implements OnInit {
         // Clear mine filter when navigating away
         this.filterEmployeeId = null;
       }
+      
+      if (p['templateId']) {
+        this.taskService.getTemplate(+p['templateId']).subscribe(res => {
+          if (res.success) {
+            this.openNewTask(res.data);
+            // Remove templateId from URL without reloading
+            window.history.replaceState({}, '', '/tasks');
+          }
+        });
+      }
+
       this.loadTasks();
     });
   }
@@ -465,8 +476,13 @@ export class TasksListComponent implements OnInit {
     return this.filteredTasks().filter(t => t.status === status);
   }
 
-  openNewTask() {
-    const ref = this.dialog.open(TaskFormDialogComponent, { width: '600px', disableClose: true, panelClass: 'task-dialog' });
+  openNewTask(templateData?: any) {
+    const ref = this.dialog.open(TaskFormDialogComponent, { 
+      width: '600px', 
+      disableClose: true, 
+      panelClass: 'task-dialog',
+      data: { template: templateData }
+    });
     ref.afterClosed().subscribe(result => { if (result) this.loadTasks(); });
   }
 
