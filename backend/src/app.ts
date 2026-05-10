@@ -81,7 +81,10 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads'), {
 
 // ── API Routes ────────────────────────────────────────────
 
-app.get('/api/test-brevo', async (req, res) => {
+// ── Debug endpoints (SUPERADMIN only — authenticated) ──────
+import { authenticate as _auth, authorizeLevel as _authLevel } from './middleware/auth';
+
+app.get('/api/test-brevo', _auth, _authLevel(1), async (req, res) => {
   try {
     const { sendEmail } = await import('./modules/email/email.service');
     const logger = require('./utils/logger').logger;
@@ -97,14 +100,14 @@ app.get('/api/test-brevo', async (req, res) => {
   }
 });
 
-app.get('/api/logs', (req, res) => {
+app.get('/api/logs', _auth, _authLevel(1), (req, res) => {
   try {
     const fs = require('fs');
     const path = require('path');
     const logPath = path.join(process.cwd(), 'logs', 'combined.log');
     if (fs.existsSync(logPath)) {
       const logs = fs.readFileSync(logPath, 'utf8');
-      const lines = logs.split('\n').slice(-50); // Get last 50 lines
+      const lines = logs.split('\n').slice(-50);
       res.send(`<pre>${lines.join('\n')}</pre>`);
     } else {
       res.send('No logs file found.');

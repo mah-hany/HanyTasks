@@ -1,4 +1,4 @@
-import { Router, Response, NextFunction, Request } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth';
 import prisma from '../../prisma/client';
 import multer from 'multer';
