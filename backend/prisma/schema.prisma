@@ -422,6 +422,7 @@ model ChatMessage {
 // ─────────────────────────────────────────
 model Contractor {
   id        Int      @id @default(autoincrement())
+  code      String?  @unique                // ← NEW: كود فريد للمقاول
   name      String
   nameAr    String?
   phone     String?
