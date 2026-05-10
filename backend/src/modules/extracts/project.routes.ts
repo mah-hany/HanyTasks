@@ -50,10 +50,10 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
   } catch (e) { next(e); }
 });
 
-// PUT update (SUPERVISOR+)
+// PUT update (ADMIN+)
 router.put('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 4) return res.status(403).json({ success: false, message: 'Forbidden' });
+    if ((req.user!.roleLevel ?? 99) > 2) return res.status(403).json({ success: false, message: 'Forbidden' });
     const { name, nameAr, code, isActive } = req.body;
     const data = await prisma.project.update({
       where: { id: +req.params.id },

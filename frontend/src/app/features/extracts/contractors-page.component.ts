@@ -137,9 +137,14 @@ import { LangService } from '../../core/services/lang.service';
         <span class="status-chip" [class.active]="c.isActive" [class.inactive]="!c.isActive">
           {{ c.isActive ? (isAr() ? 'نشط' : 'Active') : (isAr() ? 'غير نشط' : 'Inactive') }}
         </span>
-        <button mat-icon-button color="primary" (click)="openForm(c)" *ngIf="canWrite()" [matTooltip]="isAr() ? 'تعديل' : 'Edit'">
-          <mat-icon>edit</mat-icon>
-        </button>
+        <div class="card-actions" *ngIf="canEditDelete()">
+          <button mat-icon-button color="primary" (click)="openForm(c)" [matTooltip]="isAr() ? 'تعديل' : 'Edit'">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteItem(c.id, c.name)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -275,6 +280,7 @@ export class ContractorsPageComponent implements OnInit {
 
   isAr     = () => this.lang.getCurrentLang() === 'ar';
   canWrite = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
+  canEditDelete = () => (this.auth.currentUser()?.role?.level ?? 99) <= 2;
 
   constructor(
     private svc: ExtractService,
@@ -316,6 +322,14 @@ export class ContractorsPageComponent implements OnInit {
     req$.subscribe({
       next: () => { this.saving.set(false); this.closeForm(); this.load(); this.snack.open(this.isAr() ? 'تم الحفظ ✓' : 'Saved ✓', '', { duration: 2500 }); },
       error: e => { this.saving.set(false); this.snack.open(e.error?.message || 'Error', 'X'); },
+    });
+  }
+
+  deleteItem(id: number, name: string) {
+    if (!confirm(this.isAr() ? `هل أنت متأكد من تعطيل/حذف المقاول: ${name}؟` : `Are you sure you want to delete ${name}?`)) return;
+    this.svc.deleteContractor(id).subscribe({
+      next: () => { this.load(); this.snack.open(this.isAr() ? 'تم الحذف' : 'Deleted', '✓', { duration: 2500 }); },
+      error: e => this.snack.open(e.error?.message || 'Error', 'X'),
     });
   }
 

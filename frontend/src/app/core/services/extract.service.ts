@@ -34,8 +34,10 @@ export class ExtractService {
   }
   createContractor(data: any)               { return this.http.post<any>(`${environment.apiUrl}/contractors`, data); }
   updateContractor(id: number, data: any)   { return this.http.put<any>(`${environment.apiUrl}/contractors/${id}`, data); }
+  deleteContractor(id: number)              { return this.http.delete<any>(`${environment.apiUrl}/contractors/${id}`); }
   createProject(data: any)                  { return this.http.post<any>(`${environment.apiUrl}/projects`, data); }
   updateProject(id: number, data: any)      { return this.http.put<any>(`${environment.apiUrl}/projects/${id}`, data); }
+  deleteProject(id: number)                 { return this.http.delete<any>(`${environment.apiUrl}/projects/${id}`); }
 
   importContractors(file: File) {
     const fd = new FormData();

@@ -157,10 +157,10 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
   }
 });
 
-// PUT update (SUPERVISOR+)
+// PUT update (ADMIN+)
 router.put('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 4) return res.status(403).json({ success: false, message: 'Forbidden' });
+    if ((req.user!.roleLevel ?? 99) > 2) return res.status(403).json({ success: false, message: 'Forbidden' });
     const { code, name, nameAr, phone, email, isActive } = req.body;
     const data = await prisma.contractor.update({
       where: { id: +req.params.id },

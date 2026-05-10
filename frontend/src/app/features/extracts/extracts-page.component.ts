@@ -147,6 +147,9 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
             <button mat-icon-button color="warn" *ngIf="canReturn(r)" (click)="openReturn(r)" [matTooltip]="isAr() ? 'إرجاع' : 'Return'">
               <mat-icon>assignment_return</mat-icon>
             </button>
+            <button mat-icon-button color="warn" *ngIf="canDelete()" (click)="deleteItem(r.id, r.extractNumber)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </td>
       </ng-container>
@@ -320,6 +323,7 @@ export class ExtractsPageComponent implements OnInit {
 
   isAr      = () => this.lang.getCurrentLang() === 'ar';
   canCreate = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
+  canDelete = () => (this.auth.currentUser()?.role?.level ?? 99) <= 2;
   roleLevel = () => this.auth.currentUser()?.role?.level ?? 99;
 
   constructor(
@@ -407,5 +411,13 @@ export class ExtractsPageComponent implements OnInit {
     const map: any = { RECEIVED:'استلام', UNDER_REVIEW:'مراجعة', POSTED:'مُدرج', RETURNED:'مُرجَع' };
     const enMap: any = { RECEIVED:'Received', UNDER_REVIEW:'Under Review', POSTED:'Posted', RETURNED:'Returned' };
     return this.isAr() ? (map[s]||s) : (enMap[s]||s);
+  }
+
+  deleteItem(id: number, extractNum: number) {
+    if (!confirm(this.isAr() ? `هل أنت متأكد من حذف المستخلص رقم #${extractNum}؟` : `Are you sure you want to delete extract #${extractNum}?`)) return;
+    this.svc.delete(id).subscribe({
+      next: () => { this.load(); this.snack.open(this.isAr() ? 'تم الحذف' : 'Deleted', '✓', { duration: 2500 }); },
+      error: e => this.snack.open(e.error?.message || 'Error', 'X'),
+    });
   }
 }

@@ -74,10 +74,14 @@ import { LangService } from '../../core/services/lang.service';
         <span class="status-chip" [class.active]="p.isActive" [class.inactive]="!p.isActive">
           {{ p.isActive ? (isAr() ? 'نشط' : 'Active') : (isAr() ? 'غير نشط' : 'Inactive') }}
         </span>
-        <button mat-icon-button color="primary" (click)="openForm(p)" *ngIf="canWrite()"
-          [matTooltip]="isAr() ? 'تعديل' : 'Edit'">
-          <mat-icon>edit</mat-icon>
-        </button>
+        <div class="card-actions" *ngIf="canEditDelete()">
+          <button mat-icon-button color="primary" (click)="openForm(p)" [matTooltip]="isAr() ? 'تعديل' : 'Edit'">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteItem(p.id, p.name)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -186,6 +190,7 @@ export class ProjectsPageComponent implements OnInit {
 
   isAr     = () => this.lang.getCurrentLang() === 'ar';
   canWrite = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
+  canEditDelete = () => (this.auth.currentUser()?.role?.level ?? 99) <= 2;
 
   constructor(
     private svc: ExtractService,
@@ -239,6 +244,14 @@ export class ProjectsPageComponent implements OnInit {
         this.snack.open(this.isAr() ? 'تم الحفظ بنجاح ✓' : 'Saved successfully', '✓', { duration: 2500 });
       },
       error: e => { this.saving.set(false); this.snack.open(e.error?.message || 'Error', 'X'); },
+    });
+  }
+
+  deleteItem(id: number, name: string) {
+    if (!confirm(this.isAr() ? `هل أنت متأكد من تعطيل/حذف المشروع: ${name}؟` : `Are you sure you want to delete ${name}?`)) return;
+    this.svc.deleteProject(id).subscribe({
+      next: () => { this.load(); this.snack.open(this.isAr() ? 'تم الحذف' : 'Deleted', '✓', { duration: 2500 }); },
+      error: e => this.snack.open(e.error?.message || 'Error', 'X'),
     });
   }
 }
