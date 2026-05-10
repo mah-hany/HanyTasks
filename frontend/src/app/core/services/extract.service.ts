@@ -22,8 +22,18 @@ export class ExtractService {
   delete(id: number)                { return this.http.delete<any>(`${this.base}/${id}`); }
 
   // Lookup data
-  getContractors() { return this.http.get<any>(`${environment.apiUrl}/contractors`); }
-  getProjects()    { return this.http.get<any>(`${environment.apiUrl}/projects`); }
-  createContractor(data: any) { return this.http.post<any>(`${environment.apiUrl}/contractors`, data); }
-  createProject(data: any)    { return this.http.post<any>(`${environment.apiUrl}/projects`, data); }
+  getContractors(search?: string) {
+    let p = new HttpParams();
+    if (search) p = p.set('search', search);
+    return this.http.get<any>(`${environment.apiUrl}/contractors`, { params: p });
+  }
+  getProjects(search?: string) {
+    let p = new HttpParams();
+    if (search) p = p.set('search', search);
+    return this.http.get<any>(`${environment.apiUrl}/projects`, { params: p });
+  }
+  createContractor(data: any)               { return this.http.post<any>(`${environment.apiUrl}/contractors`, data); }
+  updateContractor(id: number, data: any)   { return this.http.put<any>(`${environment.apiUrl}/contractors/${id}`, data); }
+  createProject(data: any)                  { return this.http.post<any>(`${environment.apiUrl}/projects`, data); }
+  updateProject(id: number, data: any)      { return this.http.put<any>(`${environment.apiUrl}/projects/${id}`, data); }
 }

@@ -534,7 +534,7 @@ export class ShellComponent implements OnInit {
       { labelKey: 'NAV.LEADERBOARD',  label: 'Leaderboard',  icon: 'emoji_events',   route: '/leaderboard' },
       { labelKey: 'NAV.ORG_CHART',    label: 'Org Chart',    icon: 'account_tree',   route: '/org-chart' },
     ];
-    // Extracts — SUPERVISOR+ only (level <= 4, not EMPLOYEE)
+    // Extracts group — SUPERVISOR+ only (level <= 4, not EMPLOYEE)
     if (level <= 4) {
       items.splice(4, 0, {
         labelKey: 'NAV.EXTRACTS',
@@ -542,6 +542,20 @@ export class ShellComponent implements OnInit {
         labelOverride: this.currentLang() === 'ar' ? 'المستخلصات' : 'Extracts',
         icon: 'receipt_long',
         route: '/extracts',
+      });
+      items.splice(5, 0, {
+        labelKey: 'NAV.CONTRACTORS',
+        label: 'المقاولون',
+        labelOverride: this.currentLang() === 'ar' ? 'المقاولون' : 'Contractors',
+        icon: 'engineering',
+        route: '/contractors',
+      });
+      items.splice(6, 0, {
+        labelKey: 'NAV.PROJECTS',
+        label: 'المشاريع',
+        labelOverride: this.currentLang() === 'ar' ? 'المشاريع' : 'Projects',
+        icon: 'domain',
+        route: '/projects',
       });
     }
     // My Tasks nav item — SUPERADMIN only (level 1)

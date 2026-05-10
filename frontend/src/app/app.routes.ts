@@ -63,6 +63,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/extracts/extracts-page.component').then(m => m.ExtractsPageComponent),
       },
       {
+        path: 'contractors',
+        loadComponent: () => import('./features/extracts/contractors-page.component').then(m => m.ContractorsPageComponent),
+      },
+      {
+        path: 'projects',
+        loadComponent: () => import('./features/extracts/projects-page.component').then(m => m.ProjectsPageComponent),
+      },
+      {
         path: 'leaderboard',
         loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent),
       },
