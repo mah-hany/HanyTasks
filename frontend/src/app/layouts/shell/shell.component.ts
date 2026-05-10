@@ -12,6 +12,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { LangService } from '../../core/services/lang.service';
 import { ChatService } from '../../core/services/chat.service';
 import { ChatComponent } from '../../features/chat/chat.component';
+import { TaskService } from '../../core/services/task.service';
 
 interface NavItem {
   label: string; labelKey: string; icon: string; route: string;
@@ -58,6 +59,34 @@ interface NavItem {
             </a>
           </ng-container>
         </nav>
+
+        <!-- ── My Tasks Widget (SUPERADMIN only) ── -->
+        <div class="my-tasks-widget" *ngIf="showLabels() && isSuperAdminUser()">
+          <div class="myt-header">
+            <mat-icon>assignment_ind</mat-icon>
+            <span>{{ currentLang() === 'ar' ? 'مهامي' : 'My Tasks' }}</span>
+            <span class="myt-total">{{ myTasks().length }}</span>
+          </div>
+          <div class="myt-loading" *ngIf="myTasksLoading()">
+            <div class="myt-spinner"></div>
+          </div>
+          <div class="myt-empty" *ngIf="!myTasksLoading() && myTasks().length === 0">
+            {{ currentLang() === 'ar' ? 'لا توجد مهام مسندة إليك' : 'No tasks assigned to you' }}
+          </div>
+          <div class="myt-rows" *ngIf="!myTasksLoading() && myTasks().length > 0">
+            <a class="myt-row" *ngFor="let t of myTasks().slice(0, 6)"
+               [routerLink]="['/tasks', t.id]" (click)="onNavClick()">
+              <span class="myt-dot" [style.background]="getMyTaskStatusColor(t.status)"></span>
+              <span class="myt-title">{{ currentLang() === 'ar' && t.titleAr ? t.titleAr : t.title }}</span>
+              <span class="myt-status-lbl" [style.color]="getMyTaskStatusColor(t.status)">
+                {{ getMyTaskStatusLabel(t.status) }}
+              </span>
+            </a>
+            <a class="myt-more" [routerLink]="'/tasks'" (click)="onNavClick()" *ngIf="myTasks().length > 6">
+              {{ currentLang() === 'ar' ? '+ ' + (myTasks().length - 6) + ' أكثر' : '+' + (myTasks().length - 6) + ' more' }}
+            </a>
+          </div>
+        </div>
 
         <div class="sidebar-footer">
           <div class="user-info" [matMenuTriggerFor]="userMenu">
@@ -259,6 +288,87 @@ interface NavItem {
       font-size: 10px; font-weight: 700;
       padding: 1px 6px; border-radius: 20px;
       min-width: 18px; text-align: center;
+    }
+
+    /* ── My Tasks Widget ── */
+    .my-tasks-widget {
+      margin: 0 8px 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+
+    .myt-header {
+      display: flex; align-items: center; gap: 7px;
+      padding: 10px 12px 8px;
+      font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      mat-icon { font-size: 15px; width: 15px; height: 15px; color: var(--color-primary, #f97316); }
+    }
+
+    .myt-total {
+      margin-inline-start: auto;
+      background: var(--color-primary, #f97316);
+      color: #fff; font-size: 10px; font-weight: 800;
+      padding: 1px 7px; border-radius: 20px;
+    }
+
+    .myt-loading {
+      display: flex; justify-content: center; padding: 12px;
+    }
+
+    .myt-spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: var(--color-primary, #f97316);
+      border-radius: 50%;
+      animation: myt-spin 0.7s linear infinite;
+    }
+
+    @keyframes myt-spin { to { transform: rotate(360deg); } }
+
+    .myt-empty {
+      padding: 10px 12px;
+      font-size: 11px; color: rgba(255,255,255,0.35); text-align: center;
+    }
+
+    .myt-rows {
+      display: flex; flex-direction: column;
+      max-height: 220px; overflow-y: auto;
+      &::-webkit-scrollbar { width: 3px; }
+      &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+    }
+
+    .myt-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 12px; cursor: pointer; text-decoration: none;
+      transition: background 0.15s;
+      &:hover { background: rgba(255,255,255,0.07); }
+    }
+
+    .myt-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+
+    .myt-title {
+      flex: 1; font-size: 11.5px; color: rgba(255,255,255,0.75);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .myt-status-lbl {
+      font-size: 10px; font-weight: 700; flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .myt-more {
+      display: block; text-align: center; padding: 6px 12px;
+      font-size: 11px; color: var(--color-primary, #f97316);
+      cursor: pointer; text-decoration: none;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      transition: background 0.15s;
+      &:hover { background: rgba(255,255,255,0.05); }
     }
 
     /* Footer */
@@ -471,6 +581,26 @@ export class ShellComponent implements OnInit {
     }
   }
 
+  myTasks        = signal<any[]>([]);
+  myTasksLoading = signal(false);
+
+  isSuperAdminUser = () => (this.authService.currentUser()?.role?.level ?? 99) <= 1;
+
+  private readonly MY_TASK_STATUS: Record<string, { label: string; labelAr: string; color: string }> = {
+    NEW:               { label: 'New',              labelAr: 'جديدة',         color: '#64748b' },
+    IN_PROGRESS:       { label: 'In Progress',      labelAr: 'قيد التنفيذ',   color: '#3b82f6' },
+    UNDER_REVIEW:      { label: 'Under Review',     labelAr: 'تحت المراجعة',  color: '#a855f7' },
+    REVISION_REQUIRED: { label: 'Revision Required',labelAr: 'تحتاج تعديل',  color: '#f97316' },
+    COMPLETED:         { label: 'Completed',        labelAr: 'مكتملة',        color: '#22c55e' },
+    CANCELLED:         { label: 'Cancelled',        labelAr: 'ملغاة',         color: '#ef4444' },
+  };
+
+  getMyTaskStatusColor(s: string) { return this.MY_TASK_STATUS[s]?.color ?? '#94a3b8'; }
+  getMyTaskStatusLabel(s: string) {
+    const m = this.MY_TASK_STATUS[s];
+    return m ? (this.currentLang() === 'ar' ? m.labelAr : m.label) : s;
+  }
+
   constructor(
     private authService: AuthService,
     private notifService: NotificationService,
@@ -478,6 +608,7 @@ export class ShellComponent implements OnInit {
     private translate: TranslateService,
     private router: Router,
     private chatService: ChatService,
+    private taskService: TaskService,
   ) {}
 
   ngOnInit() {
@@ -492,7 +623,30 @@ export class ShellComponent implements OnInit {
     if (user) {
       this.notifService.connectSocket(user.id);
       this.chatService.connectSocket(user.id);
+      // Load my tasks for SUPERADMIN sidebar widget
+      if (this.isSuperAdminUser()) this.loadMyTasks();
     }
+  }
+
+  loadMyTasks() {
+    this.myTasksLoading.set(true);
+    this.taskService.getAll().subscribe({
+      next: (res) => {
+        this.myTasksLoading.set(false);
+        if (res.success) {
+          const myId = this.authService.currentUser()?.id;
+          const mine = (res.data as any[]).filter(t => t.assignedTo?.id === myId && t.status !== 'CANCELLED');
+          // Sort: active first (non-completed), then completed
+          mine.sort((a, b) => {
+            if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1;
+            if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1;
+            return 0;
+          });
+          this.myTasks.set(mine);
+        }
+      },
+      error: () => this.myTasksLoading.set(false),
+    });
   }
 
   onNavClick() {
