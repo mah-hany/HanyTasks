@@ -1761,3 +1761,30 @@ Foreign key constraint violated on the foreign key
 [2026-05-10 19:18:36] debug: GET /api/users — ::1
 [2026-05-10 19:18:36] debug: GET /api/tasks — ::1
 [2026-05-10 19:18:54] debug: GET /api/tasks/dashboard — ::1
+[2026-05-10 19:38:58] info: ✅ Database connected successfully
+[2026-05-10 19:38:58] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-10 19:38:58] info: 🔌 Socket.IO initialized
+[2026-05-10 19:38:58] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-10 19:38:58] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-10 19:38:58] info: 📡 Environment: development
+[2026-05-10 19:38:58] debug: Socket connected: user 1 → 9Y-ZqqBlWXIuT3SLAAAC
+[2026-05-10 19:38:58] debug: Socket connected: user 1 → BDfspGMIcHiBvaKaAAAD
+[2026-05-10 19:39:01] debug: Socket connected: user 1 → SRZweaa-u9oIhtSqAAAF
+[2026-05-10 19:39:18] info: ✅ Database connected successfully
+[2026-05-10 19:39:18] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-10 19:39:18] info: 🔌 Socket.IO initialized
+[2026-05-10 19:39:18] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-10 19:39:18] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-10 19:39:18] info: 📡 Environment: development
+[2026-05-10 19:39:18] debug: Socket connected: user 1 → yOL2mtUX4ZyTLHF7AAAB
+[2026-05-10 19:39:18] debug: Socket connected: user 1 → 5unnpl8GMqdZksIsAAAD
+[2026-05-10 19:39:20] debug: Socket connected: user 1 → BE3M__E-k7goKYYQAAAF
+[2026-05-10 19:39:35] info: ✅ Database connected successfully
+[2026-05-10 19:39:35] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-10 19:39:35] info: 🔌 Socket.IO initialized
+[2026-05-10 19:39:35] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-10 19:39:35] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-10 19:39:35] info: 📡 Environment: development
+[2026-05-10 19:39:35] debug: Socket connected: user 1 → dgcxTPBPirUfw7fxAAAB
+[2026-05-10 19:39:35] debug: Socket connected: user 1 → 3uw7sSJICLvvGEfQAAAD
+[2026-05-10 19:39:35] debug: Socket connected: user 1 → c95V1Mt7czc6CmJrAAAF

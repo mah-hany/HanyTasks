@@ -71,6 +71,14 @@ export class AuthService {
     return this.http.post(`${environment.apiUrl}/auth/change-password`, { oldPassword, newPassword });
   }
 
+  forgotPassword(email: string) {
+    return this.http.post<any>(`${environment.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post<any>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
   getProfile() {
     return this.http.get<any>(`${environment.apiUrl}/auth/profile`).pipe(
       tap(res => { if (res.success) { this.currentUser.set(res.data); this.saveUserOnly(res.data); } })

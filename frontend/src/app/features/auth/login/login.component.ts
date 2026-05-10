@@ -37,18 +37,18 @@ import { LangService } from '../../../core/services/lang.service';
         <!-- Card -->
         <div class="login-card glass">
           <div class="card-header">
-            <h2>{{ 'AUTH.LOGIN_TITLE' | translate }}</h2>
-            <p>{{ 'AUTH.LOGIN_SUBTITLE' | translate }}</p>
+            <h2>{{ getTitle() }}</h2>
+            <p>{{ getSubtitle() }}</p>
           </div>
 
           <!-- Change Password prompt (first login) -->
-          <div class="first-login-banner" *ngIf="showChangePassword()">
+          <div class="first-login-banner" *ngIf="viewMode() === 'changePass'">
             <mat-icon>info</mat-icon>
             <span>{{ 'AUTH.FIRST_LOGIN_MSG' | translate }}</span>
           </div>
 
           <!-- Login Form -->
-          <form *ngIf="!showChangePassword()" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+          <form *ngIf="viewMode() === 'login'" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ 'AUTH.USERNAME' | translate }}</mat-label>
               <input matInput formControlName="username" autocomplete="username" [placeholder]="'AUTH.USERNAME' | translate">
@@ -69,10 +69,15 @@ import { LangService } from '../../../core/services/lang.service';
               <span *ngIf="!loading()">{{ 'AUTH.LOGIN_BTN' | translate }}</span>
               <span *ngIf="loading()">{{ 'AUTH.LOGGING_IN' | translate }}</span>
             </button>
+            <div style="text-align: center; margin-top: 12px;">
+              <button type="button" class="forgot-btn" (click)="viewMode.set('forgot')">
+                {{ isAr() ? 'نسيت كلمة المرور؟' : 'Forgot Password?' }}
+              </button>
+            </div>
           </form>
 
           <!-- Change Password Form -->
-          <form *ngIf="showChangePassword()" [formGroup]="changePassForm" (ngSubmit)="onChangePassword()" class="login-form">
+          <form *ngIf="viewMode() === 'changePass'" [formGroup]="changePassForm" (ngSubmit)="onChangePassword()" class="login-form">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ 'AUTH.CURRENT_PASSWORD' | translate }}</mat-label>
               <input matInput type="password" formControlName="oldPassword">
@@ -93,6 +98,54 @@ import { LangService } from '../../../core/services/lang.service';
               <mat-spinner *ngIf="loading()" diameter="20"></mat-spinner>
               <span>{{ 'AUTH.CHANGE_PASSWORD' | translate }}</span>
             </button>
+          </form>
+
+          <!-- Forgot Password Form -->
+          <form *ngIf="viewMode() === 'forgot'" [formGroup]="forgotForm" (ngSubmit)="onForgotPassword()" class="login-form">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ isAr() ? 'البريد الإلكتروني' : 'Email' }}</mat-label>
+              <input matInput type="email" formControlName="email">
+              <mat-icon matSuffix>email</mat-icon>
+            </mat-form-field>
+            <button mat-raised-button color="primary" type="submit" class="login-btn w-100"
+                    [disabled]="forgotForm.invalid || loading()">
+              <mat-spinner *ngIf="loading()" diameter="20"></mat-spinner>
+              <span>{{ isAr() ? 'إرسال الرمز' : 'Send Code' }}</span>
+            </button>
+            <div style="text-align: center; margin-top: 12px;">
+              <button type="button" class="forgot-btn" (click)="viewMode.set('login')">
+                {{ isAr() ? 'العودة لتسجيل الدخول' : 'Back to Login' }}
+              </button>
+            </div>
+          </form>
+
+          <!-- Reset Password Form -->
+          <form *ngIf="viewMode() === 'reset'" [formGroup]="resetForm" (ngSubmit)="onResetPassword()" class="login-form">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ isAr() ? 'رمز التحقق (6 أرقام)' : 'Verification Code (6 digits)' }}</mat-label>
+              <input matInput formControlName="token" maxlength="6">
+              <mat-icon matSuffix>pin</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ 'AUTH.NEW_PASSWORD' | translate }}</mat-label>
+              <input matInput [type]="hidePass() ? 'password' : 'text'" formControlName="newPassword">
+              <button type="button" mat-icon-button matSuffix (click)="hidePass.set(!hidePass())">
+                <mat-icon>{{ hidePass() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              <mat-hint>8+ characters</mat-hint>
+            </mat-form-field>
+
+            <button mat-raised-button color="primary" type="submit" class="login-btn w-100"
+                    [disabled]="resetForm.invalid || loading()">
+              <mat-spinner *ngIf="loading()" diameter="20"></mat-spinner>
+              <span>{{ isAr() ? 'تعيين كلمة المرور' : 'Set Password' }}</span>
+            </button>
+            <div style="text-align: center; margin-top: 12px;">
+              <button type="button" class="forgot-btn" (click)="viewMode.set('login')">
+                {{ isAr() ? 'إلغاء' : 'Cancel' }}
+              </button>
+            </div>
           </form>
 
           <!-- Error -->
@@ -217,6 +270,12 @@ import { LangService } from '../../../core/services/lang.service';
       mat-icon { font-size: 18px; }
     }
 
+    .forgot-btn {
+      background: transparent; border: none; outline: none; cursor: pointer;
+      color: rgba(255,255,255,0.7); font-size: 13px; transition: color 0.2s;
+      &:hover { color: #f18f01; text-decoration: underline; }
+    }
+
     .lang-toggle {
       background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
       color: white; border-radius: 20px; padding: 8px 16px;
@@ -234,11 +293,15 @@ import { LangService } from '../../../core/services/lang.service';
 export class LoginComponent {
   loginForm: FormGroup;
   changePassForm: FormGroup;
+  forgotForm: FormGroup;
+  resetForm: FormGroup;
+  
   loading = signal(false);
   hidePass = signal(true);
   errorMsg = signal<string>('');
-  showChangePassword = signal(false);
+  viewMode = signal<'login' | 'changePass' | 'forgot' | 'reset'>('login');
   currentLang = signal<string>('ar');
+  isAr = () => this.currentLang() === 'ar';
 
   constructor(
     private fb: FormBuilder,
@@ -257,6 +320,27 @@ export class LoginComponent {
       oldPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(8)]],
     });
+    this.forgotForm = fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
+    this.resetForm = fb.group({
+      token: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
+      newPassword: ['', [Validators.required, Validators.minLength(8)]],
+    });
+  }
+
+  getTitle(): string {
+    const v = this.viewMode();
+    if (v === 'forgot') return this.isAr() ? 'نسيت كلمة المرور' : 'Forgot Password';
+    if (v === 'reset') return this.isAr() ? 'تعيين كلمة المرور' : 'Reset Password';
+    return this.translate.instant('AUTH.LOGIN_TITLE');
+  }
+
+  getSubtitle(): string {
+    const v = this.viewMode();
+    if (v === 'forgot') return this.isAr() ? 'أدخل بريدك لإرسال كود التحقق' : 'Enter your email to receive a reset code';
+    if (v === 'reset') return this.isAr() ? 'أدخل الكود وكلمة المرور الجديدة' : 'Enter verification code and new password';
+    return this.translate.instant('AUTH.LOGIN_SUBTITLE');
   }
 
   onLogin() {
@@ -271,7 +355,7 @@ export class LoginComponent {
         if (res.data.isFirstLogin) {
           // Store temp credentials for password change
           this.changePassForm.patchValue({ oldPassword: password });
-          this.showChangePassword.set(true);
+          this.viewMode.set('changePass');
         } else {
           this.router.navigate(['/dashboard']);
         }
@@ -306,5 +390,42 @@ export class LoginComponent {
     this.currentLang.set(newLang);
     this.langService.setLang(newLang as 'ar' | 'en');
     this.translate.use(newLang);
+  }
+
+  onForgotPassword() {
+    if (this.forgotForm.invalid) return;
+    this.loading.set(true);
+    this.errorMsg.set('');
+    this.authService.forgotPassword(this.forgotForm.value.email).subscribe({
+      next: (res) => {
+        this.loading.set(false);
+        this.snack.open(this.isAr() ? 'تم إرسال الكود إلى بريدك الإلكتروني' : 'Code sent to your email', '✓', { duration: 4000 });
+        this.viewMode.set('reset');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMsg.set(err.error?.message || 'Failed to send reset code');
+      }
+    });
+  }
+
+  onResetPassword() {
+    if (this.resetForm.invalid) return;
+    this.loading.set(true);
+    this.errorMsg.set('');
+    const { token, newPassword } = this.resetForm.value;
+    this.authService.resetPassword(token, newPassword).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.snack.open(this.isAr() ? 'تم تغيير كلمة المرور بنجاح!' : 'Password reset successful!', '✓', { duration: 4000 });
+        this.resetForm.reset();
+        this.forgotForm.reset();
+        this.viewMode.set('login');
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.errorMsg.set(err.error?.message || 'Failed to reset password');
+      }
+    });
   }
 }

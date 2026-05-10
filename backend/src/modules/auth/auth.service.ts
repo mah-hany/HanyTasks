@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../prisma/client';
 import { AppError } from '../../middleware/errorHandler';
 import { logger } from '../../utils/logger';
+import { sendEmail, forgotPasswordEmail } from '../email/email.service';
 
 const MAX_FAILED = 3;
 const LOCK_MINUTES = 5;
@@ -132,13 +133,64 @@ export const authService = {
     const hash = await bcrypt.hash(newPassword, 12);
     await prisma.user.update({
       where: { id: userId },
-      data: { passwordHash: hash, isFirstLogin: false },
+      data: { passwordHash: hash, plainPassword: newPassword, isFirstLogin: false },
     });
 
     await prisma.auditLog.create({
       data: { userId, action: 'PASSWORD_CHANGED', tableAffected: 'tbl_Users', recordId: userId },
     });
     return { message: 'Password changed successfully' };
+  },
+
+  async forgotPassword(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !user.isActive) {
+      // Return success even if not found to prevent email enumeration
+      return { message: 'If the email exists, a reset code has been sent' };
+    }
+
+    // Generate 6-digit token
+    const token = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { resetToken: token, resetTokenExpiry: expiry },
+    });
+
+    await sendEmail({
+      to: email,
+      subject: 'إعادة تعيين كلمة المرور - Hany Tasks',
+      html: forgotPasswordEmail(user.fullNameAr || user.fullName, token),
+    });
+
+    return { message: 'If the email exists, a reset code has been sent' };
+  },
+
+  async resetPasswordWithToken(token: string, newPassword: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        resetToken: token,
+        resetTokenExpiry: { gt: new Date() },
+      },
+    });
+
+    if (!user) {
+      throw new AppError('الكود غير صحيح أو منتهي الصلاحية / Invalid or expired code', 400);
+    }
+
+    const hash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        passwordHash: hash,
+        plainPassword: newPassword,
+        resetToken: null,
+        resetTokenExpiry: null,
+      },
+    });
+
+    return { message: 'Password reset successfully' };
   },
 
   async getProfile(userId: number) {
