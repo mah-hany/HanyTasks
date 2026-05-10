@@ -401,6 +401,15 @@ export class TasksListComponent implements OnInit {
     }
     this.route.queryParams.subscribe(p => {
       if (p['status']) this.filterStatus = p['status'];
+      // mine=true → filter to current user's tasks (SUPERADMIN only)
+      if (p['mine'] === 'true' && this.isSuperAdmin()) {
+        const myId = this.authService.currentUser()?.id ?? null;
+        this.filterEmployeeId = myId;
+        this.view.set('kanban');
+      } else if (!p['mine']) {
+        // Clear mine filter when navigating away
+        this.filterEmployeeId = null;
+      }
       this.loadTasks();
     });
   }

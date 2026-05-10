@@ -16,7 +16,7 @@ import { TaskService } from '../../core/services/task.service';
 
 interface NavItem {
   label: string; labelKey: string; icon: string; route: string;
-  roles?: string[]; badge?: number;
+  roles?: string[]; badge?: number; queryParams?: any; labelOverride?: string;
 }
 
 @Component({
@@ -49,44 +49,17 @@ interface NavItem {
         <nav class="sidebar-nav">
           <div class="nav-section-title" *ngIf="showLabels()">{{ 'NAV.DASHBOARD' | translate }}</div>
           <ng-container *ngFor="let item of navItems()">
-            <a class="nav-item" [routerLink]="item.route" routerLinkActive="active"
+            <a class="nav-item" [routerLink]="item.route" [queryParams]="item.queryParams || {}"
+               routerLinkActive="active"
                (click)="onNavClick()"
                [matTooltip]="(!showLabels()) ? (item.labelKey | translate) : ''"
                matTooltipPosition="after">
               <mat-icon class="nav-icon">{{ item.icon }}</mat-icon>
-              <span class="nav-label" *ngIf="showLabels()">{{ item.labelKey | translate }}</span>
+              <span class="nav-label" *ngIf="showLabels()">{{ item.labelOverride || (item.labelKey | translate) }}</span>
               <span class="nav-badge" *ngIf="item.badge && item.badge > 0 && showLabels()">{{ item.badge }}</span>
             </a>
           </ng-container>
         </nav>
-
-        <!-- ── My Tasks Widget (SUPERADMIN only) ── -->
-        <div class="my-tasks-widget" *ngIf="showLabels() && isSuperAdminUser()">
-          <div class="myt-header">
-            <mat-icon>assignment_ind</mat-icon>
-            <span>{{ currentLang() === 'ar' ? 'مهامي' : 'My Tasks' }}</span>
-            <span class="myt-total">{{ myTasks().length }}</span>
-          </div>
-          <div class="myt-loading" *ngIf="myTasksLoading()">
-            <div class="myt-spinner"></div>
-          </div>
-          <div class="myt-empty" *ngIf="!myTasksLoading() && myTasks().length === 0">
-            {{ currentLang() === 'ar' ? 'لا توجد مهام مسندة إليك' : 'No tasks assigned to you' }}
-          </div>
-          <div class="myt-rows" *ngIf="!myTasksLoading() && myTasks().length > 0">
-            <a class="myt-row" *ngFor="let t of myTasks().slice(0, 6)"
-               [routerLink]="['/tasks', t.id]" (click)="onNavClick()">
-              <span class="myt-dot" [style.background]="getMyTaskStatusColor(t.status)"></span>
-              <span class="myt-title">{{ currentLang() === 'ar' && t.titleAr ? t.titleAr : t.title }}</span>
-              <span class="myt-status-lbl" [style.color]="getMyTaskStatusColor(t.status)">
-                {{ getMyTaskStatusLabel(t.status) }}
-              </span>
-            </a>
-            <a class="myt-more" [routerLink]="'/tasks'" (click)="onNavClick()" *ngIf="myTasks().length > 6">
-              {{ currentLang() === 'ar' ? '+ ' + (myTasks().length - 6) + ' أكثر' : '+' + (myTasks().length - 6) + ' more' }}
-            </a>
-          </div>
-        </div>
 
         <div class="sidebar-footer">
           <div class="user-info" [matMenuTriggerFor]="userMenu">
@@ -561,6 +534,15 @@ export class ShellComponent implements OnInit {
       { labelKey: 'NAV.LEADERBOARD',  label: 'Leaderboard',  icon: 'emoji_events',   route: '/leaderboard' },
       { labelKey: 'NAV.ORG_CHART',    label: 'Org Chart',    icon: 'account_tree',   route: '/org-chart' },
     ];
+    // My Tasks nav item — SUPERADMIN only (level 1)
+    if (level <= 1) {
+      items.push({
+        labelKey: 'NAV.TASKS', label: 'مهامي',
+        labelOverride: this.currentLang() === 'ar' ? 'مهامي' : 'My Tasks',
+        icon: 'assignment_ind', route: '/tasks',
+        queryParams: { mine: 'true' }, badge: this.myTasksCount()
+      });
+    }
     if (level <= 3) {
       items.push({ labelKey: 'NAV.USERS', label: 'Employees', icon: 'people', route: '/users' });
       items.push({ labelKey: 'NAV.REPORTS', label: 'Reports', icon: 'bar_chart', route: '/reports' });
@@ -581,25 +563,9 @@ export class ShellComponent implements OnInit {
     }
   }
 
-  myTasks        = signal<any[]>([]);
-  myTasksLoading = signal(false);
+  myTasksCount = signal<number>(0);
 
   isSuperAdminUser = () => (this.authService.currentUser()?.role?.level ?? 99) <= 1;
-
-  private readonly MY_TASK_STATUS: Record<string, { label: string; labelAr: string; color: string }> = {
-    NEW:               { label: 'New',              labelAr: 'جديدة',         color: '#64748b' },
-    IN_PROGRESS:       { label: 'In Progress',      labelAr: 'قيد التنفيذ',   color: '#3b82f6' },
-    UNDER_REVIEW:      { label: 'Under Review',     labelAr: 'تحت المراجعة',  color: '#a855f7' },
-    REVISION_REQUIRED: { label: 'Revision Required',labelAr: 'تحتاج تعديل',  color: '#f97316' },
-    COMPLETED:         { label: 'Completed',        labelAr: 'مكتملة',        color: '#22c55e' },
-    CANCELLED:         { label: 'Cancelled',        labelAr: 'ملغاة',         color: '#ef4444' },
-  };
-
-  getMyTaskStatusColor(s: string) { return this.MY_TASK_STATUS[s]?.color ?? '#94a3b8'; }
-  getMyTaskStatusLabel(s: string) {
-    const m = this.MY_TASK_STATUS[s];
-    return m ? (this.currentLang() === 'ar' ? m.labelAr : m.label) : s;
-  }
 
   constructor(
     private authService: AuthService,
@@ -623,29 +589,22 @@ export class ShellComponent implements OnInit {
     if (user) {
       this.notifService.connectSocket(user.id);
       this.chatService.connectSocket(user.id);
-      // Load my tasks for SUPERADMIN sidebar widget
-      if (this.isSuperAdminUser()) this.loadMyTasks();
+      // Load my tasks count for SUPERADMIN nav badge
+      if (this.isSuperAdminUser()) this.loadMyTasksCount();
     }
   }
 
-  loadMyTasks() {
-    this.myTasksLoading.set(true);
+  loadMyTasksCount() {
     this.taskService.getAll().subscribe({
       next: (res) => {
-        this.myTasksLoading.set(false);
         if (res.success) {
           const myId = this.authService.currentUser()?.id;
-          const mine = (res.data as any[]).filter(t => t.assignedTo?.id === myId && t.status !== 'CANCELLED');
-          // Sort: active first (non-completed), then completed
-          mine.sort((a, b) => {
-            if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1;
-            if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1;
-            return 0;
-          });
-          this.myTasks.set(mine);
+          const count = (res.data as any[]).filter(
+            t => t.assignedTo?.id === myId && t.status !== 'COMPLETED' && t.status !== 'CANCELLED'
+          ).length;
+          this.myTasksCount.set(count);
         }
       },
-      error: () => this.myTasksLoading.set(false),
     });
   }
 
