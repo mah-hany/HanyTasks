@@ -419,8 +419,19 @@ export class TasksListComponent implements OnInit {
   applyFilters() {
     let list = this.tasks();
     if (this.searchTerm) {
-      const s = this.searchTerm.toLowerCase();
-      list = list.filter(t => t.title?.toLowerCase().includes(s) || t.taskCode?.toLowerCase().includes(s));
+      const s = this.searchTerm.toLowerCase().trim();
+      list = list.filter(t =>
+        t.title?.toLowerCase().includes(s)           ||  // عنوان المهمة (إنجليزي)
+        t.titleAr?.toLowerCase().includes(s)         ||  // عنوان المهمة (عربي)
+        t.taskCode?.toLowerCase().includes(s)        ||  // كود المهمة TSK-...
+        t.description?.toLowerCase().includes(s)     ||  // الوصف
+        t.assignedTo?.fullName?.toLowerCase().includes(s)   ||  // اسم الموظف (إنجليزي)
+        t.assignedTo?.fullNameAr?.toLowerCase().includes(s) ||  // اسم الموظف (عربي)
+        t.createdBy?.fullName?.toLowerCase().includes(s)    ||  // منشئ المهمة (إنجليزي)
+        t.createdBy?.fullNameAr?.toLowerCase().includes(s)  ||  // منشئ المهمة (عربي)
+        t.category?.name?.toLowerCase().includes(s)         ||  // التصنيف (إنجليزي)
+        t.category?.nameAr?.toLowerCase().includes(s)           // التصنيف (عربي)
+      );
     }
     if (this.filterStatus)     list = list.filter(t => t.status === this.filterStatus);
     if (this.filterPriority)   list = list.filter(t => t.priority === this.filterPriority);
