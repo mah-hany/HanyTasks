@@ -109,6 +109,11 @@ model User {
   timeEntries      TimeEntry[]
   points           UserPoint[]
 
+  // Chat relations
+  convAsUser1      ChatConversation[] @relation("ConvUser1")
+  convAsUser2      ChatConversation[] @relation("ConvUser2")
+  sentMessages     ChatMessage[]      @relation("ChatSender")
+
   @@map("tbl_Users")
 }
 
@@ -369,4 +374,37 @@ model SystemSetting {
   value String
 
   @@map("tbl_SystemSettings")
+}
+
+// ─────────────────────────────────────────
+//  CHAT — CONVERSATIONS & MESSAGES
+// ─────────────────────────────────────────
+model ChatConversation {
+  id           Int           @id @default(autoincrement())
+  user1Id      Int
+  user2Id      Int
+  lastMessage  String?
+  lastAt       DateTime?
+  createdAt    DateTime      @default(now())
+
+  user1        User          @relation("ConvUser1", fields: [user1Id], references: [id])
+  user2        User          @relation("ConvUser2", fields: [user2Id], references: [id])
+  messages     ChatMessage[]
+
+  @@unique([user1Id, user2Id])
+  @@map("tbl_ChatConversations")
+}
+
+model ChatMessage {
+  id             Int              @id @default(autoincrement())
+  conversationId Int
+  senderId       Int
+  text           String
+  isRead         Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User             @relation("ChatSender", fields: [senderId], references: [id])
+
+  @@map("tbl_ChatMessages")
 }

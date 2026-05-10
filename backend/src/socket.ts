@@ -4,8 +4,8 @@ import { logger } from './utils/logger';
 
 let io: SocketServer;
 
-// Map userId → socketId
-const userSocketMap = new Map<number, string>();
+// Map userId → socketId  (exported so chat controller can use it)
+export const userSocketMap = new Map<number, string>();
 
 export function initSocket(httpServer: HttpServer) {
   io = new SocketServer(httpServer, {
@@ -19,11 +19,26 @@ export function initSocket(httpServer: HttpServer) {
     const userId = socket.handshake.auth?.userId;
     if (userId) {
       userSocketMap.set(+userId, socket.id);
-      logger.debug(`Socket connected: user ${userId}`);
+      logger.debug(`Socket connected: user ${userId} → ${socket.id}`);
+
+      // Join personal room for targeted chat events
+      socket.join(`user:${userId}`);
     }
 
     socket.on('disconnect', () => {
-      if (userId) userSocketMap.delete(+userId);
+      if (userId) {
+        userSocketMap.delete(+userId);
+        logger.debug(`Socket disconnected: user ${userId}`);
+      }
+    });
+
+    // Typing indicator events (forwarded to recipient)
+    socket.on('chat:typing', (data: { toUserId: number; isTyping: boolean }) => {
+      if (!userId) return;
+      const recipientSocketId = userSocketMap.get(data.toUserId);
+      if (recipientSocketId) {
+        io.to(recipientSocketId).emit('chat:typing', { fromUserId: +userId, isTyping: data.isTyping });
+      }
     });
   });
 

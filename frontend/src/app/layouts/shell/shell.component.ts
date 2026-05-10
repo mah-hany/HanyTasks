@@ -10,6 +10,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { LangService } from '../../core/services/lang.service';
+import { ChatService } from '../../core/services/chat.service';
+import { ChatComponent } from '../../features/chat/chat.component';
 
 interface NavItem {
   label: string; labelKey: string; icon: string; route: string;
@@ -19,7 +21,7 @@ interface NavItem {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatBadgeModule, MatDividerModule, TranslateModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatBadgeModule, MatDividerModule, TranslateModule, ChatComponent],
   template: `
     <div class="app-wrapper" [class.rtl]="currentLang() === 'ar'">
 
@@ -129,6 +131,9 @@ interface NavItem {
           <router-outlet />
         </main>
       </div>
+
+      <!-- Floating Chat Widget -->
+      <app-chat />
     </div>
   `,
   styles: [`
@@ -472,6 +477,7 @@ export class ShellComponent implements OnInit {
     private langService: LangService,
     private translate: TranslateService,
     private router: Router,
+    private chatService: ChatService,
   ) {}
 
   ngOnInit() {
@@ -483,7 +489,10 @@ export class ShellComponent implements OnInit {
     this.notifService.load().subscribe();
 
     const user = this.authService.currentUser();
-    if (user) this.notifService.connectSocket(user.id);
+    if (user) {
+      this.notifService.connectSocket(user.id);
+      this.chatService.connectSocket(user.id);
+    }
   }
 
   onNavClick() {
@@ -513,6 +522,7 @@ export class ShellComponent implements OnInit {
 
   logout() {
     this.notifService.disconnectSocket();
+    this.chatService.disconnectSocket();
     this.authService.logout();
   }
 }
