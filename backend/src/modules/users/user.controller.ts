@@ -87,4 +87,11 @@ export const userController = {
       res.json({ success: true, data });
     } catch (e) { next(e); }
   },
+
+  async getCredentials(_req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = await userService.getCredentials();
+      res.json({ success: true, data });
+    } catch (e) { next(e); }
+  },
 };

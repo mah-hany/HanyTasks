@@ -75,6 +75,7 @@ model User {
   fullNameAr       String
   username         String    @unique
   passwordHash     String
+  plainPassword    String?   // stored for admin reference only
   email            String    @unique
   phone            String?
   departmentId     Int?

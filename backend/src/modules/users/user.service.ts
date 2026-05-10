@@ -71,6 +71,7 @@ export const userService = {
     } while (attempts < 10);
 
     const passwordHash = await bcrypt.hash(data.password || 'TaskFlow@2026', 12);
+    const plainPassword = data.password || 'TaskFlow@2026';
 
     const user = await prisma.user.create({
       data: {
@@ -84,6 +85,7 @@ export const userService = {
         roleId: data.roleId,
         managerId: data.managerId,
         passwordHash,
+        plainPassword,
         isFirstLogin: true,
       },
       include: { role: true, department: true },
@@ -93,7 +95,7 @@ export const userService = {
       data: { action: 'CREATE_USER', tableAffected: 'tbl_Users', recordId: user.id },
     });
 
-    const { passwordHash: _, ...safe } = user;
+    const { passwordHash: _, plainPassword: __, ...safe } = user;
     return safe;
   },
 
@@ -116,8 +118,23 @@ export const userService = {
 
   async resetPassword(id: number, newPassword: string) {
     const hash = await bcrypt.hash(newPassword, 12);
-    await prisma.user.update({ where: { id }, data: { passwordHash: hash, isFirstLogin: true } });
+    await prisma.user.update({ where: { id }, data: { passwordHash: hash, plainPassword: newPassword, isFirstLogin: true } });
     return { message: 'Password reset successfully' };
+  },
+
+  async getCredentials() {
+    return prisma.user.findMany({
+      select: {
+        id: true, employeeCode: true,
+        fullName: true, fullNameAr: true,
+        username: true, plainPassword: true,
+        email: true, phone: true,
+        isActive: true, createdAt: true, lastLoginAt: true,
+        role: { select: { name: true, nameAr: true, level: true } },
+        department: { select: { name: true, nameAr: true } },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
   },
 
   async transfer(userId: number, toDeptId: number, note: string, transferredById: number) {

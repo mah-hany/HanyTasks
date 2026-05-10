@@ -34,6 +34,7 @@ router.put('/:id',                  authorizeLevel(2), userController.update);
 router.post('/:id/reset-password',  authorizeLevel(2), userController.resetPassword);
 router.post('/:id/transfer',        authorizeLevel(2), userController.transfer);
 router.post('/:id/photo',           uploadAvatar.single('photo'), userController.uploadPhoto);
+router.get('/credentials',          authorizeLevel(1), userController.getCredentials);
 router.delete('/:id',               authorizeLevel(1), userController.delete);
 
 export default router;
