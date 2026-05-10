@@ -21,6 +21,9 @@ import exportRoutes from './modules/export/export.routes';
 import timeRoutes from './modules/time/time.routes';
 import gamificationRoutes from './modules/gamification/gamification.routes';
 import chatRoutes from './modules/chat/chat.routes';
+import extractRoutes     from './modules/extracts/extract.routes';
+import contractorRoutes  from './modules/extracts/contractor.routes';
+import projectRoutes     from './modules/extracts/project.routes';
 import { handleTelegramWebhook } from './modules/telegram/telegram.bot';
 
 const app = express();
@@ -125,6 +128,9 @@ app.use('/api/export',        exportRoutes);
 app.use('/api/time',          timeRoutes);
 app.use('/api/gamification',  gamificationRoutes);
 app.use('/api/chat',          chatRoutes);
+app.use('/api/extracts',      extractRoutes);
+app.use('/api/contractors',   contractorRoutes);
+app.use('/api/projects',      projectRoutes);
 
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';

@@ -111,6 +111,7 @@ model User {
   transferHistory  EmployeeTransfer[]
   timeEntries      TimeEntry[]
   points           UserPoint[]
+  createdExtracts  TaskExtract[]  @relation("ExtractCreator") // ← NEW
 
   // Chat relations
   convAsUser1      ChatConversation[] @relation("ConvUser1")
@@ -178,6 +179,7 @@ model Task {
   checklist       TaskChecklist[]
   timeEntries     TimeEntry[]
   tags            TaskTag[]
+  extracts        TaskExtract[]   // ← NEW: extracts linked to this task
 
   @@map("tbl_Tasks")
 }
@@ -198,15 +200,18 @@ model TaskStatusHistory {
 }
 
 model TaskComment {
-  id            Int      @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   taskId        Int
   userId        Int
   commentText   String
-  commentDate   DateTime @default(now())
-  isManagerNote Boolean  @default(false)
+  commentDate   DateTime     @default(now())
+  isManagerNote Boolean      @default(false)
+  isReturnNote  Boolean      @default(false)  // ← NEW: marks extract return comments
+  extractId     Int?                           // ← NEW: links comment to a specific extract
 
-  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id])
+  task    Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user    User         @relation(fields: [userId], references: [id])
+  extract TaskExtract? @relation(fields: [extractId], references: [id])
 
   @@map("tbl_TaskComments")
 }
@@ -410,4 +415,64 @@ model ChatMessage {
   sender         User             @relation("ChatSender", fields: [senderId], references: [id])
 
   @@map("tbl_ChatMessages")
+}
+
+// ─────────────────────────────────────────
+//  CONTRACTORS (مقاولين)
+// ─────────────────────────────────────────
+model Contractor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  nameAr    String?
+  phone     String?
+  email     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  extracts  TaskExtract[]
+
+  @@map("tbl_Contractors")
+}
+
+// ─────────────────────────────────────────
+//  PROJECTS (مشاريع)
+// ─────────────────────────────────────────
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  nameAr    String?
+  code      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  extracts  TaskExtract[]
+
+  @@map("tbl_Projects")
+}
+
+// ─────────────────────────────────────────
+//  TASK EXTRACTS (مستخلصات)
+//  Status flow: RECEIVED → UNDER_REVIEW → POSTED
+//               UNDER_REVIEW ↔ RETURNED (with mandatory comment)
+//               POSTED → RETURNED (MANAGER+ only, with mandatory comment)
+// ─────────────────────────────────────────
+model TaskExtract {
+  id            Int      @id @default(autoincrement())
+  extractNumber Int
+  taskId        Int?
+  contractorId  Int
+  projectId     Int
+  status        String   @default("RECEIVED") // RECEIVED|UNDER_REVIEW|POSTED|RETURNED
+  notes         String?
+  receivedAt    DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  createdById   Int
+
+  task        Task?       @relation(fields: [taskId], references: [id])
+  contractor  Contractor  @relation(fields: [contractorId], references: [id])
+  project     Project     @relation(fields: [projectId], references: [id])
+  createdBy   User        @relation("ExtractCreator", fields: [createdById], references: [id])
+  comments    TaskComment[]
+
+  @@map("tbl_TaskExtracts")
 }

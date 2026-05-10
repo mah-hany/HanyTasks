@@ -59,6 +59,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/templates/templates.component').then(m => m.TemplatesComponent),
       },
       {
+        path: 'extracts',
+        loadComponent: () => import('./features/extracts/extracts-page.component').then(m => m.ExtractsPageComponent),
+      },
+      {
         path: 'leaderboard',
         loadComponent: () => import('./features/leaderboard/leaderboard.component').then(m => m.LeaderboardComponent),
       },

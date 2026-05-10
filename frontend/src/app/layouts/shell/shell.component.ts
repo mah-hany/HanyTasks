@@ -534,6 +534,16 @@ export class ShellComponent implements OnInit {
       { labelKey: 'NAV.LEADERBOARD',  label: 'Leaderboard',  icon: 'emoji_events',   route: '/leaderboard' },
       { labelKey: 'NAV.ORG_CHART',    label: 'Org Chart',    icon: 'account_tree',   route: '/org-chart' },
     ];
+    // Extracts — SUPERVISOR+ only (level <= 4, not EMPLOYEE)
+    if (level <= 4) {
+      items.splice(4, 0, {
+        labelKey: 'NAV.EXTRACTS',
+        label: 'المستخلصات',
+        labelOverride: this.currentLang() === 'ar' ? 'المستخلصات' : 'Extracts',
+        icon: 'receipt_long',
+        route: '/extracts',
+      });
+    }
     // My Tasks nav item — SUPERADMIN only (level 1)
     if (level <= 1) {
       items.push({
