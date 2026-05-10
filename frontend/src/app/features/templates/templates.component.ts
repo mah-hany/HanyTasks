@@ -93,78 +93,76 @@ import { AuthService } from '../../core/services/auth.service';
             <button mat-icon-button color="warn" (click)="deleteTemplate(t.id)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
               <mat-icon>delete</mat-icon>
             </button>
-          </div>
-        </div>
       </div>
+    </div>
 
-      <!-- Create/Edit Form Dialog (inline) -->
-      <div class="form-overlay" *ngIf="showForm()">
-        <div class="form-backdrop" (click)="closeForm()"></div>
-        <div class="form-drawer tf-card">
-          <div class="form-header">
-            <h3>{{ editing() ? (isAr() ? 'تعديل قالب' : 'Edit Template') : (isAr() ? 'قالب جديد' : 'New Template') }}</h3>
-            <button mat-icon-button (click)="closeForm()"><mat-icon>close</mat-icon></button>
+    <!-- Create/Edit Form Dialog (inline) -->
+    <div class="form-overlay" *ngIf="showForm()">
+      <div class="form-backdrop" (click)="closeForm()"></div>
+      <div class="form-drawer tf-card">
+        <div class="form-header">
+          <h3>{{ editing() ? (isAr() ? 'تعديل قالب' : 'Edit Template') : (isAr() ? 'قالب جديد' : 'New Template') }}</h3>
+          <button mat-icon-button (click)="closeForm()"><mat-icon>close</mat-icon></button>
+        </div>
+
+        <div class="form-body">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ isAr() ? 'اسم القالب' : 'Template Name' }}</mat-label>
+            <input matInput [(ngModel)]="form.name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ isAr() ? 'الاسم بالعربي' : 'Name (Arabic)' }}</mat-label>
+            <input matInput [(ngModel)]="form.nameAr" dir="rtl">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>{{ isAr() ? 'الوصف' : 'Description' }}</mat-label>
+            <textarea matInput [(ngModel)]="form.description" rows="2"></textarea>
+          </mat-form-field>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ isAr() ? 'الأولوية' : 'Priority' }}</mat-label>
+              <mat-select [(ngModel)]="form.priority">
+                <mat-option value="LOW">{{ isAr() ? 'منخفض' : 'Low' }}</mat-option>
+                <mat-option value="MEDIUM">{{ isAr() ? 'متوسط' : 'Medium' }}</mat-option>
+                <mat-option value="HIGH">{{ isAr() ? 'عالٍ' : 'High' }}</mat-option>
+                <mat-option value="URGENT">{{ isAr() ? 'عاجل' : 'Urgent' }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ isAr() ? 'المدة (أيام)' : 'Duration (days)' }}</mat-label>
+              <input matInput type="number" [(ngModel)]="form.defaultDuration" min="1">
+            </mat-form-field>
           </div>
 
-          <div class="form-body">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{ isAr() ? 'اسم القالب' : 'Template Name' }}</mat-label>
-              <input matInput [(ngModel)]="form.name">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{ isAr() ? 'الاسم بالعربي' : 'Name (Arabic)' }}</mat-label>
-              <input matInput [(ngModel)]="form.nameAr" dir="rtl">
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>{{ isAr() ? 'الوصف' : 'Description' }}</mat-label>
-              <textarea matInput [(ngModel)]="form.description" rows="2"></textarea>
-            </mat-form-field>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <mat-form-field appearance="outline">
-                <mat-label>{{ isAr() ? 'الأولوية' : 'Priority' }}</mat-label>
-                <mat-select [(ngModel)]="form.priority">
-                  <mat-option value="LOW">{{ isAr() ? 'منخفض' : 'Low' }}</mat-option>
-                  <mat-option value="MEDIUM">{{ isAr() ? 'متوسط' : 'Medium' }}</mat-option>
-                  <mat-option value="HIGH">{{ isAr() ? 'عالٍ' : 'High' }}</mat-option>
-                  <mat-option value="URGENT">{{ isAr() ? 'عاجل' : 'Urgent' }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>{{ isAr() ? 'المدة (أيام)' : 'Duration (days)' }}</mat-label>
-                <input matInput type="number" [(ngModel)]="form.defaultDuration" min="1">
-              </mat-form-field>
-            </div>
-
-            <!-- Checklist items -->
-            <div class="checklist-editor">
-              <label>{{ isAr() ? 'بنود قائمة التحقق' : 'Checklist Items' }}</label>
-              <div class="checklist-edit-item" *ngFor="let item of form.checklistItems; let i = index">
-                <mat-icon style="color:var(--text-muted);font-size:18px">drag_handle</mat-icon>
-                <input [(ngModel)]="item.text" [placeholder]="isAr() ? 'البند...' : 'Item text...'" class="inline-input">
-                <button mat-icon-button (click)="removeChecklistItem(i)" color="warn" style="width:28px;height:28px">
-                  <mat-icon style="font-size:16px">close</mat-icon>
-                </button>
-              </div>
-              <button mat-stroked-button (click)="addChecklistItem()" style="width:100%;margin-top:8px">
-                <mat-icon>add</mat-icon> {{ isAr() ? 'إضافة بند' : 'Add Item' }}
+          <!-- Checklist items -->
+          <div class="checklist-editor">
+            <label>{{ isAr() ? 'بنود قائمة التحقق' : 'Checklist Items' }}</label>
+            <div class="checklist-edit-item" *ngFor="let item of form.checklistItems; let i = index">
+              <mat-icon style="color:var(--text-muted);font-size:18px">drag_handle</mat-icon>
+              <input [(ngModel)]="item.text" [placeholder]="isAr() ? 'البند...' : 'Item text...'" class="inline-input">
+              <button mat-icon-button (click)="removeChecklistItem(i)" color="warn" style="width:28px;height:28px">
+                <mat-icon style="font-size:16px">close</mat-icon>
               </button>
             </div>
-
-            <mat-slide-toggle [(ngModel)]="form.isGlobal" *ngIf="isAdmin()" style="margin-top:8px">
-              {{ isAr() ? 'قالب عام (لجميع المستخدمين)' : 'Global template (all users)' }}
-            </mat-slide-toggle>
-          </div>
-
-          <div class="form-footer">
-            <button mat-button (click)="closeForm()">{{ isAr() ? 'إلغاء' : 'Cancel' }}</button>
-            <button mat-raised-button color="primary" (click)="saveTemplate()" [disabled]="!form.name">
-              <mat-icon>save</mat-icon> {{ isAr() ? 'حفظ' : 'Save' }}
+            <button mat-stroked-button (click)="addChecklistItem()" style="width:100%;margin-top:8px">
+              <mat-icon>add</mat-icon> {{ isAr() ? 'إضافة بند' : 'Add Item' }}
             </button>
           </div>
+
+          <mat-slide-toggle [(ngModel)]="form.isGlobal" *ngIf="isAdmin()" style="margin-top:8px">
+            {{ isAr() ? 'قالب عام (لجميع المستخدمين)' : 'Global template (all users)' }}
+          </mat-slide-toggle>
+        </div>
+
+        <div class="form-footer">
+          <button mat-button (click)="closeForm()">{{ isAr() ? 'إلغاء' : 'Cancel' }}</button>
+          <button mat-raised-button color="primary" (click)="saveTemplate()" [disabled]="!form.name">
+            <mat-icon>save</mat-icon> {{ isAr() ? 'حفظ' : 'Save' }}
+          </button>
         </div>
       </div>
     </div>
