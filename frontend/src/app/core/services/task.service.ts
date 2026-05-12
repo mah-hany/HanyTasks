@@ -46,6 +46,10 @@ export class TaskService {
     return this.http.post<any>(`${this.url}/${id}/attachments`, fd);
   }
 
+  deleteAttachment(taskId: number, attachmentId: number) {
+    return this.http.delete<any>(`${this.url}/${taskId}/attachments/${attachmentId}`);
+  }
+
   delete(id: number) { return this.http.delete<any>(`${this.url}/${id}`); }
 
   // ── Checklist (Sub-tasks) ───────────────────────────────────

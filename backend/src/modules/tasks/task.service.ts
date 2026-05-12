@@ -266,6 +266,28 @@ export const taskService = {
     });
   },
 
+  async deleteAttachment(taskId: number, attachmentId: number) {
+    const attachment = await prisma.taskAttachment.findUnique({
+      where: { id: attachmentId },
+    });
+    if (!attachment || attachment.taskId !== taskId) {
+      throw new AppError('Attachment not found', 404);
+    }
+    
+    // Delete file from disk if needed
+    const fs = require('fs');
+    const path = require('path');
+    if (attachment.fileUrl.startsWith('/uploads/')) {
+      const filePath = path.join(process.cwd(), attachment.fileUrl);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    await prisma.taskAttachment.delete({ where: { id: attachmentId } });
+    return { success: true };
+  },
+
   async getDashboardStats(userId: number, roleLevel: number) {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);

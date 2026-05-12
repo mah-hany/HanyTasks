@@ -17,6 +17,7 @@ router.patch('/:id/status',           taskController.updateStatus);
 router.patch('/:id/progress',         taskController.updateProgress);
 router.post('/:id/comments',          taskController.addComment);
 router.post('/:id/attachments',       uploadAttachment.single('file'), taskController.addAttachment);
+router.delete('/:id/attachments/:attachmentId', taskController.deleteAttachment);
 router.delete('/:id',                 authorizeLevel(1), taskController.delete);
 
 export default router;

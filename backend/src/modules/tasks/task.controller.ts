@@ -109,6 +109,13 @@ export const taskController = {
     } catch (e) { next(e); }
   },
 
+  async deleteAttachment(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const data = await taskService.deleteAttachment(+req.params.id, +req.params.attachmentId);
+      res.json(data);
+    } catch (e) { next(e); }
+  },
+
   async getDashboard(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const data = await taskService.getDashboardStats(req.user!.id, req.user!.roleLevel);

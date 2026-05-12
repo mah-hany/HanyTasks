@@ -228,12 +228,17 @@ import { environment } from '../../../../environments/environment';
             <div class="tf-card attachments-card">
               <h3>{{ 'TASKS.ATTACHMENTS' | translate }} ({{ task()?.attachments?.length }})</h3>
               <div class="attachment-list">
-                <a class="attachment-item" *ngFor="let att of task()?.attachments"
-                   [href]="getFileUrl(att.fileUrl)" target="_blank">
-                  <mat-icon>attach_file</mat-icon>
-                  <span>{{ att.fileName }}</span>
+                <div class="attachment-item" *ngFor="let att of task()?.attachments">
+                  <a [href]="getFileUrl(att.fileUrl)" target="_blank" style="display:flex;align-items:center;gap:8px;flex:1;color:inherit;text-decoration:none;">
+                    <mat-icon>attach_file</mat-icon>
+                    <span>{{ att.fileName }}</span>
+                  </a>
                   <small>{{ formatSize(att.fileSize) }}</small>
-                </a>
+                  <button mat-icon-button color="warn" style="width:24px;height:24px;line-height:24px;margin-inline-start:4px" 
+                          (click)="deleteAttachment(att.id)" *ngIf="isAssignee() || canReview()">
+                    <mat-icon style="font-size:16px;width:16px;height:16px">close</mat-icon>
+                  </button>
+                </div>
               </div>
               <!-- Upload -->
               <div class="upload-zone" (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="onDrop($event)">
@@ -443,6 +448,17 @@ export class TaskDetailComponent implements OnInit {
         this.task.update(t => ({ ...t, attachments: [...t.attachments, res.data] }));
         this.snack.open(this.isAr() ? 'تم رفع الملف' : 'File uploaded', '✓', { duration: 2500 });
       },
+    });
+  }
+
+  deleteAttachment(attId: number) {
+    if (!confirm(this.isAr() ? 'هل أنت متأكد من حذف هذا المرفق؟' : 'Are you sure you want to delete this attachment?')) return;
+    this.taskService.deleteAttachment(this.task().id, attId).subscribe({
+      next: () => {
+        this.task.update(t => ({ ...t, attachments: t.attachments.filter((a: any) => a.id !== attId) }));
+        this.snack.open(this.isAr() ? 'تم حذف المرفق' : 'Attachment deleted', '✓', { duration: 2500 });
+      },
+      error: (err) => this.snack.open(err.error?.message || 'Error', 'X', { duration: 3000 })
     });
   }
 
