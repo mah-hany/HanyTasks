@@ -12,6 +12,7 @@ router.get('/calendar',               taskController.getCalendar);
 router.get('/',                       taskController.getAll);
 router.get('/:id',                    taskController.getById);
 router.post('/',                      authorizeLevel(3), taskController.create);
+router.put('/:id',                    authorizeLevel(1), taskController.update);
 router.patch('/:id/status',           taskController.updateStatus);
 router.patch('/:id/progress',         taskController.updateProgress);
 router.post('/:id/comments',          taskController.addComment);

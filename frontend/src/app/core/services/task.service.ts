@@ -26,6 +26,7 @@ export class TaskService {
   }
 
   create(data: any)       { return this.http.post<any>(this.url, data); }
+  update(id: number, data: any) { return this.http.put<any>(`${this.url}/${id}`, data); }
 
   updateStatus(id: number, status: string, note?: string) {
     return this.http.patch<any>(`${this.url}/${id}/status`, { status, note });

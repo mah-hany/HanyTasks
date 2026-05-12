@@ -11,17 +11,19 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LangService } from '../../../core/services/lang.service';
 import { TimeTrackerComponent } from './time-tracker.component';
+import { TaskFormDialogComponent } from '../task-form-dialog/task-form-dialog.component';
 
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, TranslateModule, DatePipe, TimeTrackerComponent],
+  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, MatDialogModule, TranslateModule, DatePipe, TimeTrackerComponent],
   template: `
     <div class="page-container fade-in">
       <div *ngIf="loading()" class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
@@ -40,6 +42,9 @@ import { TimeTrackerComponent } from './time-tracker.component';
           <div style="display:flex;gap:8px;align-items:center">
             <!-- Inline Delete Confirmation -->
             <ng-container *ngIf="!confirmDelete(); else confirmDeleteTpl">
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(1)" (click)="editTask()">
+                <mat-icon>edit</mat-icon> {{ isAr() ? 'تعديل المهمة' : 'Edit Task' }}
+              </button>
               <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(2)" (click)="confirmDelete.set(true)">
                 <mat-icon>delete</mat-icon> {{ isAr() ? 'حذف المهمة' : 'Delete Task' }}
               </button>
@@ -55,7 +60,7 @@ import { TimeTrackerComponent } from './time-tracker.component';
             </ng-template>
 
             <button mat-stroked-button [matMenuTriggerFor]="statusMenu" *ngIf="canChangeStatus()">
-              <mat-icon>edit</mat-icon> {{ isAr() ? 'تغيير الحالة' : 'Change Status' }}
+              <mat-icon>sync_alt</mat-icon> {{ isAr() ? 'تغيير الحالة' : 'Change Status' }}
             </button>
             <mat-menu #statusMenu="matMenu">
               <button mat-menu-item (click)="changeStatus('IN_PROGRESS')"><mat-icon>autorenew</mat-icon>{{ isAr() ? 'قيد التنفيذ' : 'In Progress' }}</button>
@@ -350,6 +355,7 @@ export class TaskDetailComponent implements OnInit {
     private langService: LangService,
     private route: ActivatedRoute,
     private snack: MatSnackBar,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit() {
@@ -474,6 +480,18 @@ export class TaskDetailComponent implements OnInit {
         this.confirmDelete.set(false);
         this.snack.open(err.error?.message || 'Error occurred', 'OK', { duration: 3000 });
       }
+    });
+  }
+
+  editTask() {
+    const ref = this.dialog.open(TaskFormDialogComponent, { 
+      width: '600px', 
+      disableClose: true, 
+      panelClass: 'task-dialog',
+      data: { task: this.task() }
+    });
+    ref.afterClosed().subscribe(result => { 
+      if (result) this.loadTask(this.task().id); 
     });
   }
 }

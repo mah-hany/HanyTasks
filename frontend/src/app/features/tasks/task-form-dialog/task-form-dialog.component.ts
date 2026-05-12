@@ -26,10 +26,10 @@ import { LangService } from '../../../core/services/lang.service';
     <div class="dialog-wrapper">
       <div mat-dialog-title class="dialog-title">
         <div class="dialog-title-left">
-          <div class="title-icon"><mat-icon>task_alt</mat-icon></div>
+          <div class="title-icon"><mat-icon>{{ isEditMode ? 'edit' : 'task_alt' }}</mat-icon></div>
           <div>
-            <h2>{{ 'TASKS.NEW_TASK' | translate }}</h2>
-            <p>{{ isAr() ? 'أنشئ مهمة جديدة وأسندها' : 'Create and assign a new task' }}</p>
+            <h2>{{ isEditMode ? (isAr() ? 'تعديل المهمة' : 'Edit Task') : ('TASKS.NEW_TASK' | translate) }}</h2>
+            <p>{{ isEditMode ? (isAr() ? 'تعديل تفاصيل المهمة' : 'Modify task details') : (isAr() ? 'أنشئ مهمة جديدة وأسندها' : 'Create and assign a new task') }}</p>
           </div>
         </div>
         <button mat-icon-button (click)="close()"><mat-icon>close</mat-icon></button>
@@ -112,8 +112,8 @@ import { LangService } from '../../../core/services/lang.service';
         <button mat-stroked-button (click)="close()">{{ 'COMMON.CANCEL' | translate }}</button>
         <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid || saving()">
           <mat-spinner *ngIf="saving()" diameter="18"></mat-spinner>
-          <mat-icon *ngIf="!saving()">send</mat-icon>
-          {{ isAr() ? 'إسناد المهمة' : 'Assign Task' }}
+          <mat-icon *ngIf="!saving()">{{ isEditMode ? 'save' : 'send' }}</mat-icon>
+          {{ isEditMode ? (isAr() ? 'حفظ التعديلات' : 'Save Changes') : (isAr() ? 'إسناد المهمة' : 'Assign Task') }}
         </button>
       </mat-dialog-actions>
     </div>
@@ -155,6 +155,7 @@ export class TaskFormDialogComponent implements OnInit {
   users = signal<any[]>([]);
   categories = signal<any[]>([]);
   saving = signal(false);
+  isEditMode = false;
   isAr = () => this.langService.getCurrentLang() === 'ar';
 
   constructor(
@@ -182,7 +183,20 @@ export class TaskFormDialogComponent implements OnInit {
     this.userService.getAssignable().subscribe(res => { if (res.success) this.users.set(res.data); });
     this.taskService.getCategories().subscribe(res => { if (res.success) this.categories.set(res.data); });
 
-    if (this.data?.template) {
+    if (this.data?.task) {
+      this.isEditMode = true;
+      const t = this.data.task;
+      this.form.patchValue({
+        title: t.title,
+        titleAr: t.titleAr,
+        description: t.description,
+        categoryId: t.categoryId,
+        priority: t.priority,
+        assignedToId: t.assignedToId,
+        startDate: t.startDate ? new Date(t.startDate) : null,
+        dueDate: t.dueDate ? new Date(t.dueDate) : null,
+      });
+    } else if (this.data?.template) {
       const t = this.data.template;
       let dueDate = null;
       if (t.defaultDuration) {
@@ -195,7 +209,7 @@ export class TaskFormDialogComponent implements OnInit {
         titleAr: t.nameAr,
         description: t.description,
         priority: t.priority,
-        categoryId: null, // Templates don't currently have categoryId in frontend schema, but could in future
+        categoryId: null,
         startDate: new Date(),
         dueDate: dueDate
       });
@@ -211,21 +225,35 @@ export class TaskFormDialogComponent implements OnInit {
       startDate: val.startDate?.toISOString(),
       dueDate: val.dueDate?.toISOString(),
     };
-    if (this.data?.template?.id) {
-      payload.templateId = this.data.template.id;
-    }
 
-    this.taskService.create(payload).subscribe({
-      next: () => {
-        this.saving.set(false);
-        this.snack.open(this.isAr() ? 'تم إنشاء المهمة' : 'Task created!', '✓', { duration: 3000 });
-        this.dialogRef.close(true);
-      },
-      error: (err) => {
-        this.saving.set(false);
-        this.snack.open(err.error?.message || 'Error', 'X', { duration: 4000 });
-      },
-    });
+    if (this.isEditMode) {
+      this.taskService.update(this.data.task.id, payload).subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.snack.open(this.isAr() ? 'تم تعديل المهمة' : 'Task updated!', '✓', { duration: 3000 });
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          this.saving.set(false);
+          this.snack.open(err.error?.message || 'Error', 'X', { duration: 4000 });
+        },
+      });
+    } else {
+      if (this.data?.template?.id) {
+        payload.templateId = this.data.template.id;
+      }
+      this.taskService.create(payload).subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.snack.open(this.isAr() ? 'تم إنشاء المهمة' : 'Task created!', '✓', { duration: 3000 });
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          this.saving.set(false);
+          this.snack.open(err.error?.message || 'Error', 'X', { duration: 4000 });
+        },
+      });
+    }
   }
 
   close() { this.dialogRef.close(false); }

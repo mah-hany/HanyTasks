@@ -59,6 +59,13 @@ export const taskController = {
     } catch (e) { next(e); }
   },
 
+  async update(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const data = await taskService.update(+req.params.id, req.body);
+      res.json({ success: true, data });
+    } catch (e) { next(e); }
+  },
+
   async updateStatus(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { status, note } = req.body;

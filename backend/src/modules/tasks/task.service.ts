@@ -164,6 +164,33 @@ export const taskService = {
     return task;
   },
 
+  async update(id: number, data: {
+    title?: string; titleAr?: string; description?: string;
+    categoryId?: number; priority?: TaskPriority; assignedToId?: number;
+    startDate?: string; dueDate?: string;
+  }) {
+    const task = await prisma.task.findUnique({ where: { id } });
+    if (!task) throw new AppError('Task not found', 404);
+
+    const updateData: any = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.titleAr !== undefined) updateData.titleAr = data.titleAr;
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+    if (data.priority !== undefined) updateData.priority = data.priority;
+    if (data.assignedToId !== undefined) updateData.assignedToId = data.assignedToId;
+    if (data.startDate !== undefined) updateData.startDate = data.startDate ? new Date(data.startDate) : null;
+    if (data.dueDate !== undefined) updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+
+    const updated = await prisma.task.update({
+      where: { id },
+      data: updateData,
+      include: { assignedTo: true, createdBy: true, category: true },
+    });
+
+    return updated;
+  },
+
   async updateStatus(taskId: number, newStatus: TaskStatus, userId: number, note?: string) {
     const task = await prisma.task.findUnique({ where: { id: taskId } });
     if (!task) throw new AppError('Task not found', 404);
