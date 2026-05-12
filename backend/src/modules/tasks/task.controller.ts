@@ -12,7 +12,10 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, uploadDir),
-  filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+  filename: (_req, file, cb) => {
+    const utf8Name = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    cb(null, `${Date.now()}-${utf8Name}`);
+  },
 });
 export const uploadAttachment = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 
@@ -91,10 +94,11 @@ export const taskController = {
   async addAttachment(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
+      const utf8Name = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
       const att = await prisma.taskAttachment.create({
         data: {
           taskId: +req.params.id,
-          fileName: req.file.originalname,
+          fileName: utf8Name,
           fileUrl: `/uploads/attachments/${req.file.filename}`,
           fileSize: req.file.size,
           fileType: req.file.mimetype,

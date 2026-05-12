@@ -19,6 +19,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { LangService } from '../../../core/services/lang.service';
 import { TimeTrackerComponent } from './time-tracker.component';
 import { TaskFormDialogComponent } from '../task-form-dialog/task-form-dialog.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-task-detail',
@@ -228,7 +229,7 @@ import { TaskFormDialogComponent } from '../task-form-dialog/task-form-dialog.co
               <h3>{{ 'TASKS.ATTACHMENTS' | translate }} ({{ task()?.attachments?.length }})</h3>
               <div class="attachment-list">
                 <a class="attachment-item" *ngFor="let att of task()?.attachments"
-                   [href]="att.fileUrl" target="_blank">
+                   [href]="getFileUrl(att.fileUrl)" target="_blank">
                   <mat-icon>attach_file</mat-icon>
                   <span>{{ att.fileName }}</span>
                   <small>{{ formatSize(att.fileSize) }}</small>
@@ -446,6 +447,11 @@ export class TaskDetailComponent implements OnInit {
   }
 
   getInitial(name?: string) { return name ? name.charAt(0).toUpperCase() : '?'; }
+  getFileUrl(url: string): string {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    return `${environment.socketUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+  }
   formatSize(bytes: number) { return bytes > 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.round(bytes / 1024)} KB`; }
   getStatusColor(s: string) { return this.STATUS_COLORS[s] || '#888'; }
 
