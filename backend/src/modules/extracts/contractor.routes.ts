@@ -219,7 +219,7 @@ router.post('/import', upload.single('file'), async (req: AuthRequest, res: Resp
           if (existing) {
             await prisma.contractor.update({
               where: { code: parsed.code },
-              data: { name: parsed.name, nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email },
+              data: { name: parsed.name, nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email, isActive: true },
             });
             updated++;
           } else {
@@ -230,7 +230,7 @@ router.post('/import', upload.single('file'), async (req: AuthRequest, res: Resp
           // Create without code (or find by name to avoid dupes)
           const existing = await prisma.contractor.findFirst({ where: { name: parsed.name } });
           if (existing) {
-            await prisma.contractor.update({ where: { id: existing.id }, data: { nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email } });
+            await prisma.contractor.update({ where: { id: existing.id }, data: { nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email, isActive: true } });
             updated++;
           } else {
             await prisma.contractor.create({ data: parsed });
