@@ -235,7 +235,7 @@ import { environment } from '../../../../environments/environment';
                   </a>
                   <small>{{ formatSize(att.fileSize) }}</small>
                   <button mat-icon-button color="warn" style="width:24px;height:24px;line-height:24px;margin-inline-start:4px" 
-                          (click)="deleteAttachment(att.id)" *ngIf="isAssignee() || canReview()">
+                          (click)="deleteAttachment(att.id)" *ngIf="authService.hasRoleLevel(1)">
                     <mat-icon style="font-size:16px;width:16px;height:16px">close</mat-icon>
                   </button>
                 </div>
