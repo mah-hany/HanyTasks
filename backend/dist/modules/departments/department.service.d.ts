@@ -38,13 +38,15 @@ export declare const departmentService: {
         managerId?: number;
     }): Promise<{
         manager: {
-            username: string;
             id: number;
             employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
             fullName: string;
             fullNameAr: string;
             passwordHash: string;
-            email: string;
+            plainPassword: string | null;
             phone: string | null;
             departmentId: number | null;
             roleId: number;
@@ -55,10 +57,11 @@ export declare const departmentService: {
             lockedUntil: Date | null;
             profilePhoto: string | null;
             preferredLang: string;
-            telegramChatId: string | null;
             createdAt: Date;
             updatedAt: Date;
             lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
         } | null;
         parent: {
             id: number;

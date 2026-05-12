@@ -40,11 +40,11 @@ export declare const taskService: {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        assignedToId: number;
         status: string;
         description: string | null;
         title: string;
         titleAr: string | null;
-        assignedToId: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
@@ -81,13 +81,15 @@ export declare const taskService: {
                 parentId: number | null;
             } | null;
         } & {
-            username: string;
             id: number;
             employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
             fullName: string;
             fullNameAr: string;
             passwordHash: string;
-            email: string;
+            plainPassword: string | null;
             phone: string | null;
             departmentId: number | null;
             roleId: number;
@@ -98,10 +100,11 @@ export declare const taskService: {
             lockedUntil: Date | null;
             profilePhoto: string | null;
             preferredLang: string;
-            telegramChatId: string | null;
             createdAt: Date;
             updatedAt: Date;
             lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
         };
         createdBy: {
             id: number;
@@ -138,6 +141,8 @@ export declare const taskService: {
             commentDate: Date;
             commentText: string;
             isManagerNote: boolean;
+            isReturnNote: boolean;
+            extractId: number | null;
         })[];
         attachments: {
             id: number;
@@ -153,11 +158,11 @@ export declare const taskService: {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        assignedToId: number;
         status: string;
         description: string | null;
         title: string;
         titleAr: string | null;
-        assignedToId: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
@@ -177,6 +182,7 @@ export declare const taskService: {
         createdById: number;
         startDate?: string;
         dueDate?: string;
+        templateId?: number;
     }): Promise<{
         category: {
             id: number;
@@ -186,13 +192,15 @@ export declare const taskService: {
             icon: string;
         } | null;
         assignedTo: {
-            username: string;
             id: number;
             employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
             fullName: string;
             fullNameAr: string;
             passwordHash: string;
-            email: string;
+            plainPassword: string | null;
             phone: string | null;
             departmentId: number | null;
             roleId: number;
@@ -203,19 +211,22 @@ export declare const taskService: {
             lockedUntil: Date | null;
             profilePhoto: string | null;
             preferredLang: string;
-            telegramChatId: string | null;
             createdAt: Date;
             updatedAt: Date;
             lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
         };
         createdBy: {
-            username: string;
             id: number;
             employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
             fullName: string;
             fullNameAr: string;
             passwordHash: string;
-            email: string;
+            plainPassword: string | null;
             phone: string | null;
             departmentId: number | null;
             roleId: number;
@@ -226,20 +237,21 @@ export declare const taskService: {
             lockedUntil: Date | null;
             profilePhoto: string | null;
             preferredLang: string;
-            telegramChatId: string | null;
             createdAt: Date;
             updatedAt: Date;
             lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
         };
     } & {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        assignedToId: number;
         status: string;
         description: string | null;
         title: string;
         titleAr: string | null;
-        assignedToId: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
@@ -253,11 +265,11 @@ export declare const taskService: {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        assignedToId: number;
         status: string;
         description: string | null;
         title: string;
         titleAr: string | null;
-        assignedToId: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
@@ -271,11 +283,11 @@ export declare const taskService: {
         id: number;
         createdAt: Date;
         updatedAt: Date;
+        assignedToId: number;
         status: string;
         description: string | null;
         title: string;
         titleAr: string | null;
-        assignedToId: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
@@ -299,6 +311,8 @@ export declare const taskService: {
         commentDate: Date;
         commentText: string;
         isManagerNote: boolean;
+        isReturnNote: boolean;
+        extractId: number | null;
     }>;
     getDashboardStats(userId: number, roleLevel: number): Promise<{
         total: number;
@@ -332,11 +346,11 @@ export declare const taskService: {
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            assignedToId: number;
             status: string;
             description: string | null;
             title: string;
             titleAr: string | null;
-            assignedToId: number;
             taskCode: string;
             categoryId: number | null;
             priority: string;

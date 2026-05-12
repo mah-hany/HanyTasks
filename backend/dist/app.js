@@ -1,4 +1,37 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -10,6 +43,7 @@ const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const path_1 = __importDefault(require("path"));
 const requestLogger_1 = require("./middleware/requestLogger");
 const errorHandler_1 = require("./middleware/errorHandler");
+const auth_1 = require("./middleware/auth");
 // Routes
 const auth_routes_1 = __importDefault(require("./modules/auth/auth.routes"));
 const user_routes_1 = __importDefault(require("./modules/users/user.routes"));
@@ -24,6 +58,10 @@ const settings_routes_1 = __importDefault(require("./modules/settings/settings.r
 const export_routes_1 = __importDefault(require("./modules/export/export.routes"));
 const time_routes_1 = __importDefault(require("./modules/time/time.routes"));
 const gamification_routes_1 = __importDefault(require("./modules/gamification/gamification.routes"));
+const chat_routes_1 = __importDefault(require("./modules/chat/chat.routes"));
+const extract_routes_1 = __importDefault(require("./modules/extracts/extract.routes"));
+const contractor_routes_1 = __importDefault(require("./modules/extracts/contractor.routes"));
+const project_routes_1 = __importDefault(require("./modules/extracts/project.routes"));
 const telegram_bot_1 = require("./modules/telegram/telegram.bot");
 const app = (0, express_1.default)();
 // ── Security Headers (Helmet) ──────────────────────────────
@@ -73,6 +111,41 @@ app.use('/uploads', express_1.default.static(path_1.default.join(process.cwd(), 
     dotfiles: 'deny',
 }));
 // ── API Routes ────────────────────────────────────────────
+// ── Debug endpoints (SUPERADMIN only — authenticated) ──────
+app.get('/api/test-brevo', auth_1.authenticate, (0, auth_1.authorizeLevel)(1), async (req, res) => {
+    try {
+        const { sendEmail } = await Promise.resolve().then(() => __importStar(require('./modules/email/email.service')));
+        const logger = require('./utils/logger').logger;
+        logger.info('Manually triggering Brevo test email...');
+        await sendEmail({
+            to: 'mh.abdel.karim1997@gmail.com',
+            subject: 'Live Brevo Diagnostic',
+            html: '<h1>If you receive this, Brevo is working perfectly!</h1>'
+        });
+        res.json({ success: true, message: 'Check the logs using /api/logs for Brevo response.' });
+    }
+    catch (err) {
+        res.json({ success: false, error: err.message });
+    }
+});
+app.get('/api/logs', auth_1.authenticate, (0, auth_1.authorizeLevel)(1), (req, res) => {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const logPath = path.join(process.cwd(), 'logs', 'combined.log');
+        if (fs.existsSync(logPath)) {
+            const logs = fs.readFileSync(logPath, 'utf8');
+            const lines = logs.split('\n').slice(-50);
+            res.send(`<pre>${lines.join('\n')}</pre>`);
+        }
+        else {
+            res.send('No logs file found.');
+        }
+    }
+    catch (err) {
+        res.send(`Error reading logs: ${err.message}`);
+    }
+});
 app.use('/api/auth', authLimiter, auth_routes_1.default); // strict limit on auth
 app.use('/api/users', user_routes_1.default);
 app.use('/api/departments', department_routes_1.default);
@@ -86,6 +159,10 @@ app.use('/api/settings', settings_routes_1.default);
 app.use('/api/export', export_routes_1.default);
 app.use('/api/time', time_routes_1.default);
 app.use('/api/gamification', gamification_routes_1.default);
+app.use('/api/chat', chat_routes_1.default);
+app.use('/api/extracts', extract_routes_1.default);
+app.use('/api/contractors', contractor_routes_1.default);
+app.use('/api/projects', project_routes_1.default);
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
 app.post('/api/telegram/webhook', (req, res, next) => {

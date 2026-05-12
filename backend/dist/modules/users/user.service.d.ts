@@ -5,23 +5,23 @@ export declare const userService: {
         isActive?: boolean;
         search?: string;
     }): Promise<{
+        id: number;
+        employeeCode: string;
         username: string;
+        email: string;
+        fullName: string;
+        fullNameAr: string;
+        phone: string | null;
+        isActive: boolean;
+        profilePhoto: string | null;
+        createdAt: Date;
+        lastLoginAt: Date | null;
         role: {
             level: number;
             id: number;
             name: string;
             nameAr: string;
         };
-        id: number;
-        employeeCode: string;
-        fullName: string;
-        fullNameAr: string;
-        email: string;
-        phone: string | null;
-        isActive: boolean;
-        profilePhoto: string | null;
-        createdAt: Date;
-        lastLoginAt: Date | null;
         department: {
             id: number;
             name: string;
@@ -76,11 +76,11 @@ export declare const userService: {
             id: number;
             createdAt: Date;
             updatedAt: Date;
+            assignedToId: number;
             status: string;
             description: string | null;
             title: string;
             titleAr: string | null;
-            assignedToId: number;
             taskCode: string;
             categoryId: number | null;
             priority: string;
@@ -90,12 +90,14 @@ export declare const userService: {
             completedDate: Date | null;
             progressPercent: number;
         })[];
-        username: string;
         id: number;
         employeeCode: string;
+        username: string;
+        email: string;
+        telegramChatId: string | null;
         fullName: string;
         fullNameAr: string;
-        email: string;
+        plainPassword: string | null;
         phone: string | null;
         departmentId: number | null;
         roleId: number;
@@ -106,10 +108,11 @@ export declare const userService: {
         lockedUntil: Date | null;
         profilePhoto: string | null;
         preferredLang: string;
-        telegramChatId: string | null;
         createdAt: Date;
         updatedAt: Date;
         lastLoginAt: Date | null;
+        resetToken: string | null;
+        resetTokenExpiry: Date | null;
     }>;
     create(data: {
         fullName: string;
@@ -139,12 +142,13 @@ export declare const userService: {
             code: string;
             parentId: number | null;
         } | null;
-        username: string;
         id: number;
         employeeCode: string;
+        username: string;
+        email: string;
+        telegramChatId: string | null;
         fullName: string;
         fullNameAr: string;
-        email: string;
         phone: string | null;
         departmentId: number | null;
         roleId: number;
@@ -155,10 +159,11 @@ export declare const userService: {
         lockedUntil: Date | null;
         profilePhoto: string | null;
         preferredLang: string;
-        telegramChatId: string | null;
         createdAt: Date;
         updatedAt: Date;
         lastLoginAt: Date | null;
+        resetToken: string | null;
+        resetTokenExpiry: Date | null;
     }>;
     update(id: number, data: Partial<{
         fullName: string;
@@ -189,12 +194,14 @@ export declare const userService: {
             code: string;
             parentId: number | null;
         } | null;
-        username: string;
         id: number;
         employeeCode: string;
+        username: string;
+        email: string;
+        telegramChatId: string | null;
         fullName: string;
         fullNameAr: string;
-        email: string;
+        plainPassword: string | null;
         phone: string | null;
         departmentId: number | null;
         roleId: number;
@@ -205,22 +212,47 @@ export declare const userService: {
         lockedUntil: Date | null;
         profilePhoto: string | null;
         preferredLang: string;
-        telegramChatId: string | null;
         createdAt: Date;
         updatedAt: Date;
         lastLoginAt: Date | null;
+        resetToken: string | null;
+        resetTokenExpiry: Date | null;
     }>;
     resetPassword(id: number, newPassword: string): Promise<{
         message: string;
     }>;
-    transfer(userId: number, toDeptId: number, note: string, transferredById: number): Promise<{
-        username: string;
+    getCredentials(): Promise<{
         id: number;
         employeeCode: string;
+        username: string;
+        email: string;
+        fullName: string;
+        fullNameAr: string;
+        plainPassword: string | null;
+        phone: string | null;
+        isActive: boolean;
+        createdAt: Date;
+        lastLoginAt: Date | null;
+        role: {
+            level: number;
+            name: string;
+            nameAr: string;
+        };
+        department: {
+            name: string;
+            nameAr: string;
+        } | null;
+    }[]>;
+    transfer(userId: number, toDeptId: number, note: string, transferredById: number): Promise<{
+        id: number;
+        employeeCode: string;
+        username: string;
+        email: string;
+        telegramChatId: string | null;
         fullName: string;
         fullNameAr: string;
         passwordHash: string;
-        email: string;
+        plainPassword: string | null;
         phone: string | null;
         departmentId: number | null;
         roleId: number;
@@ -231,10 +263,11 @@ export declare const userService: {
         lockedUntil: Date | null;
         profilePhoto: string | null;
         preferredLang: string;
-        telegramChatId: string | null;
         createdAt: Date;
         updatedAt: Date;
         lastLoginAt: Date | null;
+        resetToken: string | null;
+        resetTokenExpiry: Date | null;
     }>;
     getOrgTree(): Promise<any[]>;
     delete(id: number): Promise<{

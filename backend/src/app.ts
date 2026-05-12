@@ -49,6 +49,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  exposedHeaders: ['Content-Disposition'],   // ← allow frontend to read filename header
 }));
 
 // ── Global Rate Limiter ────────────────────────────────────

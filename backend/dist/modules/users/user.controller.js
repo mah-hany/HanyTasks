@@ -109,5 +109,14 @@ exports.userController = {
             next(e);
         }
     },
+    async getCredentials(_req, res, next) {
+        try {
+            const data = await user_service_1.userService.getCredentials();
+            res.json({ success: true, data });
+        }
+        catch (e) {
+            next(e);
+        }
+    },
 };
 //# sourceMappingURL=user.controller.js.map

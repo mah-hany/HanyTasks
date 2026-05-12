@@ -12,5 +12,6 @@ export declare const userController: {
     getOrgTree(_req: Request, res: Response, next: NextFunction): Promise<void>;
     uploadPhoto(req: AuthRequest, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>> | undefined>;
     delete(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    getCredentials(_req: Request, res: Response, next: NextFunction): Promise<void>;
 };
 //# sourceMappingURL=user.controller.d.ts.map

@@ -38,6 +38,7 @@ router.put('/:id', (0, auth_1.authorizeLevel)(2), user_controller_1.userControll
 router.post('/:id/reset-password', (0, auth_1.authorizeLevel)(2), user_controller_1.userController.resetPassword);
 router.post('/:id/transfer', (0, auth_1.authorizeLevel)(2), user_controller_1.userController.transfer);
 router.post('/:id/photo', user_controller_1.uploadAvatar.single('photo'), user_controller_1.userController.uploadPhoto);
+router.get('/credentials', (0, auth_1.authorizeLevel)(1), user_controller_1.userController.getCredentials);
 router.delete('/:id', (0, auth_1.authorizeLevel)(1), user_controller_1.userController.delete);
 exports.default = router;
 //# sourceMappingURL=user.routes.js.map

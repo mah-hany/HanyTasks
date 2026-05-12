@@ -7,19 +7,22 @@ exports.initEmailService = initEmailService;
 exports.sendEmail = sendEmail;
 exports.taskAssignedEmail = taskAssignedEmail;
 exports.weeklyReportEmail = weeklyReportEmail;
+exports.forgotPasswordEmail = forgotPasswordEmail;
 exports.sendWeeklyReports = sendWeeklyReports;
 const client_1 = __importDefault(require("../../prisma/client"));
+const logger_1 = require("../../utils/logger");
 // إيميلك الذي ستقوم بتأكيده في Brevo
 const SYSTEM_EMAIL = 'mh.abdel.karim1997@gmail.com';
 const SYSTEM_NAME = 'Hany Tasks — نظام إدارة المهام';
 let brevoApiKey = null;
 function initEmailService() {
-    brevoApiKey = process.env.BREVO_API_KEY || null;
+    let rawKey = process.env.BREVO_API_KEY || '';
+    brevoApiKey = rawKey.replace(/['"]/g, '').trim() || null;
     if (!brevoApiKey) {
-        console.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
+        logger_1.logger.warn('⚠️  BREVO_API_KEY not set — email notifications disabled');
         return;
     }
-    console.log(`✅ Email service initialized (Brevo HTTP API)`);
+    logger_1.logger.info(`✅ Email service initialized (Brevo HTTP API) - Key starts with: ${brevoApiKey.substring(0, 10)}..., Length: ${brevoApiKey.length}, Ends with: ${brevoApiKey.slice(-4)}`);
 }
 async function sendEmail(options) {
     if (!brevoApiKey)
@@ -42,14 +45,14 @@ async function sendEmail(options) {
         });
         if (!response.ok) {
             const errorData = await response.json();
-            console.error('Brevo API Error:', errorData);
+            logger_1.logger.error(`Brevo API Error: ${JSON.stringify(errorData)}`);
         }
         else {
-            console.log(`📧 Email sent successfully to ${options.to} via Brevo`);
+            logger_1.logger.info(`📧 Email sent successfully to ${options.to} via Brevo`);
         }
     }
     catch (err) {
-        console.error('Email send failed (Network/Catch):', err.message);
+        logger_1.logger.error(`Email send failed (Network/Catch): ${err.message}`);
     }
 }
 // ── Email Templates ──────────────────────────────────────────
@@ -131,6 +134,32 @@ function weeklyReportEmail(employeeName, stats) {
 </html>`;
 }
 // ── Weekly Report Scheduler (called from schedulers.ts) ──────
+function forgotPasswordEmail(employeeName, resetToken) {
+    return `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="UTF-8"><title>إعادة تعيين كلمة المرور</title></head>
+<body style="font-family:Arial,sans-serif;background:#f8fafc;padding:20px;direction:rtl">
+  <div style="max-width:600px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
+    <div style="background:linear-gradient(135deg,#f97316,#ea580c);padding:30px;text-align:center">
+      <h1 style="color:#fff;margin:0;font-size:24px">Hany Tasks</h1>
+      <p style="color:rgba(255,255,255,0.8);margin:8px 0 0">نظام إدارة المهام</p>
+    </div>
+    <div style="padding:30px">
+      <h2 style="color:#1e293b;margin-top:0">مرحباً ${employeeName}،</h2>
+      <p style="color:#475569;font-size:16px;line-height:1.6">لقد طلبت إعادة تعيين كلمة المرور لحسابك. يرجى استخدام الكود التالي:</p>
+      <div style="background:#f1f5f9;border-radius:8px;padding:20px;margin:20px 0;text-align:center">
+        <h1 style="letter-spacing:4px;color:#f97316;margin:0;font-family:monospace">${resetToken}</h1>
+      </div>
+      <p style="color:#475569">هذا الكود صالح لمدة ساعة واحدة فقط. إذا لم تطلب ذلك، يرجى تجاهل هذه الرسالة.</p>
+    </div>
+    <div style="background:#f8fafc;padding:16px;text-align:center;color:#94a3b8;font-size:12px">
+      © ${new Date().getFullYear()} Hany Tasks — نظام إدارة المهام
+    </div>
+  </div>
+</body>
+</html>`;
+}
 async function sendWeeklyReports() {
     if (!brevoApiKey)
         return;

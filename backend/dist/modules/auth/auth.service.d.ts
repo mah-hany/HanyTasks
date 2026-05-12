@@ -31,6 +31,12 @@ export declare const authService: {
     changePassword(userId: number, oldPassword: string, newPassword: string): Promise<{
         message: string;
     }>;
+    forgotPassword(email: string): Promise<{
+        message: string;
+    }>;
+    resetPasswordWithToken(token: string, newPassword: string): Promise<{
+        message: string;
+    }>;
     getProfile(userId: number): Promise<{
         role: {
             level: number;
@@ -55,12 +61,14 @@ export declare const authService: {
             fullName: string;
             fullNameAr: string;
         } | null;
-        username: string;
         id: number;
         employeeCode: string;
+        username: string;
+        email: string;
+        telegramChatId: string | null;
         fullName: string;
         fullNameAr: string;
-        email: string;
+        plainPassword: string | null;
         phone: string | null;
         departmentId: number | null;
         roleId: number;
@@ -71,10 +79,11 @@ export declare const authService: {
         lockedUntil: Date | null;
         profilePhoto: string | null;
         preferredLang: string;
-        telegramChatId: string | null;
         createdAt: Date;
         updatedAt: Date;
         lastLoginAt: Date | null;
+        resetToken: string | null;
+        resetTokenExpiry: Date | null;
     }>;
 };
 //# sourceMappingURL=auth.service.d.ts.map

@@ -11,6 +11,13 @@ const changePassSchema = zod_1.z.object({
     oldPassword: zod_1.z.string().min(4),
     newPassword: zod_1.z.string().min(8),
 });
+const forgotPasswordSchema = zod_1.z.object({
+    email: zod_1.z.string().email(),
+});
+const resetPasswordSchema = zod_1.z.object({
+    token: zod_1.z.string().min(6),
+    newPassword: zod_1.z.string().min(8),
+});
 exports.authController = {
     async login(req, res, next) {
         try {
@@ -58,6 +65,26 @@ exports.authController = {
     async logout(req, res) {
         // Stateless JWT — client discards token
         res.json({ success: true, message: 'Logged out successfully' });
+    },
+    async forgotPassword(req, res, next) {
+        try {
+            const { email } = forgotPasswordSchema.parse(req.body);
+            const result = await auth_service_1.authService.forgotPassword(email);
+            res.json({ success: true, data: result });
+        }
+        catch (e) {
+            next(e);
+        }
+    },
+    async resetPassword(req, res, next) {
+        try {
+            const { token, newPassword } = resetPasswordSchema.parse(req.body);
+            const result = await auth_service_1.authService.resetPasswordWithToken(token, newPassword);
+            res.json({ success: true, data: result });
+        }
+        catch (e) {
+            next(e);
+        }
     },
 };
 //# sourceMappingURL=auth.controller.js.map

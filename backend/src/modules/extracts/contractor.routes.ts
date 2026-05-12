@@ -2,24 +2,98 @@ import { Router, Response, NextFunction } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth';
 import prisma from '../../prisma/client';
 import multer from 'multer';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 const router = Router();
 router.use(authenticate);
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+  fileFilter: (_req, file, cb) => {
+    if (file.originalname.match(/\.(xlsx|xls)$/i)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only Excel files (.xlsx, .xls) are allowed'));
+    }
+  },
+});
 
-// ── Excel column mapping (Arabic + English) ──────────────
-function parseRow(row: any) {
+// ── Column mapping helper (Arabic + English headers) ──────
+function parseRow(row: Record<string, any>) {
+  const get = (keys: string[]): string | undefined =>
+    keys.map(k => String(row[k] ?? '').trim()).find(v => v) || undefined;
+
   return {
-    code:   (row['code']   || row['الكود']               || '').toString().trim() || undefined,
-    name:   (row['name']   || row['الاسم']    || row['الاسم بالإنجليزية'] || '').toString().trim(),
-    nameAr: (row['nameAr'] || row['الاسم بالعربي']       || '').toString().trim() || undefined,
-    phone:  (row['phone']  || row['الهاتف']               || '').toString().trim() || undefined,
-    email:  (row['email']  || row['البريد الإلكتروني']   || '').toString().trim() || undefined,
+    code:   get(['code',   'الكود']),
+    name:   get(['name',   'الاسم', 'الاسم بالإنجليزية']) ?? '',
+    nameAr: get(['nameAr', 'الاسم بالعربي']),
+    phone:  get(['phone',  'الهاتف']),
+    email:  get(['email',  'البريد الإلكتروني']),
   };
 }
 
-// GET all contractors with search
+// ── Helper: write Excel workbook and send response ────────
+async function sendWorkbook(
+  res: Response,
+  filename: string,
+  rows: Record<string, string>[],
+  sheetName = 'المقاولون',
+) {
+  const wb = new ExcelJS.Workbook();
+  wb.creator = 'HanyTasks';
+  wb.created = new Date();
+
+  const ws = wb.addWorksheet(sheetName);
+
+  ws.columns = [
+    { header: 'الكود',              key: 'code',   width: 14 },
+    { header: 'الاسم',              key: 'name',   width: 32 },
+    { header: 'الاسم بالعربي',      key: 'nameAr', width: 32 },
+    { header: 'الهاتف',             key: 'phone',  width: 18 },
+    { header: 'البريد الإلكتروني',  key: 'email',  width: 32 },
+  ];
+
+  // Style header row
+  const headerRow = ws.getRow(1);
+  headerRow.height = 24;
+  headerRow.eachCell(cell => {
+    cell.font      = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
+    cell.fill      = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A5F' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle' };
+    cell.border    = {
+      top:    { style: 'thin' }, left:   { style: 'thin' },
+      bottom: { style: 'thin' }, right:  { style: 'thin' },
+    };
+  });
+
+  // Data rows
+  rows.forEach((r, idx) => {
+    const row = ws.addRow(r);
+    row.eachCell(cell => {
+      cell.alignment = { vertical: 'middle' };
+      cell.border    = {
+        top:    { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        left:   { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        bottom: { style: 'thin', color: { argb: 'FFE2E8F0' } },
+        right:  { style: 'thin', color: { argb: 'FFE2E8F0' } },
+      };
+      if (idx % 2 === 0) {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+      }
+    });
+  });
+
+  const raw = await wb.xlsx.writeBuffer();
+  const buf = Buffer.from(raw as unknown as ArrayBuffer);
+  const encoded = encodeURIComponent(filename);
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', `attachment; filename="${filename}"; filename*=UTF-8''${encoded}`);
+  res.setHeader('Content-Length', buf.length);
+  res.setHeader('Cache-Control', 'no-cache, no-store');
+  res.send(buf);
+}
+
+// ── GET all contractors (with optional search) ─────────────
 router.get('/', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { search, active } = req.query as Record<string, string>;
@@ -42,53 +116,44 @@ router.get('/', async (req: AuthRequest, res: Response, next: NextFunction) => {
   } catch (e) { next(e); }
 });
 
-// GET single
+// ── GET /export — Export all contractors to Excel ──────────
+// ⚠️ Must be registered BEFORE GET /:id
 router.get('/export', async (_req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const contractors = await prisma.contractor.findMany({
       where: { isActive: true }, orderBy: { name: 'asc' },
     });
     const rows = contractors.map(c => ({
-      'الكود': c.code || '',
-      'الاسم': c.name,
-      'الاسم بالعربي': c.nameAr || '',
-      'الهاتف': c.phone || '',
-      'البريد الإلكتروني': c.email || '',
+      code:   c.code   ?? '',
+      name:   c.name,
+      nameAr: c.nameAr ?? '',
+      phone:  c.phone  ?? '',
+      email:  c.email  ?? '',
     }));
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(rows);
-    // Column widths
-    ws['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }, { wch: 30 }];
-    XLSX.utils.book_append_sheet(wb, ws, 'المقاولون');
-    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-    res.setHeader('Content-Disposition', 'attachment; filename="contractors.xlsx"');
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.send(buf);
+    const date = new Date().toISOString().slice(0, 10);
+    await sendWorkbook(res, `contractors_${date}.xlsx`, rows);
   } catch (e) { next(e); }
 });
 
-// GET Excel template (empty sheet with headers + example row)
+// ── GET /template — Download blank Excel template ──────────
+// ⚠️ Must be registered BEFORE GET /:id
 router.get('/template', async (_req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const rows = [
-      { 'الكود': 'C001', 'الاسم': 'Al-Nile Contracting', 'الاسم بالعربي': 'شركة النيل للمقاولات', 'الهاتف': '01012345678', 'البريد الإلكتروني': 'info@alnile.com' },
-      { 'الكود': 'C002', 'الاسم': 'Delta Works Co.', 'الاسم بالعربي': 'شركة دلتا للأعمال', 'الهاتف': '01098765432', 'البريد الإلكتروني': '' },
+      { code: 'C001', name: 'Al-Nile Contracting',  nameAr: 'شركة النيل للمقاولات', phone: '01012345678', email: 'info@alnile.com' },
+      { code: 'C002', name: 'Delta Works Co.',       nameAr: 'شركة دلتا للأعمال',    phone: '01098765432', email: '' },
     ];
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.json_to_sheet(rows);
-    ws['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }, { wch: 30 }];
-    XLSX.utils.book_append_sheet(wb, ws, 'المقاولون');
-    const buf = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
-    res.setHeader('Content-Disposition', 'attachment; filename="contractors_template.xlsx"');
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.send(buf);
+    await sendWorkbook(res, 'contractors_template.xlsx', rows);
   } catch (e) { next(e); }
 });
 
+// ── GET /:id — Get single contractor ──────────────────────
 router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    const id = parseInt(req.params.id as string, 10);
+    if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid ID' });
     const data = await prisma.contractor.findUnique({
-      where: { id: +req.params.id },
+      where: { id },
       include: { _count: { select: { extracts: true } } },
     });
     if (!data) return res.status(404).json({ success: false, message: 'Not found' });
@@ -96,40 +161,81 @@ router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) =
   } catch (e) { next(e); }
 });
 
-// POST import from Excel (SUPERVISOR+)
+// ── POST /import — Import from Excel (SUPERVISOR+) ────────
 router.post('/import', upload.single('file'), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 4) return res.status(403).json({ success: false, message: 'Forbidden' });
-    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
+    if ((req.user!.roleLevel ?? 99) > 4)
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    if (!req.file)
+      return res.status(400).json({ success: false, message: 'لم يتم رفع ملف' });
 
-    const wb = XLSX.read(req.file.buffer, { type: 'buffer' });
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const rawRows: any[] = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    const wb = new ExcelJS.Workbook();
+    const { Readable } = await import('stream');
+    const stream = Readable.from(req.file.buffer);
+    await wb.xlsx.read(stream);
 
-    if (!rawRows.length) return res.status(400).json({ success: false, message: 'الملف فارغ' });
+    const ws = wb.worksheets[0];
+    if (!ws) return res.status(400).json({ success: false, message: 'الملف لا يحتوي على صفحات' });
+
+    // Read headers from row 1
+    const headerRow = ws.getRow(1);
+    const headers: Record<number, string> = {};
+    headerRow.eachCell((cell, col) => {
+      headers[col] = String(cell.value ?? '').trim();
+    });
+
+    // Collect data rows (skip header)
+    const rawRows: Record<string, any>[] = [];
+    ws.eachRow((row, rowNum) => {
+      if (rowNum === 1) return;
+      const obj: Record<string, any> = {};
+      row.eachCell((cell, col) => {
+        const h = headers[col];
+        if (h) obj[h] = cell.value ?? '';
+      });
+      if (Object.values(obj).some(v => v !== '' && v !== null && v !== undefined)) {
+        rawRows.push(obj);
+      }
+    });
+
+    if (!rawRows.length)
+      return res.status(400).json({ success: false, message: 'الملف فارغ أو لا يحتوي على بيانات' });
 
     let created = 0, updated = 0, skipped = 0;
     const errors: string[] = [];
 
     for (let i = 0; i < rawRows.length; i++) {
       const parsed = parseRow(rawRows[i]);
-      if (!parsed.name) { errors.push(`صف ${i + 2}: الاسم مطلوب`); skipped++; continue; }
+      if (!parsed.name) {
+        errors.push(`صف ${i + 2}: الاسم مطلوب`);
+        skipped++;
+        continue;
+      }
 
       try {
         if (parsed.code) {
           // Upsert by code
           const existing = await prisma.contractor.findUnique({ where: { code: parsed.code } });
           if (existing) {
-            await prisma.contractor.update({ where: { code: parsed.code }, data: parsed });
+            await prisma.contractor.update({
+              where: { code: parsed.code },
+              data: { name: parsed.name, nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email },
+            });
             updated++;
           } else {
-            await prisma.contractor.create({ data: { ...parsed, code: parsed.code } });
+            await prisma.contractor.create({ data: parsed });
             created++;
           }
         } else {
-          // Create without code
-          await prisma.contractor.create({ data: parsed });
-          created++;
+          // Create without code (or find by name to avoid dupes)
+          const existing = await prisma.contractor.findFirst({ where: { name: parsed.name } });
+          if (existing) {
+            await prisma.contractor.update({ where: { id: existing.id }, data: { nameAr: parsed.nameAr, phone: parsed.phone, email: parsed.email } });
+            updated++;
+          } else {
+            await prisma.contractor.create({ data: parsed });
+            created++;
+          }
         }
       } catch (err: any) {
         errors.push(`صف ${i + 2} (${parsed.name}): ${err.message}`);
@@ -141,12 +247,14 @@ router.post('/import', upload.single('file'), async (req: AuthRequest, res: Resp
   } catch (e) { next(e); }
 });
 
-// POST create (SUPERVISOR+)
+// ── POST / — Create contractor (SUPERVISOR+) ──────────────
 router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 4) return res.status(403).json({ success: false, message: 'Forbidden' });
+    if ((req.user!.roleLevel ?? 99) > 4)
+      return res.status(403).json({ success: false, message: 'Forbidden' });
     const { code, name, nameAr, phone, email } = req.body;
-    if (!name?.trim()) return res.status(400).json({ success: false, message: 'الاسم مطلوب' });
+    if (!name?.trim())
+      return res.status(400).json({ success: false, message: 'الاسم مطلوب' });
     const data = await prisma.contractor.create({
       data: { code: code?.trim() || undefined, name: name.trim(), nameAr, phone, email },
     });
@@ -157,13 +265,16 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
   }
 });
 
-// PUT update (ADMIN+)
+// ── PUT /:id — Update contractor (ADMIN+) ─────────────────
 router.put('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 2) return res.status(403).json({ success: false, message: 'Forbidden' });
+    if ((req.user!.roleLevel ?? 99) > 2)
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    const id = parseInt(req.params.id as string, 10);
+    if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid ID' });
     const { code, name, nameAr, phone, email, isActive } = req.body;
     const data = await prisma.contractor.update({
-      where: { id: +req.params.id },
+      where: { id },
       data: { code: code?.trim() || null, name, nameAr, phone, email, isActive },
     });
     res.json({ success: true, data });
@@ -173,11 +284,14 @@ router.put('/:id', async (req: AuthRequest, res: Response, next: NextFunction) =
   }
 });
 
-// DELETE soft (ADMIN+)
+// ── DELETE /:id — Soft-delete contractor (ADMIN+) ─────────
 router.delete('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    if ((req.user!.roleLevel ?? 99) > 2) return res.status(403).json({ success: false, message: 'Forbidden' });
-    await prisma.contractor.update({ where: { id: +req.params.id }, data: { isActive: false } });
+    if ((req.user!.roleLevel ?? 99) > 2)
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    const id = parseInt(req.params.id as string, 10);
+    if (isNaN(id)) return res.status(400).json({ success: false, message: 'Invalid ID' });
+    await prisma.contractor.update({ where: { id }, data: { isActive: false } });
     res.json({ success: true, message: 'Deactivated' });
   } catch (e) { next(e); }
 });

@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ExtractService } from '../../core/services/extract.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LangService } from '../../core/services/lang.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-contractors-page',
@@ -34,17 +35,17 @@ import { LangService } from '../../core/services/lang.service';
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
       <mat-menu #xlsMenu="matMenu">
-        <button mat-menu-item (click)="downloadTemplate()">
-          <mat-icon color="primary">download</mat-icon>
-          <span>{{ isAr() ? 'تحميل نموذج Excel الفارغ' : 'Download Template' }}</span>
+        <button mat-menu-item (click)="downloadTemplate()" [disabled]="downloading()">
+          <mat-icon color="primary">{{ downloading() ? 'hourglass_empty' : 'download' }}</mat-icon>
+          <span>{{ isAr() ? (downloading() ? 'جاري التحميل...' : 'تحميل نموذج Excel الفارغ') : (downloading() ? 'Downloading...' : 'Download Template') }}</span>
         </button>
-        <button mat-menu-item (click)="fileInput.click()">
-          <mat-icon style="color:#16a34a">upload_file</mat-icon>
-          <span>{{ isAr() ? 'استيراد من Excel' : 'Import from Excel' }}</span>
+        <button mat-menu-item (click)="fileInput.click()" [disabled]="importing()">
+          <mat-icon style="color:#16a34a">{{ importing() ? 'hourglass_empty' : 'upload_file' }}</mat-icon>
+          <span>{{ isAr() ? (importing() ? 'جاري الاستيراد...' : 'استيراد من Excel') : (importing() ? 'Importing...' : 'Import from Excel') }}</span>
         </button>
-        <button mat-menu-item (click)="exportExcel()">
-          <mat-icon style="color:#2563eb">download</mat-icon>
-          <span>{{ isAr() ? 'تصدير الكل إلى Excel' : 'Export All to Excel' }}</span>
+        <button mat-menu-item (click)="exportExcel()" [disabled]="exporting()">
+          <mat-icon style="color:#2563eb">{{ exporting() ? 'hourglass_empty' : 'file_download' }}</mat-icon>
+          <span>{{ isAr() ? (exporting() ? 'جاري التصدير...' : 'تصدير الكل إلى Excel') : (exporting() ? 'Exporting...' : 'Export All to Excel') }}</span>
         </button>
       </mat-menu>
       <button mat-raised-button color="primary" (click)="openForm(null)" *ngIf="canWrite()">
@@ -95,7 +96,7 @@ import { LangService } from '../../core/services/lang.service';
     <mat-icon class="search-icon">search</mat-icon>
     <input class="search-input" [(ngModel)]="searchTerm" (ngModelChange)="applyFilter()"
       [placeholder]="isAr() ? 'ابحث بالكود أو الاسم أو الهاتف...' : 'Search by code, name, phone...'" />
-    <mat-spinner *ngIf="importing()" diameter="20"></mat-spinner>
+    <mat-spinner *ngIf="importing() || downloading() || exporting()" diameter="20"></mat-spinner>
     <button mat-icon-button *ngIf="searchTerm && !importing()" (click)="searchTerm=''; applyFilter()">
       <mat-icon>close</mat-icon>
     </button>
@@ -271,6 +272,8 @@ export class ContractorsPageComponent implements OnInit {
   loading      = signal(true);
   saving       = signal(false);
   importing    = signal(false);
+  downloading  = signal(false);
+  exporting    = signal(false);
   showForm     = signal(false);
   searchTerm   = '';
   editId: number | null = null;
@@ -333,18 +336,83 @@ export class ContractorsPageComponent implements OnInit {
     });
   }
 
-  // ── Excel ──
+  // ── Excel ── (use native fetch to guarantee correct filename)
   downloadTemplate() {
-    this.svc.downloadContractorTemplate().subscribe(blob => this.triggerDownload(blob, 'contractors_template.xlsx'));
+    if (this.downloading()) return;
+    this.downloading.set(true);
+    this.snack.open(this.isAr() ? 'جاري تحميل النموذج...' : 'Downloading...', '', { duration: 2000 });
+    this.fetchAndSave('/contractors/template', 'contractors_template.xlsx')
+      .then(() => {
+        this.downloading.set(false);
+        this.snack.open(this.isAr() ? '✅ تم تحميل النموذج' : '✅ Template downloaded', '', { duration: 3000 });
+      })
+      .catch(msg => {
+        this.downloading.set(false);
+        this.snack.open(msg, 'X', { duration: 4000 });
+      });
   }
 
   exportExcel() {
-    this.svc.exportContractors().subscribe(blob => this.triggerDownload(blob, 'contractors.xlsx'));
+    if (this.exporting()) return;
+    this.exporting.set(true);
+    this.snack.open(this.isAr() ? 'جاري التصدير...' : 'Exporting...', '', { duration: 2000 });
+    const date = new Date().toISOString().slice(0, 10);
+    this.fetchAndSave('/contractors/export', `contractors_${date}.xlsx`)
+      .then(() => {
+        this.exporting.set(false);
+        this.snack.open(this.isAr() ? '✅ تم تصدير البيانات' : '✅ Exported successfully', '', { duration: 3000 });
+      })
+      .catch(msg => {
+        this.exporting.set(false);
+        this.snack.open(msg, 'X', { duration: 4000 });
+      });
+  }
+
+  /** Native fetch download — bypasses Angular HttpClient to guarantee a.download filename works */
+  private async fetchAndSave(endpoint: string, filename: string): Promise<void> {
+    const token = this.auth.getToken();
+    const res = await fetch(`${environment.apiUrl}${endpoint}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) {
+      let msg = 'Download failed';
+      try { const j = await res.json(); msg = j.message || msg; } catch {}
+      throw msg;
+    }
+    const blob = await res.blob();
+    if (!blob || blob.size === 0) throw (this.isAr() ? 'الملف فارغ' : 'Empty file');
+
+    // Try to get filename from Content-Disposition header
+    const cd = res.headers.get('content-disposition');
+    const cdMatch = cd && (/filename\*=UTF-8''([^;]+)/i.exec(cd) || /filename="?([^"]+)"?/i.exec(cd));
+    const finalName = (cdMatch && cdMatch[1]) ? decodeURIComponent(cdMatch[1]) : filename;
+
+    this.triggerDownload(blob, finalName);
   }
 
   onFileSelected(e: Event) {
-    const file = (e.target as HTMLInputElement).files?.[0];
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
     if (!file) return;
+
+    // Validate file type
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+    ];
+    const validExt = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
+    if (!validExt) {
+      this.snack.open(this.isAr() ? 'يرجى اختيار ملف Excel (.xlsx أو .xls)' : 'Please select an Excel file (.xlsx or .xls)', 'X');
+      input.value = '';
+      return;
+    }
+    // Max 5MB
+    if (file.size > 5 * 1024 * 1024) {
+      this.snack.open(this.isAr() ? 'حجم الملف كبير جداً (الحد الأقصى 5MB)' : 'File too large (max 5MB)', 'X');
+      input.value = '';
+      return;
+    }
+
     this.importing.set(true);
     this.importResult = null;
     this.svc.importContractors(file).subscribe({
@@ -369,9 +437,28 @@ export class ContractorsPageComponent implements OnInit {
   }
 
   private triggerDownload(blob: Blob, filename: string) {
+    if (blob.type === 'application/json' || blob.type.includes('text')) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result as string);
+          this.snack.open(parsed.message || (this.isAr() ? 'خطأ في الخادم' : 'Server error'), 'X', { duration: 4000 });
+        } catch { this.snack.open(this.isAr() ? 'خطأ في التنزيل' : 'Download error', 'X', { duration: 3000 }); }
+      };
+      reader.readAsText(blob);
+      return;
+    }
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename || 'download.xlsx'; // fallback
+    document.body.appendChild(a);
+    a.click();
+    // Wait 30 seconds before revoking to prevent Chrome/Edge from using UUID filenames!
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 30000);
   }
 }

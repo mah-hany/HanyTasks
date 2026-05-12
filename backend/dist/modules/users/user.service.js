@@ -73,6 +73,7 @@ exports.userService = {
             attempts++;
         } while (attempts < 10);
         const passwordHash = await bcryptjs_1.default.hash(data.password || 'TaskFlow@2026', 12);
+        const plainPassword = data.password || 'TaskFlow@2026';
         const user = await client_1.default.user.create({
             data: {
                 employeeCode,
@@ -85,6 +86,7 @@ exports.userService = {
                 roleId: data.roleId,
                 managerId: data.managerId,
                 passwordHash,
+                plainPassword,
                 isFirstLogin: true,
             },
             include: { role: true, department: true },
@@ -92,7 +94,7 @@ exports.userService = {
         await client_1.default.auditLog.create({
             data: { action: 'CREATE_USER', tableAffected: 'tbl_Users', recordId: user.id },
         });
-        const { passwordHash: _, ...safe } = user;
+        const { passwordHash: _, plainPassword: __, ...safe } = user;
         return safe;
     },
     async update(id, data) {
@@ -109,8 +111,22 @@ exports.userService = {
     },
     async resetPassword(id, newPassword) {
         const hash = await bcryptjs_1.default.hash(newPassword, 12);
-        await client_1.default.user.update({ where: { id }, data: { passwordHash: hash, isFirstLogin: true } });
+        await client_1.default.user.update({ where: { id }, data: { passwordHash: hash, plainPassword: newPassword, isFirstLogin: true } });
         return { message: 'Password reset successfully' };
+    },
+    async getCredentials() {
+        return client_1.default.user.findMany({
+            select: {
+                id: true, employeeCode: true,
+                fullName: true, fullNameAr: true,
+                username: true, plainPassword: true,
+                email: true, phone: true,
+                isActive: true, createdAt: true, lastLoginAt: true,
+                role: { select: { name: true, nameAr: true, level: true } },
+                department: { select: { name: true, nameAr: true } },
+            },
+            orderBy: { createdAt: 'asc' },
+        });
     },
     async transfer(userId, toDeptId, note, transferredById) {
         const user = await client_1.default.user.findUnique({ where: { id: userId } });

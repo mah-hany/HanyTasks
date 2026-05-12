@@ -1,6 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { catchError, map, throwError } from 'rxjs';
+
+export interface BlobWithName { blob: Blob; filename: string; }
+
+function extractFilename(contentDisp: string | null, fallback: string): string {
+  if (!contentDisp) return fallback;
+  // Try filename*=UTF-8''...
+  const starMatch = /filename\*=UTF-8''([^;]+)/i.exec(contentDisp);
+  if (starMatch) return decodeURIComponent(starMatch[1]);
+  // Try filename="..."
+  const plain = /filename="?([^"]+)"?/i.exec(contentDisp);
+  if (plain) return plain[1];
+  return fallback;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ExtractService {
@@ -46,10 +60,26 @@ export class ExtractService {
   }
 
   exportContractors() {
-    return this.http.get(`${environment.apiUrl}/contractors/export`, { responseType: 'blob' });
+    return this.http.get(`${environment.apiUrl}/contractors/export`,
+      { responseType: 'blob', observe: 'response' }
+    ).pipe(
+      map(resp => ({
+        blob: resp.body as Blob,
+        filename: extractFilename(resp.headers.get('content-disposition'), `contractors_${new Date().toISOString().slice(0,10)}.xlsx`)
+      }) as BlobWithName),
+      catchError(err => throwError(() => err))
+    );
   }
 
   downloadContractorTemplate() {
-    return this.http.get(`${environment.apiUrl}/contractors/template`, { responseType: 'blob' });
+    return this.http.get(`${environment.apiUrl}/contractors/template`,
+      { responseType: 'blob', observe: 'response' }
+    ).pipe(
+      map(resp => ({
+        blob: resp.body as Blob,
+        filename: extractFilename(resp.headers.get('content-disposition'), 'contractors_template.xlsx')
+      }) as BlobWithName),
+      catchError(err => throwError(() => err))
+    );
   }
 }
