@@ -3,6 +3,7 @@ import prisma from '../../prisma/client';
 import bcrypt from 'bcryptjs';
 import https from 'https';
 import { Request, Response } from 'express';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const pendingAuth  = new Map<number, string>();
 const awaitingUsername = new Set<number>();
@@ -184,6 +185,46 @@ function registerHandlers(b: TelegramBot) {
     await b.sendMessage(chatId, '🔄 أدخل كود المهمة لتغيير حالتها:');
   });
 
+  // /ask (AI Assistant)
+  b.onText(/\/ask(?:\s+(.*))?/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const user = await getUser(chatId);
+    if (!user) { await b.sendMessage(chatId, '🔒 أرسل /start لتسجيل الدخول'); return; }
+    
+    const query = match?.[1]?.trim();
+    if (!query) {
+      await b.sendMessage(chatId, '🤖 *المساعد الذكي (AI)*\nأرسل سؤالك بعد الأمر، مثال:\n`/ask كيف أكتب تقريراً جيداً؟`', { parse_mode: 'Markdown' });
+      return;
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      await b.sendMessage(chatId, '❌ خدمة المساعد الذكي غير مفعلة حالياً (يجب أن يقوم مدير النظام بإضافة مفتاح GEMINI_API_KEY).');
+      return;
+    }
+
+    try {
+      const waitMsg = await b.sendMessage(chatId, '⏳ جاري التفكير...', { parse_mode: 'Markdown' });
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      
+      const prompt = `أنت مساعد ذكي احترافي مدمج في نظام إدارة المهام الخاص بنا (Hany Tasks).
+الموظف الذي يطرح عليك السؤال اسمه "${user.fullNameAr}" (دوره: ${user.role?.nameAr || 'موظف'}).
+أجب على سؤاله التالي بشكل مختصر، مفيد، ومحفز للعمل:
+السؤال: ${query}`;
+
+      const result = await model.generateContent(prompt);
+      const responseText = result.response.text();
+      
+      // Delete the 'thinking' message and send the actual response
+      await b.deleteMessage(chatId, waitMsg.message_id).catch(() => {});
+      await b.sendMessage(chatId, `🤖 *المساعد الذكي*\n\n${responseText}`, { parse_mode: 'Markdown' });
+    } catch (err) {
+      console.error('AI Error:', err);
+      await b.sendMessage(chatId, '❌ عذراً، حدث خطأ أثناء التفكير. قد يكون هناك ضغط على الخدمة.');
+    }
+  });
+
   // Callback queries
   b.on('callback_query', async (query) => {
     const chatId = query.message!.chat.id;
@@ -261,6 +302,8 @@ function registerHandlers(b: TelegramBot) {
       await showMyOverdue(b, chatId, user.id);
     } else if (data === 'main_menu') {
       await sendMenu(b, chatId, user);
+    } else if (data === 'ask_ai_btn') {
+      await b.sendMessage(chatId, '🤖 *المساعد الذكي (AI)*\nهذه الميزة متاحة عبر الأمر `/ask`.\n\nاضغط على الأمر للنسخ أو اكتبه مباشرة يليه سؤالك:\n`/ask كيف أدير وقتي اليوم بشكل أفضل؟`', { parse_mode: 'Markdown' });
     }
   });
 
@@ -445,6 +488,7 @@ async function sendMenu(b: TelegramBot, chatId: number, user: any, caption?: str
         [{ text: '➕ إنشاء مهمة',       callback_data: 'create_task' }],
         [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
         [{ text: '💬 إضافة تعليق',      callback_data: 'add_comment' }],
+        [{ text: '🤖 اسأل المساعد الذكي', callback_data: 'ask_ai_btn' }],
       ]}
     });
   } else {
@@ -457,6 +501,7 @@ async function sendMenu(b: TelegramBot, chatId: number, user: any, caption?: str
         [{ text: '🔍 بحث عن مهمة',     callback_data: 'my_search' }],
         [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
         [{ text: '💬 إضافة تعليق',      callback_data: 'add_comment' }],
+        [{ text: '🤖 اسأل المساعد الذكي', callback_data: 'ask_ai_btn' }],
       ]}
     });
   }
