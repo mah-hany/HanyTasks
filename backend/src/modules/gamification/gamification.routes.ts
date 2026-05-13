@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { authenticate } from '../../middleware/auth';
-import { AuthRequest } from '../../middleware/auth';
+import { authenticate, authorizeLevel, AuthRequest } from '../../middleware/auth';
 import { Response, NextFunction } from 'express';
 import prisma from '../../prisma/client';
 
@@ -174,7 +173,7 @@ router.get('/me', async (req: AuthRequest, res: Response, next: NextFunction) =>
 });
 
 // POST award points (internal - called by task service)
-router.post('/award', async (req: AuthRequest, res: Response, next: NextFunction) => {
+router.post('/award', authorizeLevel(1), async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { userId, points, reason, taskId } = req.body;
     const entry = await prisma.userPoint.create({ data: { userId, points, reason, taskId } });
