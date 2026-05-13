@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, signal, ViewChild } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -595,8 +595,14 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
     }
   `]
 })
-export class ExtractsPageComponent implements OnInit {
+export class ExtractsPageComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  ngAfterViewInit() {
+    this.paginator.page.subscribe(() => {
+      this.load();
+    });
+  }
 
   extracts     = signal<any[]>([]);
   contractors  = signal<any[]>([]);
@@ -712,7 +718,7 @@ export class ExtractsPageComponent implements OnInit {
   ngOnInit() {
     this.svc.getContractors().subscribe(r => { if (r.success) this.contractors.set(r.data); });
     this.svc.getProjects().subscribe(r => { if (r.success) this.projects.set(r.data); });
-    this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data); });
+    this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data.tasks || []); });
     // Load enabled currencies from settings; fallback to full list
     this.svc.getCurrencies().subscribe({
       next: r => {
@@ -741,12 +747,22 @@ export class ExtractsPageComponent implements OnInit {
     if (this.filterFrom)       f.dateFrom     = this.filterFrom.toISOString();
     if (this.filterTo)         f.dateTo       = this.filterTo.toISOString();
 
+    if (this.paginator) {
+      f.page = this.paginator.pageIndex + 1;
+      f.limit = this.paginator.pageSize;
+    } else {
+      f.page = 1;
+      f.limit = 20;
+    }
+
     this.svc.getAll(f).subscribe({
       next: r => {
         this.loading.set(false);
         if (r.success) {
           this.ds.data = r.data.extracts;
-          setTimeout(() => { this.ds.paginator = this.paginator; });
+          if (this.paginator) {
+            this.paginator.length = r.data.total;
+          }
           const s = r.data.summary as { status: string; _count: { id: number } }[];
           const cnt = (st: string) => s.find(x => x.status === st)?._count?.id ?? 0;
           this.summary.set({ total: r.data.total, received: cnt('RECEIVED'), underReview: cnt('UNDER_REVIEW'), returned: cnt('RETURNED'), posted: cnt('POSTED') });

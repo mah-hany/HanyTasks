@@ -40,6 +40,7 @@ export const taskService = {
     search?: string; fromDate?: string; toDate?: string;
     userId?: number; userRoleLevel?: number;
     isArchived?: string | boolean;
+    page?: number; limit?: number;
   }) {
     const where: any = {};
     where.isArchived = filters.isArchived === 'true' || filters.isArchived === true;
@@ -57,7 +58,15 @@ export const taskService = {
     if (filters.search) {
       where.OR = [
         { title: { contains: filters.search, mode: 'insensitive' } },
+        { titleAr: { contains: filters.search, mode: 'insensitive' } },
         { taskCode: { contains: filters.search, mode: 'insensitive' } },
+        { description: { contains: filters.search, mode: 'insensitive' } },
+        { assignedTo: { fullName: { contains: filters.search, mode: 'insensitive' } } },
+        { assignedTo: { fullNameAr: { contains: filters.search, mode: 'insensitive' } } },
+        { createdBy: { fullName: { contains: filters.search, mode: 'insensitive' } } },
+        { createdBy: { fullNameAr: { contains: filters.search, mode: 'insensitive' } } },
+        { category: { name: { contains: filters.search, mode: 'insensitive' } } },
+        { category: { nameAr: { contains: filters.search, mode: 'insensitive' } } },
       ];
     }
     if (filters.fromDate || filters.toDate) {
@@ -66,16 +75,27 @@ export const taskService = {
       if (filters.toDate) where.dueDate.lte = new Date(filters.toDate);
     }
 
-    return prisma.task.findMany({
-      where,
-      include: {
-        assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
-        createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
-        category: true,
-        _count: { select: { comments: true, attachments: true } },
-      },
-      orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
-    });
+    const page = filters.page ? +filters.page : 1;
+    const limit = filters.limit ? +filters.limit : 50;
+    const skip = (page - 1) * limit;
+
+    const [tasks, total] = await Promise.all([
+      prisma.task.findMany({
+        where,
+        include: {
+          assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
+          createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
+          category: true,
+          _count: { select: { comments: true, attachments: true } },
+        },
+        orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
+        skip,
+        take: limit
+      }),
+      prisma.task.count({ where })
+    ]);
+
+    return { tasks, total, page };
   },
 
   async getById(id: number) {
