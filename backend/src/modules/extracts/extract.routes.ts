@@ -2,6 +2,7 @@ import { Router, Response, NextFunction } from 'express';
 import { authenticate, AuthRequest } from '../../middleware/auth';
 import prisma from '../../prisma/client';
 import type { Prisma } from '@prisma/client';
+import { webhookService } from '../settings/webhook.service';
 
 const router = Router();
 router.use(authenticate);
@@ -190,6 +191,7 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
       include: INCLUDE,
     });
     if (extract.taskId) await syncTaskProgress(extract.taskId, req.user!.id);
+    webhookService.dispatch('EXTRACT_CREATED', extract);
     res.status(201).json({ success: true, data: extract });
   } catch (e) { next(e); }
 });
@@ -235,6 +237,7 @@ router.patch('/:id/status', async (req: AuthRequest, res: Response, next: NextFu
     });
 
     if (updated.taskId) await syncTaskProgress(updated.taskId, req.user!.id);
+    webhookService.dispatch('EXTRACT_STATUS_CHANGED', updated);
     res.json({ success: true, data: updated });
   } catch (e) { next(e); }
 });
