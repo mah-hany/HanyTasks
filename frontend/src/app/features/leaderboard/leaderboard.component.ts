@@ -13,12 +13,14 @@ import { HttpClient } from '@angular/common/http';
 import { LangService } from '../../core/services/lang.service';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
+import { BaseChartDirective } from 'ng2-charts';
+import { ChartConfiguration, ChartData } from 'chart.js';
 
 @Component({
   selector: 'app-leaderboard',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule,
-    MatProgressSpinnerModule, MatSelectModule, MatTabsModule, MatProgressBarModule, MatTooltipModule],
+    MatProgressSpinnerModule, MatSelectModule, MatTabsModule, MatProgressBarModule, MatTooltipModule, BaseChartDirective],
   template: `
     <div class="page-container fade-in">
       <div class="page-header">
@@ -67,8 +69,45 @@ import { environment } from '../../../environments/environment';
             </mat-progress-bar>
           </div>
           <!-- Badges -->
-          <div class="badges" *ngIf="myData()?.badges?.length">
-            <div class="badge-chip" *ngFor="let b of myData()?.badges">{{ b }}</div>
+          <div class="mp-section" *ngIf="myData()?.badges?.length">
+            <h4 class="section-title">{{ isAr() ? 'الأوسمة الشرفية' : 'Badges' }}</h4>
+            <div class="badges">
+              <div class="badge-chip" *ngFor="let b of myData()?.badges" [style.color]="b.color" [style.border-color]="b.color">
+                <mat-icon [style.color]="b.color">{{ b.icon }}</mat-icon>
+                <span>{{ isAr() ? b.nameAr : b.name }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Streak & Challenges -->
+          <div class="mp-section" *ngIf="myData()">
+            <h4 class="section-title">🔥 {{ isAr() ? 'النشاط والتحديات' : 'Activity & Challenges' }}</h4>
+            <div class="streak-box">
+              <mat-icon class="flame-icon">local_fire_department</mat-icon>
+              <span>{{ myData()?.streak || 0 }} {{ isAr() ? 'أيام متتالية' : 'Days Streak' }}</span>
+            </div>
+            
+            <div class="challenges-list">
+              <div class="challenge-item" *ngFor="let ch of myData()?.challenges">
+                <div class="ch-info">
+                  <span class="ch-title">{{ isAr() ? ch.titleAr : ch.title }}</span>
+                  <span class="ch-reward">+{{ ch.reward }} pts</span>
+                </div>
+                <div class="ch-progress-wrap">
+                  <div class="ch-progress"><div class="ch-fill" [style.width]="(ch.current / ch.target * 100) + '%'" [class.bg-success]="ch.completed"></div></div>
+                  <span class="ch-text">{{ ch.current }}/{{ ch.target }}</span>
+                  <mat-icon *ngIf="ch.completed" class="ch-done text-success">check_circle</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Comparison Chart -->
+          <div class="mp-section" *ngIf="myData()?.teamChart?.length">
+            <h4 class="section-title">📈 {{ isAr() ? 'مقارنة مع الفريق' : 'Team Comparison' }}</h4>
+            <div class="chart-container">
+              <canvas baseChart [data]="teamChartData" [options]="chartOptions" type="line"></canvas>
+            </div>
           </div>
         </div>
 
@@ -147,8 +186,32 @@ import { environment } from '../../../environments/environment';
     .mp-stat { text-align: center; background: var(--bg-main); border-radius: 8px; padding: 12px; }
     .mp-val { font-size: 24px; font-weight: 800; color: var(--color-primary-light); }
     .mp-lab { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-    .badges { display: flex; flex-wrap: wrap; gap: 6px; }
-    .badge-chip { background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 20px; padding: 4px 10px; font-size: 11px; }
+    
+    .mp-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(var(--border-rgb), 0.5); }
+    .section-title { font-size: 14px; font-weight: 700; color: var(--text-main); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
+    
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge-chip { display: flex; align-items: center; gap: 4px; background: rgba(var(--bg-card-rgb), 0.5); border: 1px solid var(--border-color); border-radius: 20px; padding: 6px 12px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .badge-chip mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+    .streak-box { display: inline-flex; align-items: center; gap: 8px; background: rgba(249, 115, 22, 0.1); color: #ea580c; border-radius: 12px; padding: 10px 16px; font-weight: 700; margin-bottom: 16px; border: 1px solid rgba(249, 115, 22, 0.2); }
+    .flame-icon { font-size: 24px; width: 24px; height: 24px; animation: flicker 2s infinite; }
+    @keyframes flicker { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.1); } }
+
+    .challenges-list { display: flex; flex-direction: column; gap: 12px; }
+    .challenge-item { background: rgba(var(--bg-main-rgb), 0.5); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .ch-info { display: flex; justify-content: space-between; align-items: center; }
+    .ch-title { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .ch-reward { font-size: 11px; font-weight: 700; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 2px 6px; border-radius: 4px; }
+    .ch-progress-wrap { display: flex; align-items: center; gap: 8px; }
+    .ch-progress { flex: 1; height: 8px; background: rgba(var(--border-rgb), 0.5); border-radius: 4px; overflow: hidden; }
+    .ch-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 4px; transition: width 0.5s ease; }
+    .ch-fill.bg-success { background: linear-gradient(90deg, #10b981, #34d399); }
+    .ch-text { font-size: 12px; font-weight: 600; color: var(--text-muted); min-width: 30px; text-align: right; }
+    .ch-done { font-size: 18px; width: 18px; height: 18px; margin-left: 4px; }
+    .text-success { color: #10b981; }
+
+    .chart-container { position: relative; height: 180px; width: 100%; margin-top: 10px; }
 
     .lb-main { padding: 20px; }
     .loading-center { display: flex; justify-content: center; padding: 60px; }
@@ -187,6 +250,21 @@ export class LeaderboardComponent implements OnInit {
   isAr = () => this.langService.getCurrentLang() === 'ar';
   myUserId = () => this.authService.currentUser()?.id;
 
+  teamChartData: ChartData<'line'> = { labels: [], datasets: [] };
+  chartOptions: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { color: '#888', font: { family: 'Cairo' }, usePointStyle: true, boxWidth: 6 } },
+      tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: { family: 'Cairo' }, bodyFont: { family: 'Cairo' } }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(200,200,200,0.05)' }, ticks: { color: '#888' } },
+      x: { grid: { display: false }, ticks: { color: '#888', font: { family: 'Cairo' } } }
+    },
+    elements: { line: { tension: 0.4 } }
+  };
+
   constructor(
     private http: HttpClient,
     private langService: LangService,
@@ -205,8 +283,38 @@ export class LeaderboardComponent implements OnInit {
 
   loadMyPoints() {
     this.http.get<any>(`${environment.apiUrl}/gamification/me`).subscribe({
-      next: r => { if (r.success) this.myData.set(r.data); },
+      next: r => { 
+        if (r.success) {
+          this.myData.set(r.data);
+          this.updateChartData(r.data.teamChart);
+        }
+      },
     });
+  }
+
+  updateChartData(chartData: any[]) {
+    if (!chartData || !chartData.length) return;
+    this.teamChartData = {
+      labels: chartData.map(d => d.date),
+      datasets: [
+        { 
+          data: chartData.map(d => d.user), 
+          label: this.isAr() ? 'أنا' : 'Me', 
+          borderColor: '#8b5cf6', 
+          backgroundColor: 'rgba(139, 92, 246, 0.1)', 
+          fill: true,
+          pointBackgroundColor: '#8b5cf6' 
+        },
+        { 
+          data: chartData.map(d => d.teamAvg), 
+          label: this.isAr() ? 'متوسط الفريق' : 'Team Avg', 
+          borderColor: '#94a3b8', 
+          borderDash: [5, 5],
+          backgroundColor: 'transparent',
+          pointBackgroundColor: '#94a3b8' 
+        }
+      ]
+    };
   }
 
   getInitial(item: any): string {
