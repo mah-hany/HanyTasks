@@ -26,6 +26,7 @@ import extractRoutes     from './modules/extracts/extract.routes';
 import contractorRoutes  from './modules/extracts/contractor.routes';
 import projectRoutes     from './modules/extracts/project.routes';
 import { handleTelegramWebhook } from './modules/telegram/telegram.bot';
+import pushRoutes from './modules/notifications/push.routes';
 
 const app = express();
 
@@ -135,6 +136,7 @@ app.use('/api/chat',          chatRoutes);
 app.use('/api/extracts',      extractRoutes);
 app.use('/api/contractors',   contractorRoutes);
 app.use('/api/projects',      projectRoutes);
+app.use('/api/push',          pushRoutes);
 
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';

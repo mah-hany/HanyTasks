@@ -148,6 +148,34 @@ exports.taskService = {
         }
         return task;
     },
+    async update(id, data) {
+        const task = await client_1.default.task.findUnique({ where: { id } });
+        if (!task)
+            throw new errorHandler_1.AppError('Task not found', 404);
+        const updateData = {};
+        if (data.title !== undefined)
+            updateData.title = data.title;
+        if (data.titleAr !== undefined)
+            updateData.titleAr = data.titleAr;
+        if (data.description !== undefined)
+            updateData.description = data.description;
+        if (data.categoryId !== undefined)
+            updateData.categoryId = data.categoryId;
+        if (data.priority !== undefined)
+            updateData.priority = data.priority;
+        if (data.assignedToId !== undefined)
+            updateData.assignedToId = data.assignedToId;
+        if (data.startDate !== undefined)
+            updateData.startDate = data.startDate ? new Date(data.startDate) : null;
+        if (data.dueDate !== undefined)
+            updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+        const updated = await client_1.default.task.update({
+            where: { id },
+            data: updateData,
+            include: { assignedTo: true, createdBy: true, category: true },
+        });
+        return updated;
+    },
     async updateStatus(taskId, newStatus, userId, note) {
         const task = await client_1.default.task.findUnique({ where: { id: taskId } });
         if (!task)
@@ -214,6 +242,25 @@ exports.taskService = {
             data: { taskId, userId, commentText: text, isManagerNote },
             include: { user: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true } } },
         });
+    },
+    async deleteAttachment(taskId, attachmentId) {
+        const attachment = await client_1.default.taskAttachment.findUnique({
+            where: { id: attachmentId },
+        });
+        if (!attachment || attachment.taskId !== taskId) {
+            throw new errorHandler_1.AppError('Attachment not found', 404);
+        }
+        // Delete file from disk if needed
+        const fs = require('fs');
+        const path = require('path');
+        if (attachment.fileUrl.startsWith('/uploads/')) {
+            const filePath = path.join(process.cwd(), attachment.fileUrl);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
+        await client_1.default.taskAttachment.delete({ where: { id: attachmentId } });
+        return { success: true };
     },
     async getDashboardStats(userId, roleLevel) {
         const now = new Date();

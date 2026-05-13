@@ -63,6 +63,7 @@ const extract_routes_1 = __importDefault(require("./modules/extracts/extract.rou
 const contractor_routes_1 = __importDefault(require("./modules/extracts/contractor.routes"));
 const project_routes_1 = __importDefault(require("./modules/extracts/project.routes"));
 const telegram_bot_1 = require("./modules/telegram/telegram.bot");
+const push_routes_1 = __importDefault(require("./modules/notifications/push.routes"));
 const app = (0, express_1.default)();
 // ── Security Headers (Helmet) ──────────────────────────────
 app.use((0, helmet_1.default)({
@@ -84,6 +85,7 @@ app.use((0, cors_1.default)({
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    exposedHeaders: ['Content-Disposition'], // ← allow frontend to read filename header
 }));
 // ── Global Rate Limiter ────────────────────────────────────
 const globalLimiter = (0, express_rate_limit_1.default)({
@@ -163,6 +165,7 @@ app.use('/api/chat', chat_routes_1.default);
 app.use('/api/extracts', extract_routes_1.default);
 app.use('/api/contractors', contractor_routes_1.default);
 app.use('/api/projects', project_routes_1.default);
+app.use('/api/push', push_routes_1.default);
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
 app.post('/api/telegram/webhook', (req, res, next) => {

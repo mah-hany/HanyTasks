@@ -117,6 +117,7 @@ model User {
   convAsUser1      ChatConversation[] @relation("ConvUser1")
   convAsUser2      ChatConversation[] @relation("ConvUser2")
   sentMessages     ChatMessage[]      @relation("ChatSender")
+  pushSubscriptions PushSubscription[] // ← Web Push
 
   @@map("tbl_Users")
 }
@@ -133,6 +134,23 @@ model EmployeeTransfer {
   user User @relation(fields: [userId], references: [id])
 
   @@map("tbl_EmployeeTransfers")
+}
+
+// ─────────────────────────────────────────
+//  PUSH SUBSCRIPTIONS (Web Push Notifications)
+// ─────────────────────────────────────────
+model PushSubscription {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tbl_PushSubscriptions")
 }
 
 // ─────────────────────────────────────────

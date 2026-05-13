@@ -1,6 +1,7 @@
 import prisma from '../../prisma/client';
 import { emitToUser } from '../../socket';
 import { NotificationType } from '../../types/enums';
+import { pushService } from './push.service';
 
 export const notificationService = {
   async create(data: {
@@ -10,7 +11,7 @@ export const notificationService = {
   }) {
     const notif = await prisma.notification.create({ data });
 
-    // Emit real-time via Socket.IO
+    // Emit real-time via Socket.IO (in-app)
     emitToUser(data.receiverId, 'notification', {
       id: notif.id,
       type: notif.type,
@@ -21,6 +22,14 @@ export const notificationService = {
       taskId: notif.taskId,
       createdAt: notif.createdAt,
     });
+
+    // Send browser Web Push (fire & forget — never block in-app notification)
+    pushService.sendToUser(data.receiverId, {
+      title: data.titleAr || data.title,
+      body:  data.messageAr || data.message,
+      url:   data.taskId ? `/tasks/${data.taskId}` : '/notifications',
+      tag:   `notif-${data.type}-${data.receiverId}`,
+    }).catch(() => {}); // silent — push failure must NOT break the flow
 
     return notif;
   },

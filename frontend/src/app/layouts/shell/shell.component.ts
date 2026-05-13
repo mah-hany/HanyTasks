@@ -13,6 +13,7 @@ import { LangService } from '../../core/services/lang.service';
 import { ChatService } from '../../core/services/chat.service';
 import { ChatComponent } from '../../features/chat/chat.component';
 import { TaskService } from '../../core/services/task.service';
+import { PushNotificationService } from '../../core/services/push-notification.service';
 
 interface NavItem {
   label: string; labelKey: string; icon: string; route: string;
@@ -84,6 +85,10 @@ interface NavItem {
             <button mat-menu-item (click)="toggleDark(); onNavClick()">
               <mat-icon>{{ isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
               <span>{{ isDark() ? 'Light Mode' : 'Dark Mode' }}</span>
+            </button>
+            <button mat-menu-item (click)="togglePushNotifications(); onNavClick()">
+              <mat-icon>{{ pushEnabled() ? 'notifications_active' : 'notifications_off' }}</mat-icon>
+              <span>{{ pushEnabled() ? (currentLang() === 'ar' ? 'إيقاف إشعارات المتصفح' : 'Disable Push') : (currentLang() === 'ar' ? 'تفعيل إشعارات المتصفح' : 'Enable Push') }}</span>
             </button>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="logout()" style="color:#dc2626">
@@ -506,6 +511,7 @@ export class ShellComponent implements OnInit {
   sidebarCollapsed = signal(false);
   mobileOpen = signal(false);
   isDark = signal(false);
+  pushEnabled = signal(false);
   currentLang = signal<string>('ar');
   isMobile = signal(false);
 
@@ -599,6 +605,7 @@ export class ShellComponent implements OnInit {
     private router: Router,
     private chatService: ChatService,
     private taskService: TaskService,
+    private pushSvc: PushNotificationService,
   ) {}
 
   ngOnInit() {
@@ -613,8 +620,11 @@ export class ShellComponent implements OnInit {
     if (user) {
       this.notifService.connectSocket(user.id);
       this.chatService.connectSocket(user.id);
-      // Load my tasks count for SUPERADMIN nav badge
       if (this.isSuperAdminUser()) this.loadMyTasksCount();
+      // تفعيل Web Push بعد تسجيل الدخول
+      this.pushSvc.init().then(() => {
+        this.pushEnabled.set(this.pushSvc.getPermissionStatus() === 'granted');
+      });
     }
   }
 
@@ -655,6 +665,16 @@ export class ShellComponent implements OnInit {
     this.isDark.set(dark);
     document.body.classList.toggle('dark-theme', dark);
     localStorage.setItem('tf_theme', dark ? 'dark' : 'light');
+  }
+
+  async togglePushNotifications() {
+    if (this.pushEnabled()) {
+      await this.pushSvc.unsubscribe();
+      this.pushEnabled.set(false);
+    } else {
+      await this.pushSvc.init();
+      this.pushEnabled.set(this.pushSvc.getPermissionStatus() === 'granted');
+    }
   }
 
   logout() {

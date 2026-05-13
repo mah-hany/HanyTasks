@@ -28,6 +28,50 @@ const INCLUDE = {
     createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
     comments: { where: { isReturnNote: true }, orderBy: { commentDate: 'desc' } },
 };
+async function syncTaskProgress(taskId, actorId) {
+    // جلب كل المستخلصات المرتبطة بالمهمة
+    const extracts = await client_1.default.taskExtract.findMany({
+        where: { taskId },
+        select: { status: true },
+    });
+    if (extracts.length === 0)
+        return;
+    const total = extracts.length;
+    const posted = extracts.filter(e => e.status === 'POSTED').length;
+    const active = extracts.filter(e => ['UNDER_REVIEW', 'POSTED'].includes(e.status)).length;
+    // نسبة التنفيذ بناءً على المُدرَج فعلاً
+    const progress = Math.round((posted / total) * 100);
+    // تحديد الحالة الجديدة للمهمة
+    const newStatus = posted === total ? 'COMPLETED'
+        : active > 0 ? 'IN_PROGRESS'
+            : 'IN_PROGRESS';
+    // جلب حالة المهمة الحالية
+    const task = await client_1.default.task.findUnique({
+        where: { id: taskId },
+        select: { status: true, createdById: true },
+    });
+    if (!task || task.status === 'CANCELLED')
+        return;
+    // تحديث المهمة
+    await client_1.default.task.update({
+        where: { id: taskId },
+        data: {
+            progressPercent: progress,
+            status: newStatus,
+            completedDate: newStatus === 'COMPLETED' ? new Date() : null,
+        },
+    });
+    // تسجيل في السجل فقط لو تغيرت الحالة
+    if (task.status !== newStatus) {
+        const changedById = actorId ?? task.createdById;
+        const note = newStatus === 'COMPLETED'
+            ? `✅ اكتمال تلقائي: كل المستخلصات (${total}/${total}) أُدرجت`
+            : `🔄 تحديث تلقائي من المستخلصات: ${posted}/${total} مُدرج`;
+        await client_1.default.taskStatusHistory.create({
+            data: { taskId, fromStatus: task.status, toStatus: newStatus, changedById, note },
+        });
+    }
+}
 // GET all extracts (filtered + paginated)
 router.get('/', async (req, res, next) => {
     try {
@@ -97,6 +141,8 @@ router.post('/', async (req, res, next) => {
             },
             include: INCLUDE,
         });
+        if (extract.taskId)
+            await syncTaskProgress(extract.taskId, req.user.id);
         res.status(201).json({ success: true, data: extract });
     }
     catch (e) {
@@ -140,6 +186,8 @@ router.patch('/:id/status', async (req, res, next) => {
             }
             return upd;
         });
+        if (updated.taskId)
+            await syncTaskProgress(updated.taskId, req.user.id);
         res.json({ success: true, data: updated });
     }
     catch (e) {
@@ -151,7 +199,9 @@ router.delete('/:id', async (req, res, next) => {
     try {
         if ((req.user.roleLevel ?? 99) > 2)
             return res.status(403).json({ success: false, message: 'Forbidden' });
-        await client_1.default.taskExtract.delete({ where: { id: +req.params.id } });
+        const extract = await client_1.default.taskExtract.delete({ where: { id: +req.params.id } });
+        if (extract.taskId)
+            await syncTaskProgress(extract.taskId, req.user.id);
         res.json({ success: true, message: 'Deleted' });
     }
     catch (e) {

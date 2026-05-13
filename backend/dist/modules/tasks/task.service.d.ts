@@ -261,6 +261,93 @@ export declare const taskService: {
         completedDate: Date | null;
         progressPercent: number;
     }>;
+    update(id: number, data: {
+        title?: string;
+        titleAr?: string;
+        description?: string;
+        categoryId?: number;
+        priority?: TaskPriority;
+        assignedToId?: number;
+        startDate?: string;
+        dueDate?: string;
+    }): Promise<{
+        category: {
+            id: number;
+            name: string;
+            nameAr: string;
+            color: string;
+            icon: string;
+        } | null;
+        assignedTo: {
+            id: number;
+            employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
+            fullName: string;
+            fullNameAr: string;
+            passwordHash: string;
+            plainPassword: string | null;
+            phone: string | null;
+            departmentId: number | null;
+            roleId: number;
+            managerId: number | null;
+            isActive: boolean;
+            isFirstLogin: boolean;
+            failedLoginCount: number;
+            lockedUntil: Date | null;
+            profilePhoto: string | null;
+            preferredLang: string;
+            createdAt: Date;
+            updatedAt: Date;
+            lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
+        };
+        createdBy: {
+            id: number;
+            employeeCode: string;
+            username: string;
+            email: string;
+            telegramChatId: string | null;
+            fullName: string;
+            fullNameAr: string;
+            passwordHash: string;
+            plainPassword: string | null;
+            phone: string | null;
+            departmentId: number | null;
+            roleId: number;
+            managerId: number | null;
+            isActive: boolean;
+            isFirstLogin: boolean;
+            failedLoginCount: number;
+            lockedUntil: Date | null;
+            profilePhoto: string | null;
+            preferredLang: string;
+            createdAt: Date;
+            updatedAt: Date;
+            lastLoginAt: Date | null;
+            resetToken: string | null;
+            resetTokenExpiry: Date | null;
+        };
+    } & {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        assignedToId: number;
+        status: string;
+        description: string | null;
+        title: string;
+        titleAr: string | null;
+        taskCode: string;
+        categoryId: number | null;
+        priority: string;
+        createdById: number;
+        startDate: Date | null;
+        dueDate: Date | null;
+        completedDate: Date | null;
+        progressPercent: number;
+    }>;
     updateStatus(taskId: number, newStatus: TaskStatus, userId: number, note?: string): Promise<{
         id: number;
         createdAt: Date;
@@ -313,6 +400,9 @@ export declare const taskService: {
         isManagerNote: boolean;
         isReturnNote: boolean;
         extractId: number | null;
+    }>;
+    deleteAttachment(taskId: number, attachmentId: number): Promise<{
+        success: boolean;
     }>;
     getDashboardStats(userId: number, roleLevel: number): Promise<{
         total: number;

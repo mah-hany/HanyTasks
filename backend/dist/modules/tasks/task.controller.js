@@ -14,7 +14,10 @@ if (!fs_1.default.existsSync(uploadDir))
     fs_1.default.mkdirSync(uploadDir, { recursive: true });
 const storage = multer_1.default.diskStorage({
     destination: (_req, _file, cb) => cb(null, uploadDir),
-    filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
+    filename: (_req, file, cb) => {
+        const utf8Name = Buffer.from(file.originalname, 'latin1').toString('utf8');
+        cb(null, `${Date.now()}-${utf8Name}`);
+    },
 });
 exports.uploadAttachment = (0, multer_1.default)({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
 exports.taskController = {
@@ -63,6 +66,15 @@ exports.taskController = {
             next(e);
         }
     },
+    async update(req, res, next) {
+        try {
+            const data = await task_service_1.taskService.update(+req.params.id, req.body);
+            res.json({ success: true, data });
+        }
+        catch (e) {
+            next(e);
+        }
+    },
     async updateStatus(req, res, next) {
         try {
             const { status, note } = req.body;
@@ -95,10 +107,11 @@ exports.taskController = {
         try {
             if (!req.file)
                 return res.status(400).json({ success: false, message: 'No file uploaded' });
+            const utf8Name = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
             const att = await client_1.default.taskAttachment.create({
                 data: {
                     taskId: +req.params.id,
-                    fileName: req.file.originalname,
+                    fileName: utf8Name,
                     fileUrl: `/uploads/attachments/${req.file.filename}`,
                     fileSize: req.file.size,
                     fileType: req.file.mimetype,
@@ -106,6 +119,15 @@ exports.taskController = {
                 },
             });
             res.status(201).json({ success: true, data: att });
+        }
+        catch (e) {
+            next(e);
+        }
+    },
+    async deleteAttachment(req, res, next) {
+        try {
+            const data = await task_service_1.taskService.deleteAttachment(+req.params.id, +req.params.attachmentId);
+            res.json(data);
         }
         catch (e) {
             next(e);
