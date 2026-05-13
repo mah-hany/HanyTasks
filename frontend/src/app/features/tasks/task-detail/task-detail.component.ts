@@ -42,18 +42,18 @@ import { environment } from '../../../../environments/environment';
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <!-- Inline Delete Confirmation -->
-              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2)" (click)="editTask()">
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(3)" (click)="editTask()">
                 <mat-icon>edit</mat-icon> {{ isAr() ? 'تعديل المهمة' : 'Edit Task' }}
               </button>
               
-              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2) && !task()?.isArchived" (click)="toggleArchive(true)">
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(3) && !task()?.isArchived" (click)="toggleArchive(true)">
                 <mat-icon>archive</mat-icon> {{ isAr() ? 'أرشفة المهمة' : 'Archive Task' }}
               </button>
-              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2) && task()?.isArchived" (click)="toggleArchive(false)">
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(3) && task()?.isArchived" (click)="toggleArchive(false)">
                 <mat-icon>unarchive</mat-icon> {{ isAr() ? 'استرجاع المهمة' : 'Unarchive Task' }}
               </button>
 
-              <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(2)" (click)="confirmDelete.set(true)">
+              <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(3)" (click)="confirmDelete.set(true)">
                 <mat-icon>delete</mat-icon> {{ isAr() ? 'حذف المهمة' : 'Delete Task' }}
               </button>
             </ng-container>
