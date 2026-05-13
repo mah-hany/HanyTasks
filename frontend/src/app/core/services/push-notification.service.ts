@@ -20,7 +20,7 @@ export class PushNotificationService {
 
     try {
       // تسجيل Service Worker
-      this.swReg = await navigator.serviceWorker.register('/push-sw.js', { scope: '/' });
+      this.swReg = await navigator.serviceWorker.register('/custom-sw.js', { scope: '/' });
       await navigator.serviceWorker.ready;
 
       // هل لديه إذن مسبق؟

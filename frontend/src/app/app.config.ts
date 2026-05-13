@@ -1,4 +1,4 @@
-import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -22,6 +22,7 @@ export function HttpLoaderFactory() {
 }
 
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,6 +41,9 @@ export const appConfig: ApplicationConfig = {
         }
       })
     ),
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },  // Western numerals (1,2,3) — ar-EG breaks mobile layout
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }, provideServiceWorker('custom-sw.js', {
+            enabled: !isDevMode(),
+            registrationStrategy: 'registerWhenStable:30000'
+          }),  // Western numerals (1,2,3) — ar-EG breaks mobile layout
   ],
 };
