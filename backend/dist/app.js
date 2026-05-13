@@ -65,7 +65,10 @@ const project_routes_1 = __importDefault(require("./modules/extracts/project.rou
 const telegram_bot_1 = require("./modules/telegram/telegram.bot");
 const push_routes_1 = __importDefault(require("./modules/notifications/push.routes"));
 const search_routes_1 = __importDefault(require("./modules/search/search.routes"));
+const webhook_routes_1 = __importDefault(require("./modules/settings/webhook.routes"));
 const app = (0, express_1.default)();
+// Trust proxy required for express-rate-limit behind Render's proxy
+app.set('trust proxy', 1);
 // ── Security Headers (Helmet) ──────────────────────────────
 app.use((0, helmet_1.default)({
     crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow uploads to be served
@@ -168,6 +171,7 @@ app.use('/api/contractors', contractor_routes_1.default);
 app.use('/api/projects', project_routes_1.default);
 app.use('/api/push', push_routes_1.default);
 app.use('/api/search', search_routes_1.default);
+app.use('/api/webhooks', webhook_routes_1.default);
 // ── Telegram Webhook (secret token validation) ─────────────
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET || '';
 app.post('/api/telegram/webhook', (req, res, next) => {

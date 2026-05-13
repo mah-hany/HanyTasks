@@ -7,6 +7,7 @@ export declare const taskController: {
     getById(req: Request, res: Response, next: NextFunction): Promise<void>;
     create(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     update(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
+    archive(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     updateStatus(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     updateProgress(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;
     addComment(req: AuthRequest, res: Response, next: NextFunction): Promise<void>;

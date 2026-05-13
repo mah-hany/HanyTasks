@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_1 = require("../../middleware/auth");
 const client_1 = __importDefault(require("../../prisma/client"));
+const webhook_service_1 = require("../settings/webhook.service");
+const notification_service_1 = require("../notifications/notification.service");
 const router = (0, express_1.Router)();
 router.use(auth_1.authenticate);
 // ── Transition matrix ──────────────────────────────────────
@@ -38,13 +40,19 @@ async function syncTaskProgress(taskId, actorId) {
         return;
     const total = extracts.length;
     const posted = extracts.filter(e => e.status === 'POSTED').length;
-    const active = extracts.filter(e => ['UNDER_REVIEW', 'POSTED'].includes(e.status)).length;
-    // نسبة التنفيذ بناءً على المُدرَج فعلاً
-    const progress = Math.round((posted / total) * 100);
-    // تحديد الحالة الجديدة للمهمة
-    const newStatus = posted === total ? 'COMPLETED'
-        : active > 0 ? 'IN_PROGRESS'
-            : 'IN_PROGRESS';
+    const underReview = extracts.filter(e => e.status === 'UNDER_REVIEW').length;
+    const returned = extracts.filter(e => e.status === 'RETURNED').length;
+    const received = extracts.filter(e => e.status === 'RECEIVED').length;
+    // ─── منطق التقدم والحالة ───────────────────────────────────
+    // allPosted    → 100%   COMPLETED
+    // allReturned  → 0%     IN_PROGRESS  (كل المستخلصات مُرجَعة)
+    // غير ذلك     → posted/total%  IN_PROGRESS
+    const allPosted = posted === total;
+    const allReturned = returned === total;
+    const progress = allPosted ? 100
+        : allReturned ? 0
+            : Math.round((posted / total) * 100);
+    const newStatus = allPosted ? 'COMPLETED' : 'IN_PROGRESS';
     // جلب حالة المهمة الحالية
     const task = await client_1.default.task.findUnique({
         where: { id: taskId },
@@ -52,7 +60,7 @@ async function syncTaskProgress(taskId, actorId) {
     });
     if (!task || task.status === 'CANCELLED')
         return;
-    // تحديث المهمة
+    // تحديث المهمة دائماً (قد يتغير التقدم دون تغيير الحالة)
     await client_1.default.task.update({
         where: { id: taskId },
         data: {
@@ -61,15 +69,93 @@ async function syncTaskProgress(taskId, actorId) {
             completedDate: newStatus === 'COMPLETED' ? new Date() : null,
         },
     });
-    // تسجيل في السجل فقط لو تغيرت الحالة
+    // تسجيل في السجل عند تغيير الحالة فقط
     if (task.status !== newStatus) {
         const changedById = actorId ?? task.createdById;
-        const note = newStatus === 'COMPLETED'
-            ? `✅ اكتمال تلقائي: كل المستخلصات (${total}/${total}) أُدرجت`
-            : `🔄 تحديث تلقائي من المستخلصات: ${posted}/${total} مُدرج`;
+        let note;
+        if (allPosted) {
+            note = `✅ اكتمال تلقائي: كل المستخلصات (${total}/${total}) أُدرجت`;
+        }
+        else if (allReturned) {
+            note = `⚠️ تحديث تلقائي: كل المستخلصات (${total}/${total}) مُرجَعة — التقدم يعود إلى 0%`;
+        }
+        else {
+            const parts = [];
+            if (posted)
+                parts.push(`${posted} مُدرج`);
+            if (underReview)
+                parts.push(`${underReview} مراجعة`);
+            if (returned)
+                parts.push(`${returned} مُرجَع`);
+            if (received)
+                parts.push(`${received} مستلم`);
+            note = `🔄 تحديث تلقائي: ${parts.join(' | ')} من أصل ${total} مستخلص`;
+        }
         await client_1.default.taskStatusHistory.create({
             data: { taskId, fromStatus: task.status, toStatus: newStatus, changedById, note },
         });
+    }
+}
+// ── Extract notification helper ────────────────────────────
+// Sends in-app + Web-Push notifications to all relevant parties
+// when an extract changes status. Fire-and-forget — never throws.
+async function notifyExtractTransition(opts) {
+    const { extract, newStatus, actorId, returnComment } = opts;
+    const contractorName = extract.contractor?.name ?? 'المقاول';
+    const projectName = extract.project?.name ?? 'المشروع';
+    const extractNum = extract.extractNumber;
+    const taskId = extract.task?.id ?? null;
+    const taskCode = extract.task?.taskCode ?? '';
+    const createdById = extract.createdBy?.id ?? extract.createdById;
+    const taskAssigneeId = taskId
+        ? (await client_1.default.task.findUnique({ where: { id: taskId }, select: { assignedToId: true } }))?.assignedToId
+        : null;
+    const taskCreatorId = taskId
+        ? (await client_1.default.task.findUnique({ where: { id: taskId }, select: { createdById: true } }))?.createdById
+        : null;
+    // Helper: deduplicated recipients (skip the actor)
+    const send = (receiverId, type, titleAr, title, msgAr, msg) => {
+        if (!receiverId || receiverId === actorId)
+            return Promise.resolve();
+        return notification_service_1.notificationService.create({
+            receiverId, senderId: actorId, taskId: taskId ?? undefined,
+            type, titleAr, title, messageAr: msgAr, message: msg,
+        }).catch(() => { }); // fire-and-forget
+    };
+    const ref = taskCode ? ` (${taskCode})` : '';
+    if (newStatus === 'UNDER_REVIEW') {
+        // Case A: RECEIVED → UNDER_REVIEW  (submitted for review)
+        // Case B: RETURNED  → UNDER_REVIEW  (resubmitted after return)
+        const type = extract.status === 'RETURNED' ? 'EXTRACT_RESUBMITTED' : 'EXTRACT_UNDER_REVIEW';
+        const [titleAr, title] = extract.status === 'RETURNED'
+            ? ['إعادة تقديم مستخلص', 'Extract Resubmitted']
+            : ['مستخلص تحت المراجعة', 'Extract Under Review'];
+        const msgAr = `مستخلص #${extractNum} للمقاول "${contractorName}" – "${projectName}"${ref} أُرسل للمراجعة.`;
+        const msg = `Extract #${extractNum} for "${contractorName}" – "${projectName}"${ref} sent for review.`;
+        // Notify task creator (manager) so they know to review
+        await Promise.all([
+            send(taskCreatorId, type, titleAr, title, msgAr, msg),
+            send(createdById, type, titleAr, title, msgAr, msg),
+        ]);
+    }
+    else if (newStatus === 'POSTED') {
+        // UNDER_REVIEW → POSTED  (approved)
+        const msgAr = `✅ مستخلص #${extractNum} للمقاول "${contractorName}" – "${projectName}"${ref} تم إدراجه بنجاح.`;
+        const msg = `✅ Extract #${extractNum} for "${contractorName}" – "${projectName}"${ref} has been posted.`;
+        await Promise.all([
+            send(createdById, 'EXTRACT_POSTED', 'تم إدراج المستخلص', 'Extract Posted', msgAr, msg),
+            send(taskAssigneeId, 'EXTRACT_POSTED', 'تم إدراج المستخلص', 'Extract Posted', msgAr, msg),
+        ]);
+    }
+    else if (newStatus === 'RETURNED') {
+        // UNDER_REVIEW | POSTED → RETURNED  (rejected with comment)
+        const commentPart = returnComment ? `\nالسبب: ${returnComment}` : '';
+        const msgAr = `⚠️ مستخلص #${extractNum} للمقاول "${contractorName}" – "${projectName}"${ref} تم إرجاعه.${commentPart}`;
+        const msg = `⚠️ Extract #${extractNum} for "${contractorName}" – "${projectName}"${ref} was returned.${returnComment ? `\nReason: ${returnComment}` : ''}`;
+        await Promise.all([
+            send(createdById, 'EXTRACT_RETURNED', 'تم إرجاع المستخلص', 'Extract Returned', msgAr, msg),
+            send(taskAssigneeId, 'EXTRACT_RETURNED', 'تم إرجاع المستخلص', 'Extract Returned', msgAr, msg),
+        ]);
     }
 }
 // GET all extracts (filtered + paginated)
@@ -175,6 +261,23 @@ router.post('/', async (req, res, next) => {
         const { extractNumber, taskId, contractorId, projectId, notes, amount, currency } = req.body;
         if (!extractNumber || !contractorId || !projectId)
             return res.status(400).json({ success: false, message: 'extractNumber, contractorId, projectId required' });
+        const existing = await client_1.default.taskExtract.findFirst({
+            where: {
+                extractNumber: +extractNumber,
+                contractorId: +contractorId,
+                projectId: +projectId
+            }
+        });
+        if (existing) {
+            const statusMap = { RECEIVED: 'استلام', UNDER_REVIEW: 'تحت المراجعة', POSTED: 'مُدرج', RETURNED: 'مُرجَع' };
+            const statusAr = statusMap[existing.status] || existing.status;
+            const amountStr = existing.amount ? `${existing.amount} ${existing.currency}` : 'غير محدد';
+            const dateStr = new Date(existing.receivedAt).toLocaleDateString('ar-EG');
+            return res.status(400).json({
+                success: false,
+                message: `هذا المستخلص مسجل بالفعل! قيمته ${amountStr} بتاريخ ${dateStr} وحالته الحالية "${statusAr}".`
+            });
+        }
         const extract = await client_1.default.taskExtract.create({
             data: {
                 extractNumber: +extractNumber,
@@ -190,6 +293,21 @@ router.post('/', async (req, res, next) => {
         });
         if (extract.taskId)
             await syncTaskProgress(extract.taskId, req.user.id);
+        // Notify task assignee that a new extract was linked to their task
+        if (extract.taskId) {
+            const linkedTask = await client_1.default.task.findUnique({
+                where: { id: extract.taskId },
+                select: { assignedToId: true, createdById: true, taskCode: true },
+            });
+            if (linkedTask) {
+                const msgAr = `📄 مستخلص جديد #${extract.extractNumber} تم ربطه بمهمتك (${linkedTask.taskCode}).`;
+                const msg = `📄 New extract #${extract.extractNumber} was linked to your task (${linkedTask.taskCode}).`;
+                const notifBase = { senderId: req.user.id, taskId: extract.taskId, type: 'EXTRACT_CREATED', titleAr: 'مستخلص جديد', title: 'New Extract', messageAr: msgAr, message: msg };
+                const targets = [...new Set([linkedTask.assignedToId, linkedTask.createdById])].filter(id => id !== req.user.id);
+                await Promise.all(targets.map(receiverId => notification_service_1.notificationService.create({ ...notifBase, receiverId }).catch(() => { })));
+            }
+        }
+        webhook_service_1.webhookService.dispatch('EXTRACT_CREATED', extract);
         res.status(201).json({ success: true, data: extract });
     }
     catch (e) {
@@ -235,6 +353,63 @@ router.patch('/:id/status', async (req, res, next) => {
         });
         if (updated.taskId)
             await syncTaskProgress(updated.taskId, req.user.id);
+        // Fire notifications (non-blocking)
+        notifyExtractTransition({
+            extract: updated,
+            newStatus,
+            actorId: req.user.id,
+            returnComment: returnComment?.trim(),
+        }).catch(() => { });
+        webhook_service_1.webhookService.dispatch('EXTRACT_STATUS_CHANGED', updated);
+        res.json({ success: true, data: updated });
+    }
+    catch (e) {
+        next(e);
+    }
+});
+// PATCH /:id — Edit extract data (amount, notes, taskId) — not allowed once POSTED
+// SUPERVISOR+ can edit; MANAGER+ can edit any non-POSTED extract
+router.patch('/:id', async (req, res, next) => {
+    try {
+        const level = req.user.roleLevel ?? 99;
+        if (level > 4)
+            return res.status(403).json({ success: false, message: 'Forbidden' });
+        const extract = await client_1.default.taskExtract.findUnique({ where: { id: +req.params.id } });
+        if (!extract)
+            return res.status(404).json({ success: false, message: 'Extract not found' });
+        // Block editing once POSTED — only ADMIN+ can override
+        if (extract.status === 'POSTED' && level > 2) {
+            return res.status(400).json({
+                success: false,
+                message: 'لا يمكن تعديل مستخلص مُدرج. يجب إرجاعه أولاً.',
+            });
+        }
+        const { amount, currency, notes, taskId } = req.body;
+        // Build update payload (only provided fields)
+        const data = {};
+        if (amount !== undefined)
+            data.amount = amount !== null ? +amount : null;
+        if (currency !== undefined)
+            data.currency = currency;
+        if (notes !== undefined)
+            data.notes = notes;
+        if (taskId !== undefined)
+            data.taskId = taskId !== null ? +taskId : null;
+        if (Object.keys(data).length === 0) {
+            return res.status(400).json({ success: false, message: 'لم يتم تحديد أي حقل للتعديل' });
+        }
+        const updated = await client_1.default.taskExtract.update({
+            where: { id: extract.id },
+            data,
+            include: INCLUDE,
+        });
+        // Re-sync both old and new taskId (if taskId changed)
+        const oldTaskId = extract.taskId;
+        const newTaskId = updated.taskId;
+        if (oldTaskId && oldTaskId !== newTaskId)
+            await syncTaskProgress(oldTaskId, req.user.id);
+        if (newTaskId)
+            await syncTaskProgress(newTaskId, req.user.id);
         res.json({ success: true, data: updated });
     }
     catch (e) {

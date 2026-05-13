@@ -5,7 +5,22 @@ import prisma from '../../prisma/client';
 
 const router = Router();
 router.use(authenticate);
-router.use(authorizeLevel(1)); // SuperAdmin only
+
+// ── Public (any authenticated user): get active currencies ──
+// MUST come BEFORE authorizeLevel(1) so extract users can read it
+const DEFAULT_CURRENCIES = 'EGP,USD,EUR,SAR,AED';
+
+router.get('/currencies', async (_req, res: Response, next: NextFunction) => {
+  try {
+    const setting = await prisma.systemSetting.findUnique({ where: { key: 'extract_currencies' } });
+    const raw = setting?.value || DEFAULT_CURRENCIES;
+    const currencies = raw.split(',').map((c: string) => c.trim()).filter(Boolean);
+    res.json({ success: true, data: currencies });
+  } catch (e) { next(e); }
+});
+
+// ── SuperAdmin-only routes ───────────────────────────────────
+router.use(authorizeLevel(1));
 
 router.get('/', async (_req, res: Response, next: NextFunction) => {
   try {

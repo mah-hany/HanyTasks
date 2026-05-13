@@ -4,12 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTelegramBot = getTelegramBot;
+exports.sendTelegramNotification = sendTelegramNotification;
 exports.initTelegramBot = initTelegramBot;
 exports.handleTelegramWebhook = handleTelegramWebhook;
 const node_telegram_bot_api_1 = __importDefault(require("node-telegram-bot-api"));
 const client_1 = __importDefault(require("../../prisma/client"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const https_1 = __importDefault(require("https"));
+const generative_ai_1 = require("@google/generative-ai");
 const pendingAuth = new Map();
 const awaitingUsername = new Set();
 const sessionState = new Map();
@@ -18,6 +20,20 @@ let bot = null;
 function isAdmin(user) { return user?.role?.level <= 2; }
 /** Called from app.ts to register the webhook route */
 function getTelegramBot() { return bot; }
+/** Send a message to a specific user */
+async function sendTelegramNotification(userId, text) {
+    if (!bot)
+        return;
+    const user = await client_1.default.user.findUnique({ where: { id: userId } });
+    if (user?.telegramChatId) {
+        try {
+            await bot.sendMessage(user.telegramChatId, text, { parse_mode: 'Markdown' });
+        }
+        catch (err) {
+            console.warn(`Failed to send telegram message to user ${userId}`);
+        }
+    }
+}
 /** Set Telegram webhook via raw HTTPS */
 function setWebhook(token, webhookUrl) {
     return new Promise((resolve) => {
@@ -97,6 +113,111 @@ function registerHandlers(b) {
         sessionState.delete(chatId);
         awaitingUsername.add(chatId);
         await b.sendMessage(chatId, '👋 تم تسجيل الخروج. أرسل /start للدخول مجدداً.');
+    });
+    // /report
+    b.onText(/\/report/, async (msg) => {
+        const chatId = msg.chat.id;
+        const user = await getUser(chatId);
+        if (!user) {
+            await b.sendMessage(chatId, '🔒 أرسل /start لتسجيل الدخول');
+            return;
+        }
+        if (!isAdmin(user)) {
+            await b.sendMessage(chatId, '🔒 صلاحية المديرين فقط.');
+            return;
+        }
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const [created, completed, overdue] = await Promise.all([
+            client_1.default.task.count({ where: { createdAt: { gte: today, lt: tomorrow } } }),
+            client_1.default.task.count({ where: { status: 'COMPLETED', completedDate: { gte: today, lt: tomorrow } } }),
+            client_1.default.task.count({ where: { dueDate: { lt: today }, status: { notIn: ['COMPLETED', 'CANCELLED'] } } })
+        ]);
+        await b.sendMessage(chatId, `📈 *التقرير اليومي للمدير*\n\n` +
+            `🆕 مهام أُضيفت اليوم: *${created}*\n` +
+            `✅ مهام أُنجزت اليوم: *${completed}*\n` +
+            `⚠️ مهام متأخرة بالمجمل: *${overdue}*`, { parse_mode: 'Markdown' });
+    });
+    // /today_tasks
+    b.onText(/\/today_tasks/, async (msg) => {
+        const chatId = msg.chat.id;
+        const user = await getUser(chatId);
+        if (!user)
+            return;
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const tasks = await client_1.default.task.findMany({
+            where: { assignedToId: user.id, dueDate: { gte: today, lt: tomorrow }, status: { notIn: ['COMPLETED', 'CANCELLED'] } }
+        });
+        if (!tasks.length) {
+            await b.sendMessage(chatId, '🎉 ليس لديك مهام مطلوب تسليمها اليوم!');
+            return;
+        }
+        let m = `📅 *مهامك المطلوبة اليوم (${tasks.length})*\n\n`;
+        tasks.forEach(t => { m += `• *${t.taskCode}*: ${t.titleAr || t.title}\n`; });
+        await b.sendMessage(chatId, m, { parse_mode: 'Markdown' });
+    });
+    // /employee
+    b.onText(/\/employee/, async (msg) => {
+        const chatId = msg.chat.id;
+        const user = await getUser(chatId);
+        if (!user)
+            return;
+        if (!isAdmin(user)) {
+            await b.sendMessage(chatId, '🔒 صلاحية المديرين فقط.');
+            return;
+        }
+        sessionState.set(chatId, 'search_employee');
+        await b.sendMessage(chatId, '🔍 أدخل اسم الموظف أو كوده (Employee Code) للبحث عنه:');
+    });
+    // /status
+    b.onText(/\/status/, async (msg) => {
+        const chatId = msg.chat.id;
+        if (!(await getUser(chatId)))
+            return;
+        sessionState.set(chatId, 'us_code');
+        await b.sendMessage(chatId, '🔄 أدخل كود المهمة لتغيير حالتها:');
+    });
+    // /ask (AI Assistant)
+    b.onText(/\/ask(?:\s+(.*))?/, async (msg, match) => {
+        const chatId = msg.chat.id;
+        const user = await getUser(chatId);
+        if (!user) {
+            await b.sendMessage(chatId, '🔒 أرسل /start لتسجيل الدخول');
+            return;
+        }
+        const query = match?.[1]?.trim();
+        if (!query) {
+            await b.sendMessage(chatId, '🤖 *المساعد الذكي (AI)*\nأرسل سؤالك بعد الأمر، مثال:\n`/ask كيف أكتب تقريراً جيداً؟`', { parse_mode: 'Markdown' });
+            return;
+        }
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            await b.sendMessage(chatId, '❌ خدمة المساعد الذكي غير مفعلة حالياً (يجب أن يقوم مدير النظام بإضافة مفتاح GEMINI_API_KEY).');
+            return;
+        }
+        try {
+            const waitMsg = await b.sendMessage(chatId, '⏳ جاري التفكير...', { parse_mode: 'Markdown' });
+            const genAI = new generative_ai_1.GoogleGenerativeAI(apiKey);
+            const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+            const prompt = `أنت مساعد ذكي احترافي مدمج في نظام إدارة المهام الخاص بنا (Hany Tasks).
+الموظف الذي يطرح عليك السؤال اسمه "${user.fullNameAr}" (دوره: ${user.role?.nameAr || 'موظف'}).
+أجب على سؤاله التالي بشكل مختصر، مفيد، ومحفز للعمل:
+السؤال: ${query}`;
+            const result = await model.generateContent(prompt);
+            const responseText = result.response.text();
+            // Delete the 'thinking' message and send the actual response
+            await b.deleteMessage(chatId, waitMsg.message_id).catch(() => { });
+            await b.sendMessage(chatId, `🤖 *المساعد الذكي*\n\n${responseText}`, { parse_mode: 'Markdown' });
+        }
+        catch (err) {
+            console.error('AI Error:', err);
+            await b.sendMessage(chatId, '❌ عذراً، حدث خطأ أثناء التفكير. قد يكون هناك ضغط على الخدمة.');
+        }
     });
     // Callback queries
     b.on('callback_query', async (query) => {
@@ -186,6 +307,9 @@ function registerHandlers(b) {
         else if (data === 'main_menu') {
             await sendMenu(b, chatId, user);
         }
+        else if (data === 'ask_ai_btn') {
+            await b.sendMessage(chatId, '🤖 *المساعد الذكي (AI)*\nهذه الميزة متاحة عبر الأمر `/ask`.\n\nاضغط على الأمر للنسخ أو اكتبه مباشرة يليه سؤالك:\n`/ask كيف أدير وقتي اليوم بشكل أفضل؟`', { parse_mode: 'Markdown' });
+        }
     });
     // Text messages
     b.on('message', async (msg) => {
@@ -232,6 +356,20 @@ function registerHandlers(b) {
         if (sessionState.get(chatId) === 'awaiting_task_code') {
             sessionState.delete(chatId);
             await showTaskByCode(b, chatId, text, user);
+            return;
+        }
+        if (sessionState.get(chatId) === 'search_employee') {
+            sessionState.delete(chatId);
+            const emp = await client_1.default.user.findFirst({
+                where: { OR: [{ employeeCode: { equals: text, mode: 'insensitive' } }, { fullNameAr: { contains: text, mode: 'insensitive' } }] },
+                include: { role: true }
+            });
+            if (!emp) {
+                await b.sendMessage(chatId, '❌ لم يتم العثور على موظف بهذا الاسم أو الكود.');
+            }
+            else {
+                await showEmpDetails(b, chatId, emp.id);
+            }
             return;
         }
         // ── Multi-step: Create Task ───────────────────────────────
@@ -369,6 +507,7 @@ async function sendMenu(b, chatId, user, caption) {
                     [{ text: '➕ إنشاء مهمة', callback_data: 'create_task' }],
                     [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
                     [{ text: '💬 إضافة تعليق', callback_data: 'add_comment' }],
+                    [{ text: '🤖 اسأل المساعد الذكي', callback_data: 'ask_ai_btn' }],
                 ] }
         });
     }
@@ -382,6 +521,7 @@ async function sendMenu(b, chatId, user, caption) {
                     [{ text: '🔍 بحث عن مهمة', callback_data: 'my_search' }],
                     [{ text: '🔄 تحديث حالة مهمة', callback_data: 'update_status' }],
                     [{ text: '💬 إضافة تعليق', callback_data: 'add_comment' }],
+                    [{ text: '🤖 اسأل المساعد الذكي', callback_data: 'ask_ai_btn' }],
                 ] }
         });
     }

@@ -144,5 +144,64 @@ router.get('/departments-summary', async (req, res, next) => {
         next(e);
     }
 });
+// Extracts Report
+router.get('/extracts', (0, auth_1.authorizeLevel)(3), async (req, res, next) => {
+    try {
+        const { from, to, contractorId } = req.query;
+        const dateFilter = from || to ? {
+            receivedAt: {
+                ...(from ? { gte: new Date(from) } : {}),
+                ...(to ? { lte: new Date(to) } : {}),
+            }
+        } : {};
+        const where = { ...dateFilter, ...(contractorId ? { contractorId: +contractorId } : {}) };
+        // 1. By Contractor
+        const contractors = await client_1.default.contractor.findMany({ where: { isActive: true } });
+        const contractorStats = await Promise.all(contractors.map(async (c) => {
+            const agg = await client_1.default.taskExtract.aggregate({
+                where: { contractorId: c.id, ...dateFilter },
+                _count: { id: true },
+                _sum: { amount: true }
+            });
+            const postedCount = await client_1.default.taskExtract.count({ where: { contractorId: c.id, status: 'POSTED', ...dateFilter } });
+            const returnedCount = await client_1.default.taskExtract.count({ where: { contractorId: c.id, status: 'RETURNED', ...dateFilter } });
+            return {
+                contractorName: c.nameAr || c.name,
+                total: agg._count.id,
+                posted: postedCount,
+                returned: returnedCount,
+                totalAmount: agg._sum.amount || 0
+            };
+        }));
+        // 2. Average Review Time (Hours)
+        const postedExtracts = await client_1.default.taskExtract.findMany({
+            where: { ...where, status: 'POSTED' },
+            select: { receivedAt: true, updatedAt: true }
+        });
+        let totalReviewHours = 0;
+        for (const e of postedExtracts) {
+            totalReviewHours += (e.updatedAt.getTime() - e.receivedAt.getTime()) / (1000 * 60 * 60);
+        }
+        const avgReviewHours = postedExtracts.length > 0 ? Math.round(totalReviewHours / postedExtracts.length) : 0;
+        // 3. Financial Summary
+        const financial = await client_1.default.taskExtract.aggregate({
+            where,
+            _sum: { amount: true },
+            _count: { id: true }
+        });
+        res.json({
+            success: true,
+            data: {
+                contractorStats: contractorStats.filter(c => c.total > 0),
+                avgReviewHours,
+                totalAmount: Number(financial._sum.amount || 0),
+                totalExtracts: financial._count.id
+            }
+        });
+    }
+    catch (e) {
+        next(e);
+    }
+});
 exports.default = router;
 //# sourceMappingURL=report.routes.js.map

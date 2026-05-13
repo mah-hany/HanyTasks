@@ -22,10 +22,14 @@ exports.notificationService = {
             createdAt: notif.createdAt,
         });
         // Send browser Web Push (fire & forget — never block in-app notification)
+        const isExtractNotif = data.type.startsWith('EXTRACT_');
+        const pushUrl = isExtractNotif
+            ? '/extracts'
+            : data.taskId ? `/tasks/${data.taskId}` : '/notifications';
         push_service_1.pushService.sendToUser(data.receiverId, {
             title: data.titleAr || data.title,
             body: data.messageAr || data.message,
-            url: data.taskId ? `/tasks/${data.taskId}` : '/notifications',
+            url: pushUrl,
             tag: `notif-${data.type}-${data.receiverId}`,
         }).catch(() => { }); // silent — push failure must NOT break the flow
         return notif;

@@ -12,6 +12,7 @@ export declare const taskService: {
         toDate?: string;
         userId?: number;
         userRoleLevel?: number;
+        isArchived?: string | boolean;
     }): Promise<({
         _count: {
             comments: number;
@@ -45,14 +46,16 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     })[]>;
     getById(id: number): Promise<{
         category: {
@@ -163,14 +166,16 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     }>;
     create(data: {
         title: string;
@@ -183,6 +188,7 @@ export declare const taskService: {
         startDate?: string;
         dueDate?: string;
         templateId?: number;
+        dependsOnId?: number;
     }): Promise<{
         category: {
             id: number;
@@ -252,14 +258,16 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     }>;
     update(id: number, data: {
         title?: string;
@@ -270,6 +278,7 @@ export declare const taskService: {
         assignedToId?: number;
         startDate?: string;
         dueDate?: string;
+        dependsOnId?: number;
     }): Promise<{
         category: {
             id: number;
@@ -339,14 +348,36 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
+    }>;
+    archive(id: number, isArchived: boolean, userId: number): Promise<{
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        assignedToId: number;
+        status: string;
+        description: string | null;
+        title: string;
+        titleAr: string | null;
+        createdById: number;
+        taskCode: string;
+        categoryId: number | null;
+        priority: string;
+        startDate: Date | null;
+        dueDate: Date | null;
+        completedDate: Date | null;
+        progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     }>;
     updateStatus(taskId: number, newStatus: TaskStatus, userId: number, note?: string): Promise<{
         id: number;
@@ -357,14 +388,16 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     }>;
     updateProgress(taskId: number, progress: number, userId: number): Promise<{
         id: number;
@@ -375,14 +408,16 @@ export declare const taskService: {
         description: string | null;
         title: string;
         titleAr: string | null;
+        createdById: number;
         taskCode: string;
         categoryId: number | null;
         priority: string;
-        createdById: number;
         startDate: Date | null;
         dueDate: Date | null;
         completedDate: Date | null;
         progressPercent: number;
+        isArchived: boolean;
+        dependsOnId: number | null;
     }>;
     addComment(taskId: number, userId: number, text: string, isManagerNote?: boolean): Promise<{
         user: {
@@ -443,14 +478,16 @@ export declare const taskService: {
             description: string | null;
             title: string;
             titleAr: string | null;
+            createdById: number;
             taskCode: string;
             categoryId: number | null;
             priority: string;
-            createdById: number;
             startDate: Date | null;
             dueDate: Date | null;
             completedDate: Date | null;
             progressPercent: number;
+            isArchived: boolean;
+            dependsOnId: number | null;
         })[];
         teamActivity: {
             userId: number;

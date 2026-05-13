@@ -8,6 +8,7 @@ const client_1 = __importDefault(require("../../prisma/client"));
 const errorHandler_1 = require("../../middleware/errorHandler");
 const notification_service_1 = require("../notifications/notification.service");
 const email_service_1 = require("../email/email.service");
+const webhook_service_1 = require("../settings/webhook.service");
 function generateTaskCode() {
     const year = new Date().getFullYear();
     const rand = String(Math.floor(Math.random() * 90000) + 10000);
@@ -36,6 +37,7 @@ async function getSubordinateIds(managerId) {
 exports.taskService = {
     async getAll(filters) {
         const where = {};
+        where.isArchived = filters.isArchived === 'true' || filters.isArchived === true;
         if (filters.userRoleLevel && filters.userRoleLevel > 1 && filters.userId) {
             const subordinateIds = await getSubordinateIds(filters.userId);
             where.assignedToId = { in: [filters.userId, ...subordinateIds] };
@@ -118,6 +120,7 @@ exports.taskService = {
                 createdById: data.createdById,
                 startDate: data.startDate ? new Date(data.startDate) : null,
                 dueDate: data.dueDate ? new Date(data.dueDate) : null,
+                dependsOnId: data.dependsOnId,
                 status: 'NEW',
             },
             include: { assignedTo: true, createdBy: true, category: true },
@@ -146,6 +149,8 @@ exports.taskService = {
                 html: (0, email_service_1.taskAssignedEmail)(task.titleAr || task.title, task.taskCode, assignee.fullNameAr || assignee.fullName, data.dueDate ? new Date(data.dueDate).toLocaleDateString('ar-EG') : undefined),
             }).catch(() => { }); // fire-and-forget
         }
+        // Webhook
+        webhook_service_1.webhookService.dispatch('TASK_CREATED', task);
         return task;
     },
     async update(id, data) {
@@ -169,12 +174,33 @@ exports.taskService = {
             updateData.startDate = data.startDate ? new Date(data.startDate) : null;
         if (data.dueDate !== undefined)
             updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+        if (data.dependsOnId !== undefined)
+            updateData.dependsOnId = data.dependsOnId;
         const updated = await client_1.default.task.update({
             where: { id },
             data: updateData,
             include: { assignedTo: true, createdBy: true, category: true },
         });
+        webhook_service_1.webhookService.dispatch('TASK_UPDATED', updated);
         return updated;
+    },
+    async archive(id, isArchived, userId) {
+        const task = await client_1.default.task.findUnique({ where: { id } });
+        if (!task)
+            throw new errorHandler_1.AppError('Task not found', 404);
+        await client_1.default.taskStatusHistory.create({
+            data: {
+                taskId: id,
+                fromStatus: task.status,
+                toStatus: isArchived ? 'ARCHIVED' : task.status,
+                changedById: userId,
+                note: isArchived ? 'Task was archived' : 'Task was unarchived'
+            }
+        });
+        return client_1.default.task.update({
+            where: { id },
+            data: { isArchived }
+        });
     },
     async updateStatus(taskId, newStatus, userId, note) {
         const task = await client_1.default.task.findUnique({ where: { id: taskId } });
@@ -227,6 +253,7 @@ exports.taskService = {
                 messageAr: `المهمة "${task.titleAr || task.title}" تحتاج إلى تعديل`,
             });
         }
+        webhook_service_1.webhookService.dispatch('TASK_STATUS_CHANGED', updated);
         return updated;
     },
     async updateProgress(taskId, progress, userId) {

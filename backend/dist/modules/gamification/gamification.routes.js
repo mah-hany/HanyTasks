@@ -66,7 +66,7 @@ router.get('/leaderboard', async (req, res, next) => {
         next(e);
     }
 });
-// GET user's own points + badges
+// GET user's own points + badges + streak + challenges + team comparison
 router.get('/me', async (req, res, next) => {
     try {
         const userId = req.user.id;
@@ -78,6 +78,71 @@ router.get('/me', async (req, res, next) => {
             client_1.default.userPoint.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 10 }),
             client_1.default.task.count({ where: { assignedToId: userId, status: 'COMPLETED' } }),
         ]);
+        // Calculate Streak
+        const pointsDates = await client_1.default.userPoint.findMany({
+            where: { userId },
+            select: { createdAt: true },
+            orderBy: { createdAt: 'desc' },
+        });
+        const activeDates = [...new Set(pointsDates.map(p => {
+                const d = new Date(p.createdAt);
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            }))];
+        let currentStreak = 0;
+        const today = new Date();
+        for (let i = 0; i < 365; i++) {
+            const d = new Date(today);
+            d.setDate(today.getDate() - i);
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            if (activeDates.includes(dateStr)) {
+                currentStreak++;
+            }
+            else {
+                if (i === 0)
+                    continue; // if today is missing, allow yesterday
+                break;
+            }
+        }
+        // Weekly Challenges
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay());
+        const tasksCompletedThisWeek = await client_1.default.task.count({
+            where: { assignedToId: userId, status: 'COMPLETED', completedDate: { gte: startOfWeek } }
+        });
+        const weeklyChallenges = [
+            { id: 1, title: 'Speed Demon', titleAr: 'بطل السرعة', target: 5, current: tasksCompletedThisWeek, completed: tasksCompletedThisWeek >= 5, reward: 50 },
+            { id: 2, title: 'Consistent', titleAr: 'المثابر', target: 3, current: Math.min(currentStreak, 3), completed: currentStreak >= 3, reward: 20 },
+            { id: 3, title: 'Point Hunter', titleAr: 'صائد النقاط', target: 100, current: monthPoints._sum.points || 0, completed: (monthPoints._sum.points || 0) >= 100, reward: 30 }
+        ];
+        // Team comparison data (Last 7 Days)
+        const userInfo = await client_1.default.user.findUnique({ where: { id: userId }, select: { departmentId: true } });
+        const last7Days = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }).reverse();
+        const chartData = [];
+        if (userInfo?.departmentId) {
+            for (const d of last7Days) {
+                const nextDay = new Date(d);
+                nextDay.setDate(d.getDate() + 1);
+                const uPoints = await client_1.default.userPoint.aggregate({
+                    where: { userId, createdAt: { gte: d, lt: nextDay } },
+                    _sum: { points: true }
+                });
+                const tPoints = await client_1.default.userPoint.aggregate({
+                    where: { user: { departmentId: userInfo.departmentId }, createdAt: { gte: d, lt: nextDay } },
+                    _sum: { points: true }
+                });
+                const membersCount = await client_1.default.user.count({ where: { departmentId: userInfo.departmentId } });
+                const avgTeamPoints = membersCount > 0 ? (tPoints._sum.points || 0) / membersCount : 0;
+                chartData.push({
+                    date: `${d.getDate()}/${d.getMonth() + 1}`,
+                    user: uPoints._sum.points || 0,
+                    teamAvg: Math.round(avgTeamPoints)
+                });
+            }
+        }
         const badges = computeBadges(totalPoints._sum.points || 0, completedTotal);
         res.json({
             success: true,
@@ -87,6 +152,9 @@ router.get('/me', async (req, res, next) => {
                 recentEntries: entries,
                 badges,
                 level: getLevel(totalPoints._sum.points || 0),
+                streak: currentStreak,
+                challenges: weeklyChallenges,
+                teamChart: chartData
             },
         });
     }
@@ -109,19 +177,17 @@ router.post('/award', async (req, res, next) => {
 function computeBadges(points, completed) {
     const badges = [];
     if (completed >= 1)
-        badges.push('🏆 First Task');
+        badges.push({ name: 'First Task', nameAr: 'أول مهمة', icon: 'flag', color: '#3b82f6' });
     if (completed >= 10)
-        badges.push('⭐ Task Master');
+        badges.push({ name: 'Task Master', nameAr: 'سيد المهام', icon: 'military_tech', color: '#8b5cf6' });
     if (completed >= 50)
-        badges.push('🚀 Productivity Pro');
-    if (completed >= 100)
-        badges.push('👑 Legend');
+        badges.push({ name: 'Productivity Pro', nameAr: 'محترف', icon: 'rocket_launch', color: '#ec4899' });
     if (points >= 100)
-        badges.push('💎 Point Hunter');
+        badges.push({ name: 'Point Hunter', nameAr: 'صائد النقاط', icon: 'ads_click', color: '#f59e0b' });
     if (points >= 500)
-        badges.push('🔥 On Fire');
+        badges.push({ name: 'On Fire', nameAr: 'شعلة نشاط', icon: 'local_fire_department', color: '#ef4444' });
     if (points >= 1000)
-        badges.push('🌟 Elite');
+        badges.push({ name: 'Elite', nameAr: 'النخبة', icon: 'workspace_premium', color: '#eab308' });
     return badges;
 }
 function getLevel(points) {

@@ -12,12 +12,13 @@ router.get('/calendar', task_controller_1.taskController.getCalendar);
 router.get('/', task_controller_1.taskController.getAll);
 router.get('/:id', task_controller_1.taskController.getById);
 router.post('/', (0, auth_1.authorizeLevel)(3), task_controller_1.taskController.create);
-router.put('/:id', (0, auth_1.authorizeLevel)(1), task_controller_1.taskController.update);
+router.put('/:id', (0, auth_1.authorizeLevel)(3), task_controller_1.taskController.update);
+router.put('/:id/archive', (0, auth_1.authorizeLevel)(3), task_controller_1.taskController.archive);
 router.patch('/:id/status', task_controller_1.taskController.updateStatus);
 router.patch('/:id/progress', task_controller_1.taskController.updateProgress);
 router.post('/:id/comments', task_controller_1.taskController.addComment);
 router.post('/:id/attachments', task_controller_1.uploadAttachment.single('file'), task_controller_1.taskController.addAttachment);
 router.delete('/:id/attachments/:attachmentId', (0, auth_1.authorizeLevel)(1), task_controller_1.taskController.deleteAttachment);
-router.delete('/:id', (0, auth_1.authorizeLevel)(1), task_controller_1.taskController.delete);
+router.delete('/:id', (0, auth_1.authorizeLevel)(3), task_controller_1.taskController.delete);
 exports.default = router;
 //# sourceMappingURL=task.routes.js.map

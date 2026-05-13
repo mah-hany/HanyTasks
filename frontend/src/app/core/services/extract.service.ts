@@ -7,10 +7,8 @@ export interface BlobWithName { blob: Blob; filename: string; }
 
 function extractFilename(contentDisp: string | null, fallback: string): string {
   if (!contentDisp) return fallback;
-  // Try filename*=UTF-8''...
   const starMatch = /filename\*=UTF-8''([^;]+)/i.exec(contentDisp);
   if (starMatch) return decodeURIComponent(starMatch[1]);
-  // Try filename="..."
   const plain = /filename="?([^"]+)"?/i.exec(contentDisp);
   if (plain) return plain[1];
   return fallback;
@@ -40,8 +38,17 @@ export class ExtractService {
     return this.http.patch<any>(`${this.base}/${id}/status`, { status, returnComment });
   }
   delete(id: number)                { return this.http.delete<any>(`${this.base}/${id}`); }
+  update(id: number, data: { amount?: number | null; currency?: string; notes?: string; taskId?: number | null }) {
+    return this.http.patch<any>(`${this.base}/${id}`, data);
+  }
 
-  // Lookup data
+  // ── Settings ──────────────────────────────────────────────
+  /** Returns the list of enabled currency codes from system settings */
+  getCurrencies() {
+    return this.http.get<any>(`${environment.apiUrl}/settings/currencies`);
+  }
+
+  // ── Lookup data ───────────────────────────────────────────
   getContractors(search?: string) {
     let p = new HttpParams();
     if (search) p = p.set('search', search);

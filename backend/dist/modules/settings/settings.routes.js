@@ -8,7 +8,22 @@ const auth_1 = require("../../middleware/auth");
 const client_1 = __importDefault(require("../../prisma/client"));
 const router = (0, express_1.Router)();
 router.use(auth_1.authenticate);
-router.use((0, auth_1.authorizeLevel)(1)); // SuperAdmin only
+// ── Public (any authenticated user): get active currencies ──
+// MUST come BEFORE authorizeLevel(1) so extract users can read it
+const DEFAULT_CURRENCIES = 'EGP,USD,EUR,SAR,AED';
+router.get('/currencies', async (_req, res, next) => {
+    try {
+        const setting = await client_1.default.systemSetting.findUnique({ where: { key: 'extract_currencies' } });
+        const raw = setting?.value || DEFAULT_CURRENCIES;
+        const currencies = raw.split(',').map((c) => c.trim()).filter(Boolean);
+        res.json({ success: true, data: currencies });
+    }
+    catch (e) {
+        next(e);
+    }
+});
+// ── SuperAdmin-only routes ───────────────────────────────────
+router.use((0, auth_1.authorizeLevel)(1));
 router.get('/', async (_req, res, next) => {
     try {
         const settings = await client_1.default.systemSetting.findMany();

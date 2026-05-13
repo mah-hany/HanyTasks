@@ -81,14 +81,16 @@ export declare const userService: {
             description: string | null;
             title: string;
             titleAr: string | null;
+            createdById: number;
             taskCode: string;
             categoryId: number | null;
             priority: string;
-            createdById: number;
             startDate: Date | null;
             dueDate: Date | null;
             completedDate: Date | null;
             progressPercent: number;
+            isArchived: boolean;
+            dependsOnId: number | null;
         })[];
         id: number;
         employeeCode: string;

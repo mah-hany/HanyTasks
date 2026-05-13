@@ -12,6 +12,7 @@ export declare function weeklyReportEmail(employeeName: string, stats: {
     overdue: number;
     rate: number;
 }): string;
+export declare function taskReminderEmail(taskTitle: string, taskCode: string, employeeName: string, daysLeft: number): string;
 export declare function forgotPasswordEmail(employeeName: string, resetToken: string): string;
 export declare function sendWeeklyReports(): Promise<void>;
 //# sourceMappingURL=email.service.d.ts.map

@@ -203,6 +203,9 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
             <button mat-icon-button color="warn" *ngIf="canReturn(r)" (click)="openReturn(r)" [matTooltip]="isAr() ? 'إرجاع' : 'Return'">
               <mat-icon>assignment_return</mat-icon>
             </button>
+            <button mat-icon-button *ngIf="canEdit(r)" (click)="openEdit(r); $event.stopPropagation()" [matTooltip]="isAr() ? 'تعديل' : 'Edit'" style="color:var(--primary)">
+              <mat-icon>edit</mat-icon>
+            </button>
             <button mat-icon-button color="warn" *ngIf="canDelete()" (click)="deleteItem(r.id, r.extractNumber)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
               <mat-icon>delete</mat-icon>
             </button>
@@ -318,11 +321,9 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
           <mat-form-field appearance="outline" class="currency-field">
             <mat-label>{{ isAr() ? 'العملة' : 'Currency' }}</mat-label>
             <mat-select [(ngModel)]="newForm.currency">
-              <mat-option value="EGP">🇪🇬 EGP — جنيه مصري</mat-option>
-              <mat-option value="USD">🇺🇸 USD — دولار</mat-option>
-              <mat-option value="EUR">🇪🇺 EUR — يورو</mat-option>
-              <mat-option value="SAR">🇸🇦 SAR — ريال سعودي</mat-option>
-              <mat-option value="AED">🇦🇪 AED — درهم إماراتي</mat-option>
+              <mat-option *ngFor="let cur of enabledCurrencies()" [value]="cur.code">
+                {{cur.flag}} {{cur.code}}
+              </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -332,6 +333,97 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
         <button mat-raised-button color="primary" (click)="submitCreate()"
           [disabled]="!newForm.extractNumber || !newForm.contractorId || !newForm.projectId || saving()">
           <mat-icon>save</mat-icon> {{ isAr() ? 'حفظ' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Edit dialog (inline drawer) ──────────────────────── -->
+  <div class="form-overlay" *ngIf="showEdit()">
+    <div class="form-backdrop" (click)="showEdit.set(false)"></div>
+    <div class="form-drawer tf-card">
+      <div class="form-header">
+        <h3>
+          <mat-icon style="vertical-align:middle;margin-inline-end:6px;font-size:20px">edit</mat-icon>
+          {{ isAr() ? 'تعديل المستخلص' : 'Edit Extract' }}
+          <span class="edit-num-badge">#{{editForm.extractNumber}}</span>
+        </h3>
+        <button mat-icon-button (click)="showEdit.set(false)"><mat-icon>close</mat-icon></button>
+      </div>
+
+      <!-- Read-only info bar -->
+      <div class="edit-info-bar">
+        <span class="edit-info-item">
+          <mat-icon>person</mat-icon> {{editForm.contractorName}}
+        </span>
+        <span class="edit-info-item">
+          <mat-icon>business</mat-icon> {{editForm.projectName}}
+        </span>
+        <span class="edit-status-badge" [class]="editForm.status?.toLowerCase()?.replace('_','-')">
+          {{statusLabel(editForm.status || '')}}
+        </span>
+      </div>
+
+      <div class="form-body">
+        <!-- Amount + Currency -->
+        <div class="amount-row">
+          <mat-form-field appearance="outline" class="amount-field">
+            <mat-label>{{ isAr() ? 'المبلغ' : 'Amount' }}</mat-label>
+            <input matInput type="number" min="0" [(ngModel)]="editForm.amount" placeholder="0.00">
+            <mat-icon matSuffix>payments</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="currency-field">
+            <mat-label>{{ isAr() ? 'العملة' : 'Currency' }}</mat-label>
+            <mat-select [(ngModel)]="editForm.currency">
+              <mat-option *ngFor="let cur of enabledCurrencies()" [value]="cur.code">
+                {{cur.flag}} {{cur.code}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Linked Task -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ isAr() ? 'المهمة المرتبطة (اختياري)' : 'Linked Task (optional)' }}</mat-label>
+          <mat-select [(ngModel)]="editForm.taskId" (openedChange)="editTaskQ=''">
+            <div class="select-search-wrap">
+              <mat-icon class="select-search-icon">search</mat-icon>
+              <input class="select-search-input"
+                     [placeholder]="isAr() ? 'ابحث...' : 'Search...'"
+                     [(ngModel)]="editTaskQ"
+                     (keydown.space)="$event.stopPropagation()"
+                     (click)="$event.stopPropagation()">
+            </div>
+            <mat-option [value]="null">
+              <mat-icon style="font-size:15px;vertical-align:middle;color:var(--text-muted)">link_off</mat-icon>
+              {{ isAr() ? 'بدون ربط' : 'No linked task' }}
+            </mat-option>
+            <mat-option *ngFor="let t of filteredTasksEdit()" [value]="t.id">
+              <span class="opt-code">{{t.taskCode}}</span>
+              {{ isAr() && t.titleAr ? t.titleAr : t.title }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix style="font-size:16px">link</mat-icon>
+        </mat-form-field>
+
+        <!-- Notes -->
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ isAr() ? 'ملاحظات' : 'Notes' }}</mat-label>
+          <textarea matInput [(ngModel)]="editForm.notes" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="edit-hint" *ngIf="editForm.status === 'POSTED'">
+          <mat-icon>info</mat-icon>
+          {{ isAr() ? 'هذا المستخلص مُدرج — التعديل متاح فقط للمسؤولين.' : 'This extract is POSTED — editing is restricted to admins only.' }}
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button mat-button (click)="showEdit.set(false)">{{ isAr() ? 'إلغاء' : 'Cancel' }}</button>
+        <button mat-raised-button color="primary" (click)="submitEdit()" [disabled]="saving()">
+          <mat-spinner diameter="18" *ngIf="saving()" style="display:inline-block;margin-inline-end:6px"></mat-spinner>
+          <mat-icon *ngIf="!saving()">save</mat-icon>
+          {{ isAr() ? 'حفظ التعديلات' : 'Save Changes' }}
         </button>
       </div>
     </div>
@@ -467,6 +559,32 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
       background:#f1f5f9; color:#2563eb; padding:1px 6px;
       border-radius:4px; margin-inline-end:6px;
     }
+
+    /* ── Edit drawer extras ───────────────────────── */
+    .edit-num-badge {
+      display:inline-block; font-family:monospace; font-size:13px;
+      background:#1e3a5f; color:#fff; padding:1px 9px;
+      border-radius:8px; margin-inline-start:6px; vertical-align:middle;
+    }
+    .edit-info-bar {
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+      padding:8px 24px 0; font-size:12px; color:var(--text-secondary);
+      mat-icon { font-size:14px; width:14px; height:14px; vertical-align:middle; }
+    }
+    .edit-info-item { display:flex; align-items:center; gap:4px; }
+    .edit-status-badge {
+      padding:2px 10px; border-radius:20px; font-size:11px; font-weight:700;
+      &.received     { background:#fffbeb; color:#d97706; }
+      &.under-review { background:#eff6ff; color:#2563eb; }
+      &.posted       { background:#f0fdf4; color:#16a34a; }
+      &.returned     { background:#fef2f2; color:#dc2626; }
+    }
+    .edit-hint {
+      display:flex; align-items:center; gap:6px; padding:10px 14px;
+      background:#fffbeb; border:1px solid #fde68a; border-radius:8px;
+      font-size:12px; color:#92400e;
+      mat-icon { font-size:16px; width:16px; height:16px; }
+    }
   `]
 })
 export class ExtractsPageComponent implements OnInit {
@@ -475,10 +593,12 @@ export class ExtractsPageComponent implements OnInit {
   extracts     = signal<any[]>([]);
   contractors  = signal<any[]>([]);
   projects     = signal<any[]>([]);
-  tasks        = signal<any[]>([]);
+  tasks              = signal<any[]>([]);
+  enabledCurrencies  = signal<{code:string;flag:string;name:string;nameAr:string}[]>([]);
   loading      = signal(true);
   saving       = signal(false);
   showCreate   = signal(false);
+  showEdit     = signal(false);
   expandedRow: any = null;
 
   ds = new MatTableDataSource<any>([]);
@@ -492,6 +612,12 @@ export class ExtractsPageComponent implements OnInit {
   filterTo:   Date | null = null;
 
   newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, taskId: null as any, notes: '', amount: null as any, currency: 'EGP' };
+
+  // ── Edit form state ──
+  editForm: { id: number; extractNumber: number; contractorName: string; projectName: string; status: string; amount: any; currency: string; notes: string; taskId: any } = {
+    id: 0, extractNumber: 0, contractorName: '', projectName: '', status: '', amount: null, currency: 'EGP', notes: '', taskId: null,
+  };
+  editTaskQ = '';
 
   summary          = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
   financialSummary = signal<any>(null);
@@ -531,10 +657,27 @@ export class ExtractsPageComponent implements OnInit {
     );
   };
 
+  filteredTasksEdit = () => {
+    const q = this.editTaskQ.trim().toLowerCase();
+    if (!q) return this.tasks();
+    return this.tasks().filter(t =>
+      t.taskCode?.toLowerCase().includes(q) ||
+      t.title?.toLowerCase().includes(q) ||
+      t.titleAr?.toLowerCase().includes(q)
+    );
+  };
+
   isAr      = () => this.lang.getCurrentLang() === 'ar';
   canCreate = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
   canDelete = () => (this.auth.currentUser()?.role?.level ?? 99) <= 2;
   roleLevel = () => this.auth.currentUser()?.role?.level ?? 99;
+
+  // Can edit: SUPERVISOR+ for non-POSTED; ADMIN+ for POSTED
+  canEdit = (r: any) => {
+    const lv = this.roleLevel();
+    if (r.status === 'POSTED') return lv <= 2;
+    return lv <= 4;
+  };
 
   constructor(
     private svc: ExtractService,
@@ -545,10 +688,37 @@ export class ExtractsPageComponent implements OnInit {
     private snack: MatSnackBar,
   ) {}
 
+  // Full currency definitions (code + emoji flag + bilingual name)
+  readonly ALL_CURRENCIES = [
+    { code: 'EGP', flag: '🇪🇬', name: 'Egyptian Pound',  nameAr: 'جنيه مصري' },
+    { code: 'USD', flag: '🇺🇸', name: 'US Dollar',        nameAr: 'دولار أمريكي' },
+    { code: 'EUR', flag: '🇪🇺', name: 'Euro',             nameAr: 'يورو' },
+    { code: 'SAR', flag: '🇸🇦', name: 'Saudi Riyal',      nameAr: 'ريال سعودي' },
+    { code: 'AED', flag: '🇦🇪', name: 'UAE Dirham',       nameAr: 'درهم إماراتي' },
+    { code: 'KWD', flag: '🇰🇼', name: 'Kuwaiti Dinar',    nameAr: 'دينار كويتي' },
+    { code: 'QAR', flag: '🇶🇦', name: 'Qatari Riyal',     nameAr: 'ريال قطري' },
+    { code: 'GBP', flag: '🇬🇧', name: 'British Pound',    nameAr: 'جنيه بريطاني' },
+  ];
+
   ngOnInit() {
     this.svc.getContractors().subscribe(r => { if (r.success) this.contractors.set(r.data); });
     this.svc.getProjects().subscribe(r => { if (r.success) this.projects.set(r.data); });
     this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data); });
+    // Load enabled currencies from settings; fallback to full list
+    this.svc.getCurrencies().subscribe({
+      next: r => {
+        if (r.success && r.data?.length) {
+          const codes: string[] = r.data;
+          const filtered = this.ALL_CURRENCIES.filter(c => codes.includes(c.code));
+          this.enabledCurrencies.set(filtered.length ? filtered : this.ALL_CURRENCIES);
+          // Set default currency for new form to first enabled
+          if (filtered.length) this.newForm.currency = filtered[0].code;
+        } else {
+          this.enabledCurrencies.set(this.ALL_CURRENCIES);
+        }
+      },
+      error: () => this.enabledCurrencies.set(this.ALL_CURRENCIES),
+    });
     this.load();
   }
 
@@ -593,6 +763,44 @@ export class ExtractsPageComponent implements OnInit {
   setFilter(s: string) { this.filterStatus = s; this.load(); }
   toggleExpand(r: any) { this.expandedRow = this.expandedRow === r ? null : r; }
   openCreate() { this.newForm = { extractNumber: null, contractorId: null, projectId: null, taskId: null, notes: '', amount: null, currency: 'EGP' }; this.showCreate.set(true); }
+
+  openEdit(r: any) {
+    this.editTaskQ = '';
+    this.editForm = {
+      id:              r.id,
+      extractNumber:   r.extractNumber,
+      contractorName:  r.contractor?.name ?? '',
+      projectName:     r.project?.name ?? '',
+      status:          r.status,
+      amount:          r.amount ?? null,
+      currency:        r.currency ?? 'EGP',
+      notes:           r.notes ?? '',
+      taskId:          r.task?.id ?? null,
+    };
+    this.showEdit.set(true);
+  }
+
+  submitEdit() {
+    this.saving.set(true);
+    const payload: any = {
+      amount:   this.editForm.amount !== '' ? this.editForm.amount : null,
+      currency: this.editForm.currency,
+      notes:    this.editForm.notes,
+      taskId:   this.editForm.taskId,
+    };
+    this.svc.update(this.editForm.id, payload).subscribe({
+      next: () => {
+        this.saving.set(false);
+        this.showEdit.set(false);
+        this.load();
+        this.snack.open(this.isAr() ? 'تم حفظ التعديلات ✓' : 'Changes saved ✓', '', { duration: 2500 });
+      },
+      error: (e) => {
+        this.saving.set(false);
+        this.snack.open(e.error?.message || (this.isAr() ? 'حدث خطأ' : 'Error'), 'X', { duration: 4000 });
+      },
+    });
+  }
 
   submitCreate() {
     this.saving.set(true);

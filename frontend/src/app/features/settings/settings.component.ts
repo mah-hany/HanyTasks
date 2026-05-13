@@ -18,10 +18,12 @@ import { environment } from '../../../environments/environment';
 import { LangService } from '../../core/services/lang.service';
 import { AuthService } from '../../core/services/auth.service';
 
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, DatePipe, RouterLink, FormsModule, TranslateModule, MatIconModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressSpinnerModule, MatTabsModule, MatSlideToggleModule, MatTooltipModule],
+  imports: [CommonModule, DatePipe, RouterLink, FormsModule, TranslateModule, MatIconModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatSelectModule, MatProgressSpinnerModule, MatTabsModule, MatSlideToggleModule, MatTooltipModule, MatCheckboxModule],
   template: `
     <div class="page-container fade-in">
       <div class="page-header">
@@ -82,6 +84,31 @@ import { AuthService } from '../../core/services/auth.service';
                 <mat-label>{{ isAr() ? 'التنبيه قبل (أيام)' : 'Alert Before (Days)' }}</mat-label>
                 <input matInput type="number" [(ngModel)]="settings['alert_before_days']" />
               </mat-form-field>
+
+            <!-- Currencies Card -->
+            <div class="settings-card premium-glass currency-card">
+              <h3 class="card-title">
+                <mat-icon>currency_exchange</mat-icon>
+                {{ isAr() ? 'عملات المستخلصات' : 'Extract Currencies' }}
+              </h3>
+              <p class="currency-hint">
+                {{ isAr() ? 'حدد العملات التي تظهر عند إنشاء المستخلصات. يجب اختيار عملة واحدة على الأقل.' : 'Choose which currencies appear when creating extracts. At least one must stay enabled.' }}
+              </p>
+              <div class="currency-grid">
+                <label class="currency-item" *ngFor="let c of allCurrencies" [class.active]="isCurrencyEnabled(c.code)">
+                  <mat-checkbox color="primary"
+                    [checked]="isCurrencyEnabled(c.code)"
+                    (change)="toggleCurrency(c.code, $event.checked)">
+                  </mat-checkbox>
+                  <span class="cur-flag">{{c.flag}}</span>
+                  <span class="cur-info">
+                    <strong>{{c.code}}</strong>
+                    <small>{{ isAr() ? c.nameAr : c.name }}</small>
+                  </span>
+                </label>
+              </div>
+            </div>
+
             </div>
           </div>
         </mat-tab>
@@ -261,6 +288,31 @@ import { AuthService } from '../../core/services/auth.service';
     .tf-full-width { width: 100%; margin-bottom: 16px; }
     .loading-center { display: flex; justify-content: center; padding: 100px; }
 
+    /* ── Currencies Card ── */
+    .currency-card { grid-column: 1 / -1; max-width: 100%; }
+    .currency-hint { font-size: 13px; color: var(--text-muted); margin: -12px 0 18px; }
+    .currency-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 10px;
+    }
+    .currency-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 12px; cursor: pointer;
+      border: 2px solid var(--border-color); transition: all .2s;
+      background: var(--bg-main);
+      &.active {
+        border-color: var(--color-primary);
+        background: rgba(var(--color-primary-rgb, 59,130,246), 0.06);
+      }
+      &:hover { border-color: var(--color-primary); }
+    }
+    .cur-flag { font-size: 22px; line-height: 1; }
+    .cur-info { display: flex; flex-direction: column; gap: 1px;
+      strong { font-size: 13px; font-weight: 700; }
+      small  { font-size: 11px; color: var(--text-muted); }
+    }
+
     .table-responsive { overflow-x: auto; }
     .tf-table {
       width: 100%; border-collapse: collapse; text-align: start;
@@ -344,6 +396,39 @@ export class SettingsComponent implements OnInit {
   credSearch = '';
   showPassMap: Record<number, boolean> = {};
   webhooks: any[] = [];
+
+  // ── Currencies ──
+  allCurrencies = [
+    { code: 'EGP', flag: '🇪🇬', name: 'Egyptian Pound',    nameAr: 'جنيه مصري' },
+    { code: 'USD', flag: '🇺🇸', name: 'US Dollar',         nameAr: 'دولار أمريكي' },
+    { code: 'EUR', flag: '🇪🇺', name: 'Euro',              nameAr: 'يورو' },
+    { code: 'SAR', flag: '🇸🇦', name: 'Saudi Riyal',       nameAr: 'ريال سعودي' },
+    { code: 'AED', flag: '🇦🇪', name: 'UAE Dirham',        nameAr: 'درهم إماراتي' },
+    { code: 'KWD', flag: '🇰🇼', name: 'Kuwaiti Dinar',     nameAr: 'دينار كويتي' },
+    { code: 'QAR', flag: '🇶🇦', name: 'Qatari Riyal',      nameAr: 'ريال قطري' },
+    { code: 'GBP', flag: '🇬🇧', name: 'British Pound',     nameAr: 'جنيه بريطاني' },
+  ];
+
+  isCurrencyEnabled(code: string): boolean {
+    const raw = this.settings['extract_currencies'] || 'EGP,USD,EUR,SAR,AED';
+    return raw.split(',').map(c => c.trim()).includes(code);
+  }
+
+  toggleCurrency(code: string, enabled: boolean) {
+    const raw = this.settings['extract_currencies'] || 'EGP,USD,EUR,SAR,AED';
+    let list = raw.split(',').map(c => c.trim()).filter(Boolean);
+    if (enabled) {
+      if (!list.includes(code)) list.push(code);
+    } else {
+      if (list.length <= 1) return; // keep at least one
+      list = list.filter(c => c !== code);
+    }
+    // Preserve allCurrencies order
+    this.settings['extract_currencies'] = this.allCurrencies
+      .map(c => c.code)
+      .filter(c => list.includes(c))
+      .join(',');
+  }
 
   isAr = () => this.langService.getCurrentLang() === 'ar';
   isSuperAdmin = () => (this.authService.currentUser()?.role?.level ?? 99) <= 1;
