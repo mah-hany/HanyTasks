@@ -3,6 +3,7 @@ import { AppError } from '../../middleware/errorHandler';
 import { TaskStatus, TaskPriority } from '../../types/enums';
 import { notificationService } from '../notifications/notification.service';
 import { sendEmail, taskAssignedEmail } from '../email/email.service';
+import { webhookService } from '../settings/webhook.service';
 
 function generateTaskCode(): string {
   const year = new Date().getFullYear();
@@ -164,6 +165,9 @@ export const taskService = {
       }).catch(() => {}); // fire-and-forget
     }
 
+    // Webhook
+    webhookService.dispatch('TASK_CREATED', task);
+
     return task;
   },
 
@@ -191,6 +195,8 @@ export const taskService = {
       data: updateData,
       include: { assignedTo: true, createdBy: true, category: true },
     });
+
+    webhookService.dispatch('TASK_UPDATED', updated);
 
     return updated;
   },
@@ -271,6 +277,9 @@ export const taskService = {
         messageAr: `المهمة "${task.titleAr || task.title}" تحتاج إلى تعديل`,
       });
     }
+
+
+    webhookService.dispatch('TASK_STATUS_CHANGED', updated);
 
     return updated;
   },

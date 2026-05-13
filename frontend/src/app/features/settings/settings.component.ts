@@ -201,6 +201,47 @@ import { AuthService } from '../../core/services/auth.service';
           </div>
         </mat-tab>
 
+        <!-- ── Webhooks Tab (SUPERADMIN only) ── -->
+        <mat-tab *ngIf="isSuperAdmin()" label="{{ isAr() ? '🔗 ربط خارجي (Webhooks)' : '🔗 Webhooks' }}">
+          <div style="margin-top:24px;padding-bottom:40px">
+            <div class="cred-toolbar">
+              <button mat-flat-button color="primary" class="tf-btn-primary" (click)="newWebhook()">
+                <mat-icon>add</mat-icon> {{ isAr() ? 'إضافة Webhook' : 'Add Webhook' }}
+              </button>
+            </div>
+
+            <div class="settings-grid" *ngIf="webhooks.length > 0">
+              <div class="settings-card premium-glass" *ngFor="let hook of webhooks" style="position: relative;">
+                <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px;">
+                  <button mat-icon-button color="warn" (click)="deleteWebhook(hook.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+                <h3 class="card-title" style="margin-bottom: 8px;">
+                  <mat-icon>webhook</mat-icon> {{ hook.name }}
+                </h3>
+                <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">{{ hook.url }}</p>
+                
+                <div style="font-size: 13px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 6px;">
+                  <span class="role-pill lvl-4" *ngFor="let ev of hook.eventTypes.split(',')">{{ ev }}</span>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border-color); padding-top:12px;">
+                  <span style="font-size: 12px; color: var(--text-muted)">
+                    {{ hook.isActive ? (isAr() ? 'مفعل' : 'Active') : (isAr() ? 'معطل' : 'Disabled') }}
+                  </span>
+                  <mat-slide-toggle color="primary" [(ngModel)]="hook.isActive" (change)="updateWebhook(hook)"></mat-slide-toggle>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="webhooks.length === 0" style="text-align: center; padding: 60px; color: var(--text-muted);">
+              <mat-icon style="font-size: 48px; width: 48px; height: 48px; opacity: 0.5;">webhook</mat-icon>
+              <p style="margin-top: 16px; font-size: 16px;">{{ isAr() ? 'لا توجد Webhooks مضافة' : 'No Webhooks found' }}</p>
+            </div>
+          </div>
+        </mat-tab>
+
       </mat-tab-group>
     </div>
   `,
@@ -302,6 +343,7 @@ export class SettingsComponent implements OnInit {
   filteredCreds = signal<any[]>([]);
   credSearch = '';
   showPassMap: Record<number, boolean> = {};
+  webhooks: any[] = [];
 
   isAr = () => this.langService.getCurrentLang() === 'ar';
   isSuperAdmin = () => (this.authService.currentUser()?.role?.level ?? 99) <= 1;
@@ -345,7 +387,52 @@ export class SettingsComponent implements OnInit {
         },
         error: () => this.credsLoading.set(false),
       });
+
+      this.loadWebhooks();
     }
+  }
+
+  loadWebhooks() {
+    this.http.get<any>(`${environment.apiUrl}/webhooks`).subscribe(res => {
+      if (res.success) this.webhooks = res.data;
+    });
+  }
+
+  newWebhook() {
+    const name = prompt(this.isAr() ? 'اسم النظام الخارجي (مثال: ERP System)' : 'Webhook Name (e.g., ERP System)');
+    if (!name) return;
+    const url = prompt(this.isAr() ? 'رابط الاستقبال (URL)' : 'Webhook URL');
+    if (!url) return;
+    const secret = prompt(this.isAr() ? '(اختياري) رمز سري للتشفير (Secret)' : '(Optional) Secret for signing');
+    
+    // For simplicity, hardcode to listen to TASK_CREATED, TASK_UPDATED, TASK_STATUS_CHANGED.
+    // Ideally this would be a multi-select dialog, but prompt is quicker for now.
+    const eventTypes = 'TASK_CREATED,TASK_UPDATED,TASK_STATUS_CHANGED';
+
+    this.http.post<any>(`${environment.apiUrl}/webhooks`, { name, url, secret, eventTypes, isActive: true }).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.webhooks.unshift(res.data);
+          this.snack.open(this.isAr() ? 'تم إضافة Webhook' : 'Webhook added', 'OK', { duration: 2000 });
+        }
+      }
+    });
+  }
+
+  updateWebhook(hook: any) {
+    this.http.put<any>(`${environment.apiUrl}/webhooks/${hook.id}`, hook).subscribe();
+  }
+
+  deleteWebhook(id: number) {
+    if (!confirm(this.isAr() ? 'هل أنت متأكد من الحذف؟' : 'Are you sure?')) return;
+    this.http.delete<any>(`${environment.apiUrl}/webhooks/${id}`).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.webhooks = this.webhooks.filter(h => h.id !== id);
+          this.snack.open(this.isAr() ? 'تم الحذف' : 'Deleted', 'OK', { duration: 2000 });
+        }
+      }
+    });
   }
 
   private loadCount = 0;

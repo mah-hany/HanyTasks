@@ -408,6 +408,23 @@ model SystemSetting {
 }
 
 // ─────────────────────────────────────────
+//  WEBHOOKS (External Integration)
+// ─────────────────────────────────────────
+model Webhook {
+  id          Int      @id @default(autoincrement())
+  name        String
+  url         String
+  eventTypes  String   // e.g., "TASK_CREATED,TASK_COMPLETED"
+  secret      String?  // Optional secret to sign payloads
+  isActive    Boolean  @default(true)
+  createdById Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tbl_Webhooks")
+}
+
+// ─────────────────────────────────────────
 //  CHAT — CONVERSATIONS & MESSAGES
 // ─────────────────────────────────────────
 model ChatConversation {
