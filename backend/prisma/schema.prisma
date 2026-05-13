@@ -199,6 +199,10 @@ model Task {
   timeEntries     TimeEntry[]
   tags            TaskTag[]
   extracts        TaskExtract[]   // ← NEW: extracts linked to this task
+  
+  dependsOnId     Int?
+  dependsOn       Task?              @relation("TaskDependencies", fields: [dependsOnId], references: [id])
+  dependentTasks  Task[]             @relation("TaskDependencies")
 
   @@map("tbl_Tasks")
 }

@@ -79,12 +79,22 @@ import { LangService } from '../../../core/services/lang.service';
             </mat-form-field>
           </div>
 
-          <div class="form-row">
+          <div class="form-row-2">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>{{ 'TASKS.ASSIGNED_TO' | translate }}</mat-label>
               <mat-select formControlName="assignedToId" required>
                 <mat-option *ngFor="let u of users()" [value]="u.id">
                   {{ isAr() ? u.fullNameAr : u.fullName }} ({{ u.employeeCode }})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>{{ isAr() ? 'تعتمد على مهمة' : 'Depends On Task' }}</mat-label>
+              <mat-select formControlName="dependsOnId">
+                <mat-option [value]="null">-- {{ isAr() ? 'لا يوجد' : 'None' }} --</mat-option>
+                <mat-option *ngFor="let t of allTasks()" [value]="t.id">
+                  {{ t.taskCode }}: {{ isAr() && t.titleAr ? t.titleAr : t.title }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
@@ -154,6 +164,7 @@ export class TaskFormDialogComponent implements OnInit {
   form: FormGroup;
   users = signal<any[]>([]);
   categories = signal<any[]>([]);
+  allTasks = signal<any[]>([]);
   saving = signal(false);
   isEditMode = false;
   isAr = () => this.langService.getCurrentLang() === 'ar';
@@ -174,6 +185,7 @@ export class TaskFormDialogComponent implements OnInit {
       categoryId: [null],
       priority: ['MEDIUM', Validators.required],
       assignedToId: [null, Validators.required],
+      dependsOnId: [null],
       startDate: [null],
       dueDate: [null],
     });
@@ -182,6 +194,7 @@ export class TaskFormDialogComponent implements OnInit {
   ngOnInit() {
     this.userService.getAssignable().subscribe(res => { if (res.success) this.users.set(res.data); });
     this.taskService.getCategories().subscribe(res => { if (res.success) this.categories.set(res.data); });
+    this.taskService.getAll({}).subscribe(res => { if (res.success) this.allTasks.set(res.data); });
 
     if (this.data?.task) {
       this.isEditMode = true;
@@ -193,6 +206,7 @@ export class TaskFormDialogComponent implements OnInit {
         categoryId: t.categoryId,
         priority: t.priority,
         assignedToId: t.assignedToId,
+        dependsOnId: t.dependsOnId,
         startDate: t.startDate ? new Date(t.startDate) : null,
         dueDate: t.dueDate ? new Date(t.dueDate) : null,
       });

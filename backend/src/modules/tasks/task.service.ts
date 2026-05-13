@@ -103,7 +103,7 @@ export const taskService = {
     title: string; titleAr?: string; description?: string;
     categoryId?: number; priority: TaskPriority; assignedToId: number;
     createdById: number; startDate?: string; dueDate?: string;
-    templateId?: number;
+    templateId?: number; dependsOnId?: number;
   }) {
     let taskCode: string;
     let attempts = 0;
@@ -126,6 +126,7 @@ export const taskService = {
         createdById: data.createdById,
         startDate: data.startDate ? new Date(data.startDate) : null,
         dueDate: data.dueDate ? new Date(data.dueDate) : null,
+        dependsOnId: data.dependsOnId,
         status: 'NEW',
       },
       include: { assignedTo: true, createdBy: true, category: true },
@@ -169,7 +170,7 @@ export const taskService = {
   async update(id: number, data: {
     title?: string; titleAr?: string; description?: string;
     categoryId?: number; priority?: TaskPriority; assignedToId?: number;
-    startDate?: string; dueDate?: string;
+    startDate?: string; dueDate?: string; dependsOnId?: number;
   }) {
     const task = await prisma.task.findUnique({ where: { id } });
     if (!task) throw new AppError('Task not found', 404);
@@ -183,6 +184,7 @@ export const taskService = {
     if (data.assignedToId !== undefined) updateData.assignedToId = data.assignedToId;
     if (data.startDate !== undefined) updateData.startDate = data.startDate ? new Date(data.startDate) : null;
     if (data.dueDate !== undefined) updateData.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+    if (data.dependsOnId !== undefined) updateData.dependsOnId = data.dependsOnId;
 
     const updated = await prisma.task.update({
       where: { id },

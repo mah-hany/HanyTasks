@@ -19,6 +19,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { LangService } from '../../../core/services/lang.service';
 import { UserService } from '../../../core/services/user.service';
 import { TaskFormDialogComponent } from '../task-form-dialog/task-form-dialog.component';
+import { GanttChartComponent } from '../gantt-chart/gantt-chart.component';
 
 const STATUS_COLUMNS = [
   { key: 'NEW',               labelAr: 'جديدة',          label: 'New',              color: '#64748b', bg: 'rgba(100,116,139,0.08)', icon: 'fiber_new' },
@@ -33,7 +34,7 @@ const STATUS_COLUMNS = [
   standalone: true,
   imports: [CommonModule, DatePipe, RouterLink, FormsModule, MatIconModule, MatButtonModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
-    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule, DragDropModule],
+    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule, DragDropModule, GanttChartComponent],
   template: `
     <div class="page-container fade-in">
       <!-- Header -->
@@ -49,6 +50,9 @@ const STATUS_COLUMNS = [
             </button>
             <button [class.active]="view() === 'list'" (click)="view.set('list')" [matTooltip]="'TASKS.LIST_VIEW' | translate">
               <mat-icon>list</mat-icon>
+            </button>
+            <button [class.active]="view() === 'gantt'" (click)="view.set('gantt')" [matTooltip]="isAr() ? 'مخطط جانت (Gantt)' : 'Gantt Chart'">
+              <mat-icon>timeline</mat-icon>
             </button>
           </div>
           <button mat-stroked-button (click)="toggleArchived()" [matTooltip]="isAr() ? (showArchived ? 'إخفاء الأرشيف' : 'عرض الأرشيف') : (showArchived ? 'Hide Archived' : 'Show Archived')">
@@ -223,6 +227,12 @@ const STATUS_COLUMNS = [
           </table>
         </div>
       </div>
+
+      <!-- ── Gantt View ── -->
+      <div *ngIf="!loading() && view() === 'gantt'" class="gantt-view">
+        <app-gantt-chart [tasks]="filteredTasks()"></app-gantt-chart>
+      </div>
+
     </div>
   `,
   styles: [`
@@ -391,7 +401,7 @@ export class TasksListComponent implements OnInit {
   filteredTasks = signal<any[]>([]);
   showArchived = false;
   loading = signal(true);
-  view = signal<'kanban' | 'list'>('kanban');
+  view = signal<'kanban' | 'list' | 'gantt'>('kanban');
   allUsers = signal<any[]>([]);
 
   searchTerm       = '';
