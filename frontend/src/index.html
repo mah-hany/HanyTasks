@@ -20,6 +20,13 @@
   <base href="/">
 </head>
 <body class="mat-typography">
+  <!-- ⚡ Instant theme restore — must run before Angular boots -->
+  <script>
+    (function() {
+      var t = localStorage.getItem('tf_theme');
+      if (t === 'dark') document.body.classList.add('dark-theme');
+    })();
+  </script>
   <app-root></app-root>
 </body>
 </html>

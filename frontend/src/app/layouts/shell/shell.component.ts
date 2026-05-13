@@ -606,7 +606,7 @@ export class ShellComponent implements OnInit {
 
     const lang = this.langService.getCurrentLang();
     this.currentLang.set(lang);
-    this.isDark.set(document.body.classList.contains('dark-theme'));
+    this.isDark.set(localStorage.getItem('tf_theme') === 'dark');
     this.notifService.load().subscribe();
 
     const user = this.authService.currentUser();
