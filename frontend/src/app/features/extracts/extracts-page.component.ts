@@ -19,6 +19,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { ExtractService } from '../../core/services/extract.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LangService } from '../../core/services/lang.service';
+import { TaskService } from '../../core/services/task.service';
 import { ReturnCommentDialogComponent } from './return-comment-dialog.component';
 
 @Component({
@@ -208,6 +209,17 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
+          <mat-label>{{ isAr() ? 'المهمة المرتبطة (اختياري)' : 'Linked Task (optional)' }}</mat-label>
+          <mat-select [(ngModel)]="newForm.taskId" [placeholder]="isAr() ? 'بدون ربط بمهمة' : 'No linked task'">
+            <mat-option [value]="null">{{ isAr() ? 'بدون ربط بمهمة' : 'No linked task' }}</mat-option>
+            <mat-option *ngFor="let t of tasks()" [value]="t.id">
+              <span style="font-family:monospace;font-size:11px;color:#2563eb">{{t.taskCode}}</span>
+              &nbsp;—&nbsp;{{ isAr() && t.titleAr ? t.titleAr : t.title }}
+            </mat-option>
+          </mat-select>
+          <mat-icon matSuffix style="font-size:16px">link</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ isAr() ? 'ملاحظات' : 'Notes' }}</mat-label>
           <textarea matInput [(ngModel)]="newForm.notes" rows="2"></textarea>
         </mat-form-field>
@@ -302,6 +314,7 @@ export class ExtractsPageComponent implements OnInit {
   extracts     = signal<any[]>([]);
   contractors  = signal<any[]>([]);
   projects     = signal<any[]>([]);
+  tasks        = signal<any[]>([]);
   loading      = signal(true);
   saving       = signal(false);
   showCreate   = signal(false);
@@ -317,7 +330,7 @@ export class ExtractsPageComponent implements OnInit {
   filterFrom: Date | null = null;
   filterTo:   Date | null = null;
 
-  newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, notes: '' };
+  newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, taskId: null as any, notes: '' };
 
   summary = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
 
@@ -330,6 +343,7 @@ export class ExtractsPageComponent implements OnInit {
     private svc: ExtractService,
     private auth: AuthService,
     private lang: LangService,
+    private taskSvc: TaskService,
     private dialog: MatDialog,
     private snack: MatSnackBar,
   ) {}
@@ -337,6 +351,7 @@ export class ExtractsPageComponent implements OnInit {
   ngOnInit() {
     this.svc.getContractors().subscribe(r => { if (r.success) this.contractors.set(r.data); });
     this.svc.getProjects().subscribe(r => { if (r.success) this.projects.set(r.data); });
+    this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data); });
     this.load();
   }
 
@@ -367,7 +382,7 @@ export class ExtractsPageComponent implements OnInit {
 
   setFilter(s: string) { this.filterStatus = s; this.load(); }
   toggleExpand(r: any) { this.expandedRow = this.expandedRow === r ? null : r; }
-  openCreate() { this.newForm = { extractNumber: null, contractorId: null, projectId: null, notes: '' }; this.showCreate.set(true); }
+  openCreate() { this.newForm = { extractNumber: null, contractorId: null, projectId: null, taskId: null, notes: '' }; this.showCreate.set(true); }
 
   submitCreate() {
     this.saving.set(true);
