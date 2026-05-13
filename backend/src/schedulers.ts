@@ -38,6 +38,7 @@ export function startSchedulers() {
         });
 
         if (!recentNotif) {
+          // Notify Assignee
           await notificationService.create({
             receiverId: task.assignedToId,
             taskId: task.id,
@@ -47,6 +48,7 @@ export function startSchedulers() {
             message: `Task "${task.title}" is overdue!`,
             messageAr: `المهمة "${task.titleAr || task.title}" تجاوزت الموعد النهائي!`,
           });
+          // Notify Task Creator
           await notificationService.create({
             receiverId: task.createdById,
             taskId: task.id,
@@ -56,10 +58,66 @@ export function startSchedulers() {
             message: `Task "${task.title}" assigned to ${task.assignedTo.fullName} is overdue`,
             messageAr: `المهمة "${task.titleAr || task.title}" المسندة إلى ${task.assignedTo.fullNameAr} متأخرة`,
           });
+
+          // 🌟 RULE 1: Notify Manager Automatically
+          if (task.assignedTo.managerId) {
+            await notificationService.create({
+              receiverId: task.assignedTo.managerId,
+              taskId: task.id,
+              type: 'TASK_OVERDUE',
+              title: 'تنبيه تأخير تلقائي (إدارة)',
+              titleAr: 'تنبيه تأخير تلقائي (للمدير المباشر)',
+              message: `Task "${task.title}" assigned to your team member is overdue`,
+              messageAr: `المهمة "${task.titleAr || task.title}" المسندة للموظف ${task.assignedTo.fullNameAr} تجاوزت موعد التسليم.`,
+            });
+            // Also send Telegram to manager
+            const { sendTelegramNotification } = require('./modules/telegram/telegram.bot');
+            await sendTelegramNotification(
+              task.assignedTo.managerId,
+              `⚠️ *تنبيه تأخير للمدير*\n\nالمهمة: *${task.taskCode}* - ${task.titleAr || task.title}\nالموظف: *${task.assignedTo.fullNameAr}*\nهذه المهمة تجاوزت الموعد النهائي!`
+            );
+          }
         }
       }
     } catch (err) {
       logger.error('Scheduler error:', err);
+    }
+  });
+
+  // 🌟 RULE 3: Daily at 9 AM: 3-days no update reminder
+  cron.schedule('0 9 * * *', async () => {
+    logger.debug('⏳ Running 3-days no update check...');
+    try {
+      const threeDaysAgo = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+      const staleTasks = await prisma.task.findMany({
+        where: {
+          status: { in: ['NEW', 'IN_PROGRESS'] },
+          updatedAt: { lt: threeDaysAgo },
+        },
+        include: { assignedTo: true }
+      });
+
+      for (const task of staleTasks) {
+        // Send In-App Notification
+        await notificationService.create({
+          receiverId: task.assignedToId,
+          taskId: task.id,
+          type: 'SYSTEM',
+          title: 'تحديث مطلوب للمهمة',
+          titleAr: 'تحديث مطلوب للمهمة',
+          message: `Task "${task.title}" has not been updated for 3 days`,
+          messageAr: `المهمة "${task.titleAr || task.title}" لم يتم تحديث حالتها منذ 3 أيام. يرجى المتابعة وتحديث التطورات.`,
+        });
+        
+        // Send Telegram reminder
+        const { sendTelegramNotification } = require('./modules/telegram/telegram.bot');
+        await sendTelegramNotification(
+          task.assignedToId,
+          `🔔 *تذكير بتحديث حالة*\n\nالمهمة: *${task.taskCode}* - ${task.titleAr || task.title}\nلم يتم تحديثها منذ أكثر من 3 أيام. يرجى الدخول للنظام وتحديث حالة الإنجاز أو إضافة تعليق.`
+        );
+      }
+    } catch (err) {
+      logger.error('No-update reminder error:', err);
     }
   });
 
