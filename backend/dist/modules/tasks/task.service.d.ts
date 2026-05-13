@@ -410,6 +410,8 @@ export declare const taskService: {
         completed: number;
         overdue: number;
         completedThisWeek: number;
+        totalLastMonth: number;
+        completedLastMonth: number;
         monthlyData: {
             month: string;
             count: number;
@@ -450,6 +452,17 @@ export declare const taskService: {
             completedDate: Date | null;
             progressPercent: number;
         })[];
+        teamActivity: {
+            userId: number;
+            userName: string;
+            userNameAr: string;
+            count: number;
+        }[];
+        burndownData: {
+            date: string;
+            dateAr: string;
+            remaining: number;
+        }[];
     }>;
     delete(id: number): Promise<{
         message: string;

@@ -47,7 +47,14 @@ Chart.register(...registerables);
           <div class="kpi-card total" routerLink="/tasks">
             <div class="kpi-icon"><mat-icon>assignment</mat-icon></div>
             <div class="kpi-data">
-              <div class="kpi-value">{{ stats()?.total }}</div>
+              <div class="kpi-value">
+                {{ stats()?.total }}
+                <ng-container *ngIf="getTrend(stats()?.total, stats()?.totalLastMonth) as tr">
+                  <span class="trend" [class.positive]="tr.pos" [class.negative]="!tr.pos">
+                    <mat-icon inline>{{ tr.pos ? 'arrow_upward' : 'arrow_downward' }}</mat-icon> {{ tr.val }}%
+                  </span>
+                </ng-container>
+              </div>
               <div class="kpi-label">{{ 'DASHBOARD.TOTAL_TASKS' | translate }}</div>
             </div>
           </div>
@@ -61,7 +68,14 @@ Chart.register(...registerables);
           <div class="kpi-card done" routerLink="/tasks" [queryParams]="{status: 'COMPLETED'}">
             <div class="kpi-icon"><mat-icon>check_circle_outline</mat-icon></div>
             <div class="kpi-data">
-              <div class="kpi-value">{{ stats()?.completedThisWeek }}</div>
+              <div class="kpi-value">
+                {{ stats()?.completed }}
+                <ng-container *ngIf="getTrend(stats()?.completed, stats()?.completedLastMonth) as tr">
+                  <span class="trend" [class.positive]="tr.pos" [class.negative]="!tr.pos">
+                    <mat-icon inline>{{ tr.pos ? 'arrow_upward' : 'arrow_downward' }}</mat-icon> {{ tr.val }}%
+                  </span>
+                </ng-container>
+              </div>
               <div class="kpi-label">{{ 'DASHBOARD.COMPLETED_WEEK' | translate }}</div>
             </div>
           </div>
@@ -76,18 +90,14 @@ Chart.register(...registerables);
 
         <!-- Charts + Recent Tasks -->
         <div class="dashboard-grid">
-          <!-- Bar Chart: Monthly productivity -->
+          <!-- Line Chart: Progress over time -->
           <div class="tf-card chart-card">
             <div class="chart-header">
-              <h3>{{ 'DASHBOARD.TEAM_PRODUCTIVITY' | translate }}</h3>
+              <h3>{{ isAr() ? 'تقدم المهام على مدار الوقت' : 'Tasks Progress Over Time' }}</h3>
               <span class="chart-sub">آخر 6 أشهر / Last 6 months</span>
             </div>
             <div class="chart-wrapper">
-              <canvas baseChart
-                [data]="barChartData()"
-                [options]="barOptions"
-                type="bar">
-              </canvas>
+              <canvas baseChart [data]="lineChartData()" [options]="lineOptions" type="line"></canvas>
             </div>
           </div>
 
@@ -97,11 +107,32 @@ Chart.register(...registerables);
               <h3>{{ 'DASHBOARD.STATUS_DISTRIBUTION' | translate }}</h3>
             </div>
             <div class="chart-wrapper chart-wrapper--pie">
-              <canvas baseChart
-                [data]="pieChartData()"
-                [options]="pieOptions"
-                type="doughnut">
-              </canvas>
+              <canvas baseChart [data]="pieChartData()" [options]="pieOptions" type="doughnut"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2 Charts -->
+        <div class="dashboard-grid dashboard-grid-equal">
+          <!-- Burndown Chart -->
+          <div class="tf-card chart-card">
+            <div class="chart-header">
+              <h3>{{ isAr() ? 'معدل الإنجاز (Burndown)' : 'Tasks Burndown' }}</h3>
+              <span class="chart-sub">آخر 7 أيام / Last 7 days</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas baseChart [data]="burndownChartData()" [options]="lineOptions" type="line"></canvas>
+            </div>
+          </div>
+
+          <!-- Team Activity -->
+          <div class="tf-card chart-card">
+            <div class="chart-header">
+              <h3>{{ isAr() ? 'هيت ماب نشاط الفريق' : 'Team Activity Map' }}</h3>
+              <span class="chart-sub">أفضل أداء هذا الشهر / Top performance this month</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas baseChart [data]="teamChartData()" [options]="hBarOptions" type="bar"></canvas>
             </div>
           </div>
         </div>
@@ -165,6 +196,15 @@ Chart.register(...registerables);
       margin-bottom: 24px;
 
       @media (max-width: 900px) { grid-template-columns: 1fr; }
+    }
+    .dashboard-grid-equal {
+      grid-template-columns: 1fr 1fr;
+    }
+    .trend {
+      font-size: 12px; font-weight: 600; padding: 2px 6px; border-radius: 20px; display: inline-flex; align-items: center; margin-left: 10px; margin-right: 10px;
+      &.positive { background: rgba(34,197,94,0.1); color: #22c55e; }
+      &.negative { background: rgba(239,68,68,0.1); color: #ef4444; }
+      mat-icon { font-size: 14px; width: 14px; height: 14px; }
     }
 
     .chart-card {
@@ -232,12 +272,23 @@ export class DashboardComponent implements OnInit {
   user = () => this.authService.currentUser();
   isAr = () => this.langService.getCurrentLang() === 'ar';
 
-  barOptions: ChartConfiguration['options'] = {
+  lineOptions: ChartConfiguration['options'] = {
     responsive: true, maintainAspectRatio: false,
     plugins: { legend: { display: false } },
+    elements: { line: { tension: 0.4 } },
     scales: {
       x: { grid: { display: false } },
       y: { beginAtZero: true, ticks: { stepSize: 1 } },
+    },
+  };
+
+  hBarOptions: ChartConfiguration['options'] = {
+    responsive: true, maintainAspectRatio: false,
+    indexAxis: 'y',
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { beginAtZero: true, ticks: { stepSize: 1 } },
+      y: { grid: { display: false } },
     },
   };
 
@@ -247,8 +298,17 @@ export class DashboardComponent implements OnInit {
     cutout: '65%',
   };
 
-  barChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
+  lineChartData = signal<ChartData<'line'>>({ labels: [], datasets: [] });
+  burndownChartData = signal<ChartData<'line'>>({ labels: [], datasets: [] });
+  teamChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
   pieChartData = signal<ChartData<'doughnut'>>({ labels: [], datasets: [] });
+
+  getTrend(current: number, previous: number) {
+    if (previous === undefined || previous === null) return null;
+    if (previous === 0) return current > 0 ? { val: 100, pos: true } : { val: 0, pos: true };
+    const diff = current - previous;
+    return { val: Math.round((Math.abs(diff) / previous) * 100), pos: diff >= 0 };
+  }
 
   constructor(
     private taskService: TaskService,
@@ -270,18 +330,45 @@ export class DashboardComponent implements OnInit {
   }
 
   buildCharts(data: any) {
-    // Bar chart
+    // Line chart
     const months = data.monthlyData?.map((m: any) => m.month) || [];
     const counts = data.monthlyData?.map((m: any) => m.count) || [];
-    this.barChartData.set({
+    this.lineChartData.set({
       labels: months,
       datasets: [{
-        data: counts, label: 'Completed',
-        backgroundColor: 'rgba(46,134,171,0.7)',
+        data: counts, label: this.isAr() ? 'مكتملة' : 'Completed',
+        backgroundColor: 'rgba(46,134,171,0.2)',
         borderColor: '#2E86AB',
-        borderWidth: 2, borderRadius: 6,
-        hoverBackgroundColor: 'rgba(241,143,1,0.8)',
+        borderWidth: 2, fill: true,
+        pointBackgroundColor: '#2E86AB',
+        pointBorderColor: '#fff',
       }],
+    });
+
+    // Burndown Chart
+    const bdDates = data.burndownData?.map((d: any) => this.isAr() ? d.dateAr : d.date) || [];
+    const bdRemaining = data.burndownData?.map((d: any) => d.remaining) || [];
+    this.burndownChartData.set({
+      labels: bdDates,
+      datasets: [{
+        data: bdRemaining, label: this.isAr() ? 'مهام مفتوحة' : 'Open Tasks',
+        backgroundColor: 'rgba(239,68,68,0.2)',
+        borderColor: '#ef4444',
+        borderWidth: 2, fill: true,
+        pointBackgroundColor: '#ef4444',
+      }]
+    });
+
+    // Team Activity Horizontal Bar
+    const teamNames = data.teamActivity?.map((t: any) => this.isAr() ? t.userNameAr : t.userName) || [];
+    const teamCounts = data.teamActivity?.map((t: any) => t.count) || [];
+    this.teamChartData.set({
+      labels: teamNames,
+      datasets: [{
+        data: teamCounts, label: this.isAr() ? 'المهام المكتملة' : 'Completed Tasks',
+        backgroundColor: 'rgba(34,197,94,0.7)',
+        borderRadius: 4,
+      }]
     });
 
     // Pie chart

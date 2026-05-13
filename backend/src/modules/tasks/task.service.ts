@@ -292,6 +292,9 @@ export const taskService = {
     const now = new Date();
     const weekStart = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
 
     let baseWhere: any = {};
     if (roleLevel > 1) {
@@ -305,6 +308,11 @@ export const taskService = {
       prisma.task.count({ where: { ...baseWhere, status: 'COMPLETED' } }),
       prisma.task.count({ where: { ...baseWhere, status: { not: 'COMPLETED' }, dueDate: { lt: now } } }),
       prisma.task.count({ where: { ...baseWhere, status: 'COMPLETED', completedDate: { gte: weekStart } } }),
+    ]);
+
+    const [totalLastMonth, completedLastMonth] = await Promise.all([
+      prisma.task.count({ where: { ...baseWhere, status: { not: 'CANCELLED' }, createdAt: { lte: lastMonthEnd } } }),
+      prisma.task.count({ where: { ...baseWhere, status: 'COMPLETED', completedDate: { gte: lastMonthStart, lte: lastMonthEnd } } })
     ]);
 
     // Monthly chart data (last 6 months)
@@ -329,7 +337,46 @@ export const taskService = {
       take: 5,
     });
 
-    return { total, inProgress, completed, overdue, completedThisWeek, monthlyData, statusDist, recentTasks };
+    // Team Activity (tasks completed by user this month)
+    const teamActivityRows = await prisma.task.groupBy({
+      by: ['assignedToId'],
+      where: { ...baseWhere, status: 'COMPLETED', completedDate: { gte: monthStart } },
+      _count: { id: true }
+    });
+    const userIds = teamActivityRows.map(t => t.assignedToId).filter(id => id !== null) as number[];
+    const users = await prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, fullName: true, fullNameAr: true } });
+    const teamActivity = teamActivityRows.map(t => {
+      const user = users.find(u => u.id === t.assignedToId);
+      return { userId: t.assignedToId, userName: user?.fullName || 'Unknown', userNameAr: user?.fullNameAr || 'غير معروف', count: t._count.id };
+    }).sort((a, b) => b.count - a.count).slice(0, 5); // top 5
+
+    // Burndown Data (Last 7 days, open tasks)
+    const last7Days = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (6 - i));
+      const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59);
+      return { start: d, end };
+    });
+    const burndownData = await Promise.all(last7Days.map(async day => {
+      const remaining = await prisma.task.count({
+        where: {
+           ...baseWhere,
+           status: { not: 'CANCELLED' },
+           createdAt: { lte: day.end },
+           OR: [
+             { completedDate: null },
+             { completedDate: { gt: day.end } }
+           ]
+        }
+      });
+      return { date: day.start.toLocaleString('en-US', { weekday: 'short' }), dateAr: day.start.toLocaleString('ar-EG', { weekday: 'short' }), remaining };
+    }));
+
+    return { 
+      total, inProgress, completed, overdue, completedThisWeek, 
+      totalLastMonth, completedLastMonth,
+      monthlyData, statusDist, recentTasks,
+      teamActivity, burndownData
+    };
   },
 
   async delete(id: number) {
