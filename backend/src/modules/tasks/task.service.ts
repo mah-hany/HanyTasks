@@ -94,7 +94,8 @@ export const taskService = {
           orderBy: { commentDate: 'asc' },
         },
         attachments: true,
-      },
+        dependsOn: { select: { id: true, taskCode: true, title: true, titleAr: true, status: true } },
+        dependentTasks: { select: { id: true, taskCode: true, title: true, titleAr: true, status: true } },
     });
     if (!task) throw new AppError('Task not found', 404);
     return task;

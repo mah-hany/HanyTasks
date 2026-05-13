@@ -144,6 +144,33 @@ import { environment } from '../../../../environments/environment';
                 <p>{{ task()?.description }}</p>
               </div>
 
+              <!-- Dependencies -->
+              <div class="dependencies-section" *ngIf="task()?.dependsOn || (task()?.dependentTasks && task()?.dependentTasks.length > 0)">
+                <label>{{ isAr() ? '🔗 التبعيات (Dependencies)' : '🔗 Dependencies' }}</label>
+                
+                <div class="dep-container">
+                  <div class="dep-block" *ngIf="task()?.dependsOn">
+                    <span class="dep-title">{{ isAr() ? 'تعتمد على:' : 'Depends On:' }}</span>
+                    <a [routerLink]="['/tasks', task()?.dependsOn?.id]" class="dep-task-chip" (click)="loadTask(task()?.dependsOn?.id)">
+                      <mat-icon style="font-size:16px;width:16px;height:16px">arrow_upward</mat-icon>
+                      <span class="dep-name">{{ task()?.dependsOn?.taskCode }}: {{ isAr() && task()?.dependsOn?.titleAr ? task()?.dependsOn?.titleAr : task()?.dependsOn?.title }}</span>
+                      <span class="status-chip" [class]="getStatusClass(task()?.dependsOn?.status)">{{ getStatusLabel(task()?.dependsOn?.status) }}</span>
+                    </a>
+                  </div>
+
+                  <div class="dep-block" *ngIf="task()?.dependentTasks?.length">
+                    <span class="dep-title">{{ isAr() ? 'تمهد للمهام:' : 'Blocks Tasks:' }}</span>
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <a *ngFor="let dep of task()?.dependentTasks" [routerLink]="['/tasks', dep.id]" class="dep-task-chip" (click)="loadTask(dep.id)">
+                        <mat-icon style="font-size:16px;width:16px;height:16px">arrow_downward</mat-icon>
+                        <span class="dep-name">{{ dep.taskCode }}: {{ isAr() && dep.titleAr ? dep.titleAr : dep.title }}</span>
+                        <span class="status-chip" [class]="getStatusClass(dep.status)">{{ getStatusLabel(dep.status) }}</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <!-- Checklist -->
               <div class="checklist-section">
                 <div class="checklist-header">
@@ -299,6 +326,20 @@ import { environment } from '../../../../environments/environment';
 
     .progress-section { padding: 16px 0; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); margin-bottom: 16px; }
     .description-section { label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; display: block; } p { font-size: 14px; line-height: 1.7; } }
+    
+    .dependencies-section { padding: 16px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; label { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; display: block; font-weight: 700; } }
+    .dep-container { display: flex; flex-direction: column; gap: 16px; }
+    .dep-block { display: flex; flex-direction: column; gap: 6px; }
+    .dep-title { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+    .dep-task-chip {
+      display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+      background: rgba(var(--primary-rgb), 0.05); border: 1px solid rgba(var(--primary-rgb), 0.2);
+      border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;
+      &:hover { background: rgba(var(--primary-rgb), 0.1); transform: translateX(2px); }
+      mat-icon { color: var(--primary); }
+      .dep-name { font-size: 13px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .status-chip { font-size: 10px; padding: 2px 6px; }
+    }
     .checklist-section { padding: 16px 0; border-top: 1px solid var(--border-color); margin-top: 16px; }
     .checklist-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; label { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; } }
     .checklist-count { background: var(--color-primary-light); color: white; border-radius: 20px; padding: 1px 8px; font-size: 11px; font-weight: 700; }
