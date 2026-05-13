@@ -31,6 +31,9 @@ import searchRoutes from './modules/search/search.routes';
 
 const app = express();
 
+// Trust proxy required for express-rate-limit behind Render's proxy
+app.set('trust proxy', 1);
+
 // ── Security Headers (Helmet) ──────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow uploads to be served
