@@ -22,15 +22,24 @@ export interface ChatMessage {
   sender?: ChatUser;
 }
 
+export interface ChatParticipant {
+  id: number;
+  userId: number;
+  user: ChatUser;
+}
+
 export interface ChatConversation {
   id: number;
-  user1Id: number;
-  user2Id: number;
+  isGroup?: boolean;
+  groupName?: string;
+  user1Id?: number;
+  user2Id?: number;
   lastMessage?: string;
   lastAt?: string;
   unreadCount: number;
-  user1: ChatUser;
-  user2: ChatUser;
+  user1?: ChatUser;
+  user2?: ChatUser;
+  participants?: ChatParticipant[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -127,7 +136,12 @@ export class ChatService {
     this.activeConvUserId.set(otherUserId);
     this.isChatOpen.set(true);
     this.isLoadingMessages.set(true);
-    this.http.get<any>(`${environment.apiUrl}/chat/conversations/${otherUserId}/messages`).pipe(
+    
+    const url = otherUserId < 0 
+      ? `${environment.apiUrl}/chat/groups/${-otherUserId}/messages`
+      : `${environment.apiUrl}/chat/conversations/${otherUserId}/messages`;
+      
+    this.http.get<any>(url).pipe(
       tap(res => {
         if (res.success) {
           this.messages.set(res.data.messages);
@@ -139,7 +153,11 @@ export class ChatService {
   }
 
   sendMessage(toUserId: number, text: string) {
-    return this.http.post<any>(`${environment.apiUrl}/chat/conversations/${toUserId}/messages`, { text }).pipe(
+    const url = toUserId < 0 
+      ? `${environment.apiUrl}/chat/groups/${-toUserId}/messages`
+      : `${environment.apiUrl}/chat/conversations/${toUserId}/messages`;
+      
+    return this.http.post<any>(url, { text }).pipe(
       tap(res => {
         if (res.success) {
           this.messages.update(msgs => [...msgs, res.data]);
@@ -150,8 +168,10 @@ export class ChatService {
   }
 
   markRead(otherUserId: number, _currentUserId: number) {
-    // Trigger a GET which internally marks as read
-    return this.http.get<any>(`${environment.apiUrl}/chat/conversations/${otherUserId}/messages`).pipe(
+    const url = otherUserId < 0 
+      ? `${environment.apiUrl}/chat/groups/${-otherUserId}/messages`
+      : `${environment.apiUrl}/chat/conversations/${otherUserId}/messages`;
+    return this.http.get<any>(url).pipe(
       tap(() => this.loadUnreadCount().subscribe())
     );
   }
@@ -163,12 +183,26 @@ export class ChatService {
   }
 
   getConvPartner(conv: ChatConversation, myId: number): ChatUser {
-    return conv.user1Id === myId ? conv.user2 : conv.user1;
+    if (conv.isGroup) {
+      return { id: -conv.id, fullName: conv.groupName || 'مجموعة', fullNameAr: conv.groupName || 'مجموعة', profilePhoto: '' } as ChatUser;
+    }
+    return conv.user1Id === myId ? conv.user2! : conv.user1!;
   }
 
   private getOtherUserId(convId: number, myId: number): number | null {
     const conv = this.conversations().find(c => c.id === convId);
     if (!conv) return null;
-    return conv.user1Id === myId ? conv.user2Id : conv.user1Id;
+    if (conv.isGroup) return -conv.id;
+    return conv.user1Id === myId ? conv.user2Id! : conv.user1Id!;
+  }
+
+  createGroup(name: string, userIds: number[]) {
+    return this.http.post<any>(`${environment.apiUrl}/chat/groups`, { name, userIds }).pipe(
+      tap(res => {
+        if (res.success) {
+          this.loadConversations().subscribe();
+        }
+      })
+    );
   }
 }

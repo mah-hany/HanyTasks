@@ -11,7 +11,6 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-
 // ─────────────────────────────────────────
 //  ROLES & PERMISSIONS
 // ─────────────────────────────────────────
@@ -19,7 +18,7 @@ model Role {
   id          Int          @id @default(autoincrement())
   name        String       @unique // SUPERADMIN | ADMIN | MANAGER | SUPERVISOR | EMPLOYEE
   nameAr      String
-  level       Int          // 1=SUPERADMIN 5=EMPLOYEE
+  level       Int // 1=SUPERADMIN 5=EMPLOYEE
   permissions Permission[]
   users       User[]
 
@@ -27,15 +26,15 @@ model Role {
 }
 
 model Permission {
-  id       Int     @id @default(autoincrement())
-  roleId   Int
-  module   String  // USERS | TASKS | DEPARTMENTS | REPORTS | AUDIT
-  canCreate  Boolean @default(false)
-  canRead    Boolean @default(true)
-  canUpdate  Boolean @default(false)
-  canDelete  Boolean @default(false)
-  canAssign  Boolean @default(false)
-  canReport  Boolean @default(false)
+  id        Int     @id @default(autoincrement())
+  roleId    Int
+  module    String // USERS | TASKS | DEPARTMENTS | REPORTS | AUDIT
+  canCreate Boolean @default(false)
+  canRead   Boolean @default(true)
+  canUpdate Boolean @default(false)
+  canDelete Boolean @default(false)
+  canAssign Boolean @default(false)
+  canReport Boolean @default(false)
 
   role Role @relation(fields: [roleId], references: [id])
 
@@ -47,20 +46,20 @@ model Permission {
 //  DEPARTMENTS (Self-referencing hierarchy)
 // ─────────────────────────────────────────
 model Department {
-  id             Int          @id @default(autoincrement())
-  name           String
-  nameAr         String
-  code           String       @unique // DEP-HR, DEP-IT, etc.
-  parentId       Int?
-  managerId      Int?
-  isActive       Boolean      @default(true)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  nameAr    String
+  code      String   @unique // DEP-HR, DEP-IT, etc.
+  parentId  Int?
+  managerId Int?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  parent         Department?  @relation("DeptHierarchy", fields: [parentId], references: [id])
-  children       Department[] @relation("DeptHierarchy")
-  users          User[]
-  manager        User?        @relation("DeptManager", fields: [managerId], references: [id])
+  parent   Department?  @relation("DeptHierarchy", fields: [parentId], references: [id])
+  children Department[] @relation("DeptHierarchy")
+  users    User[]
+  manager  User?        @relation("DeptManager", fields: [managerId], references: [id])
 
   @@map("tbl_Departments")
 }
@@ -75,12 +74,12 @@ model User {
   fullNameAr       String
   username         String    @unique
   passwordHash     String
-  plainPassword    String?   // stored for admin reference only
+  plainPassword    String? // stored for admin reference only
   email            String    @unique
   phone            String?
   departmentId     Int?
   roleId           Int
-  managerId        Int?      // Self-reference
+  managerId        Int? // Self-reference
   isActive         Boolean   @default(true)
   isFirstLogin     Boolean   @default(true)
   failedLoginCount Int       @default(0)
@@ -94,40 +93,42 @@ model User {
   resetToken       String?
   resetTokenExpiry DateTime?
 
-  role             Role       @relation(fields: [roleId], references: [id])
-  department       Department? @relation(fields: [departmentId], references: [id])
-  manager          User?      @relation("UserManager", fields: [managerId], references: [id])
-  subordinates     User[]     @relation("UserManager")
-  managedDepts     Department[] @relation("DeptManager")
+  role         Role         @relation(fields: [roleId], references: [id])
+  department   Department?  @relation(fields: [departmentId], references: [id])
+  manager      User?        @relation("UserManager", fields: [managerId], references: [id])
+  subordinates User[]       @relation("UserManager")
+  managedDepts Department[] @relation("DeptManager")
 
   // Task relations
-  tasksAssigned    Task[]     @relation("TaskAssignee")
-  tasksCreated     Task[]     @relation("TaskCreator")
-  taskComments     TaskComment[]
-  statusChanges    TaskStatusHistory[]
-  notifications    Notification[] @relation("NotifReceiver")
-  sentNotifications Notification[] @relation("NotifSender")
-  auditLogs        AuditLog[]
-  transferHistory  EmployeeTransfer[]
-  timeEntries      TimeEntry[]
-  points           UserPoint[]
-  createdExtracts  TaskExtract[]  @relation("ExtractCreator") // ← NEW
+  tasksAssigned     Task[]              @relation("TaskAssignee")
+  tasksCreated      Task[]              @relation("TaskCreator")
+  taskComments      TaskComment[]
+  statusChanges     TaskStatusHistory[]
+  notifications     Notification[]      @relation("NotifReceiver")
+  sentNotifications Notification[]      @relation("NotifSender")
+  auditLogs         AuditLog[]
+  transferHistory   EmployeeTransfer[]
+  timeEntries       TimeEntry[]
+  points            UserPoint[]
+  createdExtracts   TaskExtract[]       @relation("ExtractCreator") // ← NEW
 
   // Chat relations
-  convAsUser1      ChatConversation[] @relation("ConvUser1")
-  convAsUser2      ChatConversation[] @relation("ConvUser2")
-  sentMessages     ChatMessage[]      @relation("ChatSender")
-  pushSubscriptions PushSubscription[] // ← Web Push
+  convAsUser1        ChatConversation[] @relation("ConvUser1")
+  convAsUser2        ChatConversation[] @relation("ConvUser2")
+  convCreated        ChatConversation[] @relation("ConvCreator")
+  chatParticipations ChatParticipant[]  @relation("UserChatParticipants")
+  sentMessages       ChatMessage[]      @relation("ChatSender")
+  pushSubscriptions  PushSubscription[] // ← Web Push
 
   @@map("tbl_Users")
 }
 
 model EmployeeTransfer {
-  id              Int        @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   userId          Int
   fromDeptId      Int
   toDeptId        Int
-  transferDate    DateTime   @default(now())
+  transferDate    DateTime @default(now())
   note            String?
   transferredById Int
 
@@ -170,67 +171,67 @@ model TaskCategory {
 // Enums replaced with String for SQLite compatibility
 
 model Task {
-  id              Int          @id @default(autoincrement())
-  taskCode        String       @unique // TSK-2026-0001
+  id              Int       @id @default(autoincrement())
+  taskCode        String    @unique // TSK-2026-0001
   title           String
   titleAr         String?
   description     String?
   categoryId      Int?
-  priority        String       @default("MEDIUM")
-  status          String       @default("NEW")
+  priority        String    @default("MEDIUM")
+  status          String    @default("NEW")
   assignedToId    Int
   createdById     Int
   startDate       DateTime?
   dueDate         DateTime?
   completedDate   DateTime?
-  progressPercent Int          @default(0)
-  isArchived      Boolean      @default(false)
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  progressPercent Int       @default(0)
+  isArchived      Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  category        TaskCategory?      @relation(fields: [categoryId], references: [id])
-  assignedTo      User               @relation("TaskAssignee", fields: [assignedToId], references: [id])
-  createdBy       User               @relation("TaskCreator", fields: [createdById], references: [id])
-  statusHistory   TaskStatusHistory[]
-  comments        TaskComment[]
-  attachments     TaskAttachment[]
-  notifications   Notification[]
-  checklist       TaskChecklist[]
-  timeEntries     TimeEntry[]
-  tags            TaskTag[]
-  extracts        TaskExtract[]   // ← NEW: extracts linked to this task
-  
-  dependsOnId     Int?
-  dependsOn       Task?              @relation("TaskDependencies", fields: [dependsOnId], references: [id])
-  dependentTasks  Task[]             @relation("TaskDependencies")
+  category      TaskCategory?       @relation(fields: [categoryId], references: [id])
+  assignedTo    User                @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  createdBy     User                @relation("TaskCreator", fields: [createdById], references: [id])
+  statusHistory TaskStatusHistory[]
+  comments      TaskComment[]
+  attachments   TaskAttachment[]
+  notifications Notification[]
+  checklist     TaskChecklist[]
+  timeEntries   TimeEntry[]
+  tags          TaskTag[]
+  extracts      TaskExtract[] // ← NEW: extracts linked to this task
+
+  dependsOnId    Int?
+  dependsOn      Task?  @relation("TaskDependencies", fields: [dependsOnId], references: [id])
+  dependentTasks Task[] @relation("TaskDependencies")
 
   @@map("tbl_Tasks")
 }
 
 model TaskStatusHistory {
-  id           Int        @id @default(autoincrement())
-  taskId       Int
-  fromStatus   String?
-  toStatus     String
-  changedById  Int
-  changeDate   DateTime   @default(now())
-  note         String?
+  id          Int      @id @default(autoincrement())
+  taskId      Int
+  fromStatus  String?
+  toStatus    String
+  changedById Int
+  changeDate  DateTime @default(now())
+  note        String?
 
-  task         Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  changedBy    User @relation(fields: [changedById], references: [id])
+  task      Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  changedBy User @relation(fields: [changedById], references: [id])
 
   @@map("tbl_TaskStatusHistory")
 }
 
 model TaskComment {
-  id            Int          @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   taskId        Int
   userId        Int
   commentText   String
-  commentDate   DateTime     @default(now())
-  isManagerNote Boolean      @default(false)
-  isReturnNote  Boolean      @default(false)  // ← NEW: marks extract return comments
-  extractId     Int?                           // ← NEW: links comment to a specific extract
+  commentDate   DateTime @default(now())
+  isManagerNote Boolean  @default(false)
+  isReturnNote  Boolean  @default(false) // ← NEW: marks extract return comments
+  extractId     Int? // ← NEW: links comment to a specific extract
 
   task    Task         @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user    User         @relation(fields: [userId], references: [id])
@@ -260,20 +261,20 @@ model TaskAttachment {
 // Enums replaced with String for SQLite compatibility
 
 model Notification {
-  id               Int              @id @default(autoincrement())
-  receiverId       Int
-  senderId         Int?
-  taskId           Int?
-  type             String
-  title            String
-  titleAr          String
-  message          String
-  messageAr        String
-  isRead           Boolean          @default(false)
-  createdAt        DateTime         @default(now())
+  id         Int      @id @default(autoincrement())
+  receiverId Int
+  senderId   Int?
+  taskId     Int?
+  type       String
+  title      String
+  titleAr    String
+  message    String
+  messageAr  String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
 
   receiverUser User  @relation("NotifReceiver", fields: [receiverId], references: [id])
-  senderUser   User? @relation("NotifSender",   fields: [senderId], references: [id])
+  senderUser   User? @relation("NotifSender", fields: [senderId], references: [id])
   task         Task? @relation(fields: [taskId], references: [id])
 
   @@map("tbl_Notifications")
@@ -283,16 +284,16 @@ model Notification {
 //  AUDIT LOG
 // ─────────────────────────────────────────
 model AuditLog {
-  id             Int      @id @default(autoincrement())
-  userId         Int?
-  action         String   // LOGIN | CREATE_TASK | DELETE_USER | etc.
-  tableAffected  String?
-  recordId       Int?
-  oldValues      String?  // JSON string
-  newValues      String?  // JSON string
-  ipAddress      String?
-  userAgent      String?
-  actionDate     DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  userId        Int?
+  action        String // LOGIN | CREATE_TASK | DELETE_USER | etc.
+  tableAffected String?
+  recordId      Int?
+  oldValues     String? // JSON string
+  newValues     String? // JSON string
+  ipAddress     String?
+  userAgent     String?
+  actionDate    DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id])
 
@@ -321,18 +322,18 @@ model TaskChecklist {
 //  TASK TEMPLATES
 // ─────────────────────────────────────────
 model TaskTemplate {
-  id              Int       @id @default(autoincrement())
+  id              Int      @id @default(autoincrement())
   name            String
   nameAr          String?
   description     String?
   categoryId      Int?
-  priority        String    @default("MEDIUM")
-  defaultDuration Int?      // days
-  checklistItems  String?   // JSON array of {text, textAr}
-  isGlobal        Boolean   @default(false)
+  priority        String   @default("MEDIUM")
+  defaultDuration Int? // days
+  checklistItems  String? // JSON array of {text, textAr}
+  isGlobal        Boolean  @default(false)
   createdById     Int
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@map("tbl_TaskTemplates")
 }
@@ -346,7 +347,7 @@ model TimeEntry {
   userId    Int
   startTime DateTime
   endTime   DateTime?
-  duration  Int?      // minutes
+  duration  Int? // minutes
   note      String?
   createdAt DateTime  @default(now())
 
@@ -360,11 +361,11 @@ model TimeEntry {
 //  TASK TAGS
 // ─────────────────────────────────────────
 model Tag {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  nameAr    String?
-  color     String    @default("#6366f1")
-  taskTags  TaskTag[]
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  nameAr   String?
+  color    String    @default("#6366f1")
+  taskTags TaskTag[]
 
   @@map("tbl_Tags")
 }
@@ -384,12 +385,12 @@ model TaskTag {
 //  GAMIFICATION — USER POINTS
 // ─────────────────────────────────────────
 model UserPoint {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  points      Int
-  reason      String   // TASK_COMPLETED | ON_TIME | EARLY | STREAK
-  taskId      Int?
-  createdAt   DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  points    Int
+  reason    String // TASK_COMPLETED | ON_TIME | EARLY | STREAK
+  taskId    Int?
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
@@ -414,8 +415,8 @@ model Webhook {
   id          Int      @id @default(autoincrement())
   name        String
   url         String
-  eventTypes  String   // e.g., "TASK_CREATED,TASK_COMPLETED"
-  secret      String?  // Optional secret to sign payloads
+  eventTypes  String // e.g., "TASK_CREATED,TASK_COMPLETED"
+  secret      String? // Optional secret to sign payloads
   isActive    Boolean  @default(true)
   createdById Int
   createdAt   DateTime @default(now())
@@ -428,31 +429,52 @@ model Webhook {
 //  CHAT — CONVERSATIONS & MESSAGES
 // ─────────────────────────────────────────
 model ChatConversation {
-  id           Int           @id @default(autoincrement())
-  user1Id      Int
-  user2Id      Int
-  lastMessage  String?
-  lastAt       DateTime?
-  createdAt    DateTime      @default(now())
+  id          Int     @id @default(autoincrement())
+  isGroup     Boolean @default(false)
+  groupName   String?
+  createdById Int?
 
-  user1        User          @relation("ConvUser1", fields: [user1Id], references: [id])
-  user2        User          @relation("ConvUser2", fields: [user2Id], references: [id])
+  // For 1-on-1 chats
+  user1Id Int?
+  user2Id Int?
+
+  lastMessage String?
+  lastAt      DateTime?
+  createdAt   DateTime  @default(now())
+
+  user1        User?             @relation("ConvUser1", fields: [user1Id], references: [id])
+  user2        User?             @relation("ConvUser2", fields: [user2Id], references: [id])
+  createdBy    User?             @relation("ConvCreator", fields: [createdById], references: [id])
   messages     ChatMessage[]
+  participants ChatParticipant[]
 
   @@unique([user1Id, user2Id])
   @@map("tbl_ChatConversations")
 }
 
+model ChatParticipant {
+  id             Int      @id @default(autoincrement())
+  conversationId Int
+  userId         Int
+  joinedAt       DateTime @default(now())
+
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User             @relation("UserChatParticipants", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("tbl_ChatParticipants")
+}
+
 model ChatMessage {
-  id             Int              @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   conversationId Int
   senderId       Int
   text           String
-  isRead         Boolean          @default(false)
-  createdAt      DateTime         @default(now())
+  isRead         Boolean  @default(false)
+  createdAt      DateTime @default(now())
 
-  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender         User             @relation("ChatSender", fields: [senderId], references: [id])
+  conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User             @relation("ChatSender", fields: [senderId], references: [id])
 
   @@map("tbl_ChatMessages")
 }
@@ -462,7 +484,7 @@ model ChatMessage {
 // ─────────────────────────────────────────
 model Contractor {
   id        Int      @id @default(autoincrement())
-  code      String?  @unique                // ← NEW: كود فريد للمقاول
+  code      String?  @unique // ← NEW: كود فريد للمقاول
   name      String
   nameAr    String?
   phone     String?
@@ -470,7 +492,7 @@ model Contractor {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  extracts  TaskExtract[]
+  extracts TaskExtract[]
 
   @@map("tbl_Contractors")
 }
@@ -486,7 +508,7 @@ model Project {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  extracts  TaskExtract[]
+  extracts TaskExtract[]
 
   @@map("tbl_Projects")
 }
@@ -504,18 +526,18 @@ model TaskExtract {
   contractorId  Int
   projectId     Int
   status        String   @default("RECEIVED") // RECEIVED|UNDER_REVIEW|POSTED|RETURNED
-  amount        Decimal? @db.Decimal(15, 2)   // ← المبلغ المالي للمستخلص
-  currency      String   @default("EGP")      // ← العملة (EGP, USD, EUR, SAR...)
+  amount        Decimal? @db.Decimal(15, 2) // ← المبلغ المالي للمستخلص
+  currency      String   @default("EGP") // ← العملة (EGP, USD, EUR, SAR...)
   notes         String?
   receivedAt    DateTime @default(now())
   updatedAt     DateTime @updatedAt
   createdById   Int
 
-  task        Task?       @relation(fields: [taskId], references: [id])
-  contractor  Contractor  @relation(fields: [contractorId], references: [id])
-  project     Project     @relation(fields: [projectId], references: [id])
-  createdBy   User        @relation("ExtractCreator", fields: [createdById], references: [id])
-  comments    TaskComment[]
+  task       Task?         @relation(fields: [taskId], references: [id])
+  contractor Contractor    @relation(fields: [contractorId], references: [id])
+  project    Project       @relation(fields: [projectId], references: [id])
+  createdBy  User          @relation("ExtractCreator", fields: [createdById], references: [id])
+  comments   TaskComment[]
 
   @@map("tbl_TaskExtracts")
 }

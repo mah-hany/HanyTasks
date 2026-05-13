@@ -82,6 +82,9 @@ import { AuthService } from '../../core/services/auth.service';
               <mat-icon>arrow_forward</mat-icon>
             </button>
             <div class="header-title">محادثة جديدة</div>
+            <button class="icon-btn" (click)="showNewGroup()" matTooltip="إنشاء مجموعة">
+              <mat-icon>group_add</mat-icon>
+            </button>
           </div>
 
           <div class="search-box">
@@ -100,6 +103,41 @@ import { AuthService } from '../../core/services/auth.service';
                 <div class="conv-last">{{ u.role?.nameAr }}</div>
               </div>
             </div>
+          </div>
+        </ng-container>
+
+        <!-- ── NEW GROUP view ── -->
+        <ng-container *ngIf="view() === 'new_group'">
+          <div class="panel-header">
+            <button class="icon-btn" (click)="view.set('new')">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+            <div class="header-title">مجموعة جديدة</div>
+          </div>
+
+          <div style="padding: 10px 14px; border-bottom: 1px solid var(--border-color, #e2e8f0);">
+            <input type="text" placeholder="اسم المجموعة..." [(ngModel)]="groupName" style="width: 100%; border: none; outline: none; padding: 8px; font-family: Cairo; background: var(--bg-main, #f8fafc); border-radius: 8px;">
+          </div>
+
+          <div class="search-box">
+            <mat-icon>search</mat-icon>
+            <input type="text" placeholder="ابحث لإضافة أعضاء..." [(ngModel)]="userSearchQuery" />
+          </div>
+
+          <div class="conv-list" style="max-height: 250px;">
+            <div class="conv-item" *ngFor="let u of filteredUsers()" (click)="toggleGroupUser(u.id)" [class.has-unread]="selectedGroupUsers.has(u.id)">
+              <div class="conv-avatar small">
+                <span *ngIf="!u.profilePhoto">{{ u.fullNameAr.charAt(0) }}</span>
+              </div>
+              <div class="conv-info">
+                <div class="conv-name">{{ u.fullNameAr }}</div>
+              </div>
+              <mat-icon *ngIf="selectedGroupUsers.has(u.id)" style="color: #f97316; font-size: 18px;">check_circle</mat-icon>
+            </div>
+          </div>
+
+          <div style="padding: 10px; display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color, #e2e8f0);">
+            <button class="btn-new" (click)="createGroupSubmit()" [disabled]="!groupName.trim() || selectedGroupUsers.size === 0">إنشاء</button>
           </div>
         </ng-container>
 
@@ -461,10 +499,13 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
   chatService = inject(ChatService);
   private authService = inject(AuthService);
 
-  view = signal<'list' | 'new' | 'messages'>('list');
+  view = signal<'list' | 'new' | 'messages' | 'new_group'>('list');
   searchQuery = '';
   userSearchQuery = '';
   newMessage = '';
+  groupName = '';
+  selectedGroupUsers = new Set<number>();
+
   private typingTimeout: any;
   private shouldScroll = false;
 
@@ -537,6 +578,33 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     this.chatService.openChat(partner.id);
     this.view.set('messages');
     this.shouldScroll = true;
+  }
+
+
+  showNewGroup() {
+    this.groupName = '';
+    this.selectedGroupUsers.clear();
+    this.userSearchQuery = '';
+    this.view.set('new_group');
+  }
+
+  toggleGroupUser(id: number) {
+    if (this.selectedGroupUsers.has(id)) {
+      this.selectedGroupUsers.delete(id);
+    } else {
+      this.selectedGroupUsers.add(id);
+    }
+  }
+
+  createGroupSubmit() {
+    if (!this.groupName.trim() || this.selectedGroupUsers.size === 0) return;
+    this.chatService.createGroup(this.groupName, Array.from(this.selectedGroupUsers)).subscribe(res => {
+      if (res.success && res.data) {
+        this.chatService.openChat(-res.data.id);
+        this.view.set('messages');
+        this.shouldScroll = true;
+      }
+    });
   }
 
   startNewChat(user: ChatUser) {
