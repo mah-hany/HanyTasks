@@ -177,6 +177,25 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
     if (!extractNumber || !contractorId || !projectId)
       return res.status(400).json({ success: false, message: 'extractNumber, contractorId, projectId required' });
 
+    const existing = await prisma.taskExtract.findFirst({
+      where: {
+        extractNumber: +extractNumber,
+        contractorId: +contractorId,
+        projectId: +projectId
+      }
+    });
+
+    if (existing) {
+      const statusMap: any = { RECEIVED:'استلام', UNDER_REVIEW:'تحت المراجعة', POSTED:'مُدرج', RETURNED:'مُرجَع' };
+      const statusAr = statusMap[existing.status] || existing.status;
+      const amountStr = existing.amount ? `${existing.amount} ${existing.currency}` : 'غير محدد';
+      const dateStr = new Date(existing.receivedAt).toLocaleDateString('ar-EG');
+      return res.status(400).json({ 
+        success: false, 
+        message: `هذا المستخلص مسجل بالفعل! قيمته ${amountStr} بتاريخ ${dateStr} وحالته الحالية "${statusAr}".` 
+      });
+    }
+
     const extract = await prisma.taskExtract.create({
       data: {
         extractNumber: +extractNumber,
