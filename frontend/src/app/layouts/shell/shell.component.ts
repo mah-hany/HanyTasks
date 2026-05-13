@@ -14,6 +14,8 @@ import { ChatService } from '../../core/services/chat.service';
 import { ChatComponent } from '../../features/chat/chat.component';
 import { TaskService } from '../../core/services/task.service';
 import { PushNotificationService } from '../../core/services/push-notification.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { GlobalSearchDialogComponent } from './global-search-dialog.component';
 
 interface NavItem {
   label: string; labelKey: string; icon: string; route: string;
@@ -23,7 +25,7 @@ interface NavItem {
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatBadgeModule, MatDividerModule, TranslateModule, ChatComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, CommonModule, MatIconModule, MatTooltipModule, MatMenuModule, MatBadgeModule, MatDividerModule, TranslateModule, ChatComponent, MatDialogModule],
   template: `
     <div class="app-wrapper" [class.rtl]="currentLang() === 'ar'">
 
@@ -113,6 +115,18 @@ interface NavItem {
           </button>
 
           <span class="header-spacer"></span>
+
+          <!-- Search Button -->
+          <button class="header-search-btn desktop-only" (click)="openGlobalSearch()">
+            <mat-icon>search</mat-icon>
+            <span class="search-text">{{ currentLang() === 'ar' ? 'بحث عالمي...' : 'Global Search...' }}</span>
+            <span class="search-shortcut">Ctrl+K</span>
+          </button>
+          
+          <!-- Mobile search icon -->
+          <button class="header-btn mobile-only" (click)="openGlobalSearch()">
+            <mat-icon>search</mat-icon>
+          </button>
 
           <!-- Notification Bell -->
           <button class="header-btn" [routerLink]="'/notifications'"
@@ -392,6 +406,16 @@ interface NavItem {
       overflow: hidden;
     }
 
+      /* Header Buttons */
+      .header-search-btn {
+        display: flex; align-items: center; gap: 8px; background: rgba(100,116,139,0.08); border: 1px solid rgba(100,116,139,0.2);
+        padding: 6px 12px; border-radius: 8px; cursor: pointer; margin-inline-end: 16px; color: var(--text-secondary); transition: all 0.2s;
+        &:hover { background: rgba(100,116,139,0.15); color: var(--text-main); }
+        mat-icon { font-size: 20px; width: 20px; height: 20px; }
+        .search-text { font-size: 13px; font-weight: 500; }
+        .search-shortcut { font-size: 11px; padding: 2px 6px; background: var(--bg-card); border-radius: 4px; border: 1px solid var(--border-color); font-weight: 600; }
+      }
+
     /* Header */
     .app-header {
       height: var(--header-h);
@@ -606,11 +630,11 @@ export class ShellComponent implements OnInit {
     private chatService: ChatService,
     private taskService: TaskService,
     private pushSvc: PushNotificationService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit() {
     this.isMobile.set(window.innerWidth <= 768);
-
     const lang = this.langService.getCurrentLang();
     this.currentLang.set(lang);
     this.isDark.set(localStorage.getItem('tf_theme') === 'dark');
@@ -681,5 +705,22 @@ export class ShellComponent implements OnInit {
     this.notifService.disconnectSocket();
     this.chatService.disconnectSocket();
     this.authService.logout();
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.ctrlKey && event.key === 'k') {
+      event.preventDefault();
+      this.openGlobalSearch();
+    }
+  }
+
+  openGlobalSearch() {
+    this.dialog.open(GlobalSearchDialogComponent, {
+      width: '600px',
+      position: { top: '10vh' },
+      autoFocus: false,
+      panelClass: 'search-dialog-panel'
+    });
   }
 }
