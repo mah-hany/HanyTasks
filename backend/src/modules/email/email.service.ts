@@ -136,6 +136,37 @@ export function weeklyReportEmail(employeeName: string, stats: {
 </html>`;
 }
 
+export function taskReminderEmail(taskTitle: string, taskCode: string, employeeName: string, daysLeft: number): string {
+  const isOneDay = daysLeft === 1;
+  return `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head><meta charset="UTF-8"><title>تذكير بموعد المهمة</title></head>
+<body style="font-family:Arial,sans-serif;background:#f8fafc;padding:20px;direction:rtl">
+  <div style="max-width:600px;margin:auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08)">
+    <div style="background:linear-gradient(135deg, ${isOneDay ? '#ef4444,#dc2626' : '#f59e0b,#d97706'});padding:30px;text-align:center">
+      <h1 style="color:#fff;margin:0;font-size:24px">⏰ تذكير بموعد استحقاق مهمة</h1>
+    </div>
+    <div style="padding:30px">
+      <h2 style="color:#1e293b;margin-top:0">مرحباً ${employeeName}،</h2>
+      <p style="color:#475569;font-size:16px;line-height:1.6">نذكرك بأن المهمة التالية تقترب من موعد التسليم (${isOneDay ? 'يتبقى 24 ساعة فقط' : 'يتبقى 3 أيام'}):</p>
+      <div style="background:#f1f5f9;border-radius:8px;padding:20px;margin:20px 0">
+        <p style="margin:0 0 8px"><strong>📋 المهمة:</strong> ${taskTitle}</p>
+        <p style="margin:0 0 8px"><strong>🔖 الكود:</strong> <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px">${taskCode}</code></p>
+      </div>
+      <p style="color:#475569">يرجى التأكد من إنجازها في الوقت المحدد.</p>
+      <div style="text-align:center;margin-top:30px">
+        <a href="${process.env.APP_URL || 'https://hany-tasks.vercel.app'}/tasks"
+           style="background:${isOneDay ? '#ef4444' : '#f59e0b'};color:#fff;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:bold;display:inline-block">
+          عرض المهمة
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>`;
+}
+
 // ── Weekly Report Scheduler (called from schedulers.ts) ──────
 export function forgotPasswordEmail(employeeName: string, resetToken: string): string {
   return `

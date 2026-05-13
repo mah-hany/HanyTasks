@@ -16,6 +16,19 @@ function isAdmin(user: any) { return user?.role?.level <= 2; }
 /** Called from app.ts to register the webhook route */
 export function getTelegramBot(): TelegramBot | null { return bot; }
 
+/** Send a message to a specific user */
+export async function sendTelegramNotification(userId: number, text: string) {
+  if (!bot) return;
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (user?.telegramChatId) {
+    try {
+      await bot.sendMessage(user.telegramChatId, text, { parse_mode: 'Markdown' });
+    } catch (err) {
+      console.warn(`Failed to send telegram message to user ${userId}`);
+    }
+  }
+}
+
 /** Set Telegram webhook via raw HTTPS */
 function setWebhook(token: string, webhookUrl: string): Promise<void> {
   return new Promise((resolve) => {
