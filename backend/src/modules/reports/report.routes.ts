@@ -149,4 +149,67 @@ router.get('/departments-summary', async (req: AuthRequest, res: Response, next:
   } catch (e) { next(e); }
 });
 
+// Extracts Report
+router.get('/extracts', authorizeLevel(3), async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { from, to, contractorId } = req.query as { from?: string; to?: string, contractorId?: string };
+    const dateFilter = from || to ? {
+      receivedAt: {
+        ...(from ? { gte: new Date(from) } : {}),
+        ...(to ? { lte: new Date(to) } : {}),
+      }
+    } : {};
+
+    const where = { ...dateFilter, ...(contractorId ? { contractorId: +contractorId } : {}) };
+
+    // 1. By Contractor
+    const contractors = await prisma.contractor.findMany({ where: { isActive: true } });
+    const contractorStats = await Promise.all(contractors.map(async (c) => {
+      const agg = await prisma.taskExtract.aggregate({
+        where: { contractorId: c.id, ...dateFilter },
+        _count: { id: true },
+        _sum: { amount: true }
+      });
+      const postedCount = await prisma.taskExtract.count({ where: { contractorId: c.id, status: 'POSTED', ...dateFilter } });
+      const returnedCount = await prisma.taskExtract.count({ where: { contractorId: c.id, status: 'RETURNED', ...dateFilter } });
+      return {
+        contractorName: c.nameAr || c.name,
+        total: agg._count.id,
+        posted: postedCount,
+        returned: returnedCount,
+        totalAmount: agg._sum.amount || 0
+      };
+    }));
+
+    // 2. Average Review Time (Hours)
+    const postedExtracts = await prisma.taskExtract.findMany({
+      where: { ...where, status: 'POSTED' },
+      select: { receivedAt: true, updatedAt: true }
+    });
+    
+    let totalReviewHours = 0;
+    for (const e of postedExtracts) {
+      totalReviewHours += (e.updatedAt.getTime() - e.receivedAt.getTime()) / (1000 * 60 * 60);
+    }
+    const avgReviewHours = postedExtracts.length > 0 ? Math.round(totalReviewHours / postedExtracts.length) : 0;
+
+    // 3. Financial Summary
+    const financial = await prisma.taskExtract.aggregate({
+      where,
+      _sum: { amount: true },
+      _count: { id: true }
+    });
+
+    res.json({
+      success: true,
+      data: {
+        contractorStats: contractorStats.filter(c => c.total > 0),
+        avgReviewHours,
+        totalAmount: Number(financial._sum.amount || 0),
+        totalExtracts: financial._count.id
+      }
+    });
+  } catch (e) { next(e); }
+});
+
 export default router;

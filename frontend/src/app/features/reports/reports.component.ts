@@ -160,6 +160,65 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
               </table>
             </div>
           </mat-tab>
+          <mat-tab [label]="isAr() ? 'تقارير المستخلصات' : 'Extracts Reports'">
+            <div *ngIf="extractReport()" style="padding: 20px;">
+              <!-- Extracts KPIs -->
+              <div class="kpi-cards" style="margin-bottom: 24px;">
+                <div class="kpi-card premium-glass">
+                  <div class="kpi-icon total"><mat-icon>receipt_long</mat-icon></div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">{{ isAr() ? 'إجمالي المستخلصات' : 'Total Extracts' }}</span>
+                    <span class="kpi-value">{{ extractReport()?.totalExtracts || 0 }}</span>
+                  </div>
+                </div>
+                <div class="kpi-card premium-glass">
+                  <div class="kpi-icon completed"><mat-icon>payments</mat-icon></div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">{{ isAr() ? 'القيمة الإجمالية' : 'Total Amount' }}</span>
+                    <span class="kpi-value">{{ extractReport()?.totalAmount | number:'1.0-0' }}</span>
+                  </div>
+                </div>
+                <div class="kpi-card premium-glass">
+                  <div class="kpi-icon rate"><mat-icon>timer</mat-icon></div>
+                  <div class="kpi-info">
+                    <span class="kpi-label">{{ isAr() ? 'متوسط وقت المراجعة (ساعة)' : 'Avg Review Time (hrs)' }}</span>
+                    <span class="kpi-value">{{ extractReport()?.avgReviewHours || 0 }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="page-header" style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                <button mat-stroked-button color="primary" (click)="exportExtractsToCsv()">
+                  <mat-icon>download</mat-icon>
+                  {{ isAr() ? 'تصدير التقرير (Excel)' : 'Export Report (Excel)' }}
+                </button>
+              </div>
+
+              <!-- Extracts Table -->
+              <div class="table-container">
+                <table class="premium-table">
+                  <thead>
+                    <tr>
+                      <th>{{ isAr() ? 'المقاول' : 'Contractor' }}</th>
+                      <th>{{ isAr() ? 'إجمالي المستخلصات' : 'Total Extracts' }}</th>
+                      <th>{{ isAr() ? 'المُرحلة' : 'Posted' }}</th>
+                      <th>{{ isAr() ? 'المُرجعة' : 'Returned' }}</th>
+                      <th>{{ isAr() ? 'إجمالي المبالغ' : 'Total Amount' }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of extractReport()?.contractorStats">
+                      <td class="fw-600">{{ c.contractorName }}</td>
+                      <td>{{ c.total }}</td>
+                      <td><span class="badge success">{{ c.posted }}</span></td>
+                      <td><span class="badge danger" *ngIf="c.returned > 0">{{ c.returned }}</span><span class="badge neutral" *ngIf="c.returned === 0">0</span></td>
+                      <td class="fw-600">{{ c.totalAmount | number:'1.0-0' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </mat-tab>
         </mat-tab-group>
       </div>
     </div>
@@ -246,6 +305,7 @@ export class ReportsComponent implements OnInit {
   loading = signal(true);
   deptReport = signal<any[]>([]);
   overdueReport = signal<any[]>([]);
+  extractReport = signal<any>(null);
 
   isAr = () => this.langService.getCurrentLang() === 'ar';
 
@@ -322,7 +382,17 @@ export class ReportsComponent implements OnInit {
   fetchOverdue() {
     this.http.get<any>(`${environment.apiUrl}/reports/overdue`).subscribe(res => {
       if (res.success) this.overdueReport.set(res.data);
-      this.loading.set(false);
+      this.fetchExtractsReport();
+    });
+  }
+
+  fetchExtractsReport() {
+    this.http.get<any>(`${environment.apiUrl}/reports/extracts`).subscribe({
+      next: (res) => {
+        if (res.success) this.extractReport.set(res.data);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false)
     });
   }
 
@@ -351,6 +421,25 @@ export class ReportsComponent implements OnInit {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `TaskFlow_Reports_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  }
+
+  exportExtractsToCsv() {
+    const data = this.extractReport()?.contractorStats;
+    if (!data || data.length === 0) return;
+    
+    let csv = this.isAr() 
+      ? 'المقاول,إجمالي المستخلصات,المُرحلة,المُرجعة,إجمالي المبالغ\n'
+      : 'Contractor,Total Extracts,Posted,Returned,Total Amount\n';
+    
+    data.forEach((d: any) => {
+      csv += `${d.contractorName},${d.total},${d.posted},${d.returned},${d.totalAmount}\n`;
+    });
+
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Extracts_Report_${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
   }
 }
