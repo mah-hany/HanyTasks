@@ -61,8 +61,12 @@ const STATUS_COLUMNS = [
             {{ isAr() ? (showArchived ? 'إخفاء الأرشيف' : 'عرض الأرشيف') : (showArchived ? 'Hide Archived' : 'Show Archived') }}
           </button>
           <button mat-stroked-button (click)="exportCsv()" [matTooltip]="isAr() ? 'تصدير CSV' : 'Export CSV'">
-            <mat-icon>download</mat-icon>
-            {{ isAr() ? 'تصدير' : 'Export' }}
+            <mat-icon>table_chart</mat-icon>
+            {{ isAr() ? 'CSV' : 'CSV' }}
+          </button>
+          <button mat-stroked-button (click)="exportPdf()" [matTooltip]="isAr() ? 'تصدير PDF' : 'Export PDF'" style="color: #dc2626; border-color: rgba(220, 38, 38, 0.5);">
+            <mat-icon>picture_as_pdf</mat-icon>
+            {{ isAr() ? 'PDF' : 'PDF' }}
           </button>
           <button mat-raised-button color="primary" (click)="openNewTask()" *ngIf="canCreate()">
             <mat-icon>add</mat-icon>
@@ -598,6 +602,22 @@ export class TasksListComponent implements OnInit, AfterViewInit {
         const url = URL.createObjectURL(blob);
         const a   = document.createElement('a');
         a.href = url; a.download = `tasks-${new Date().toISOString().split('T')[0]}.csv`; a.click();
+        URL.revokeObjectURL(url);
+        this.snack.open(this.isAr() ? 'تم تصدير المهام بنجاح' : 'Tasks exported successfully', '✓', { duration: 2500 });
+      },
+      error: () => this.snack.open(this.isAr() ? 'حدث خطأ' : 'Export failed', 'X'),
+    });
+  }
+
+  exportPdf() {
+    const filters: any = {};
+    if (this.filterStatus)     filters.status   = this.filterStatus;
+    if (this.filterPriority)   filters.priority = this.filterPriority;
+    this.taskService.exportTasksPdf(filters).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href = url; a.download = `tasks-${new Date().toISOString().split('T')[0]}.pdf`; a.click();
         URL.revokeObjectURL(url);
         this.snack.open(this.isAr() ? 'تم تصدير المهام بنجاح' : 'Tasks exported successfully', '✓', { duration: 2500 });
       },

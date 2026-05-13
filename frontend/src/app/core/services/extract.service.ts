@@ -42,6 +42,12 @@ export class ExtractService {
     return this.http.patch<any>(`${this.base}/${id}`, data);
   }
 
+  exportExtractsPdf(filters: any = {}) {
+    let p = new HttpParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v !== null && v !== undefined && v !== '') p = p.set(k, String(v)); });
+    return this.http.get(`${environment.apiUrl}/export/extracts/pdf`, { params: p, responseType: 'blob' });
+  }
+
   // ── Settings ──────────────────────────────────────────────
   /** Returns the list of enabled currency codes from system settings */
   getCurrencies() {

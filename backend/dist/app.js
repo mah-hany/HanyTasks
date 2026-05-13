@@ -142,7 +142,13 @@ app.get('/api/logs', auth_1.authenticate, (0, auth_1.authorizeLevel)(1), (req, r
         if (fs.existsSync(logPath)) {
             const logs = fs.readFileSync(logPath, 'utf8');
             const lines = logs.split('\n').slice(-50);
-            res.send(`<pre>${lines.join('\n')}</pre>`);
+            const escapeHtml = (unsafe) => unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+            res.send(`<pre>${escapeHtml(lines.join('\n'))}</pre>`);
         }
         else {
             res.send('No logs file found.');

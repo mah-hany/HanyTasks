@@ -8,16 +8,20 @@ exports.getMessages = getMessages;
 exports.sendMessage = sendMessage;
 exports.getChatUsers = getChatUsers;
 exports.getUnreadCount = getUnreadCount;
+exports.createGroup = createGroup;
+exports.getGroupMessages = getGroupMessages;
+exports.sendGroupMessage = sendGroupMessage;
 const client_1 = __importDefault(require("../../prisma/client"));
 const socket_1 = require("../../socket");
 // GET /api/chat/conversations — list all conversations for the current user
 async function getConversations(req, res) {
     const userId = req.user.id;
     const convs = await client_1.default.chatConversation.findMany({
-        where: { OR: [{ user1Id: userId }, { user2Id: userId }] },
+        where: { OR: [{ user1Id: userId }, { user2Id: userId }, { participants: { some: { userId } } }] },
         include: {
             user1: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, isActive: true } },
             user2: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, isActive: true } },
+            participants: { include: { user: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, isActive: true } } } },
         },
         orderBy: { lastAt: 'desc' },
     });
@@ -114,8 +118,109 @@ async function getChatUsers(req, res) {
 async function getUnreadCount(req, res) {
     const userId = req.user.id;
     const count = await client_1.default.chatMessage.count({
-        where: { isRead: false, senderId: { not: userId }, conversation: { OR: [{ user1Id: userId }, { user2Id: userId }] } },
+        where: {
+            isRead: false,
+            senderId: { not: userId },
+            conversation: { OR: [{ user1Id: userId }, { user2Id: userId }, { participants: { some: { userId } } }] }
+        },
     });
     res.json({ success: true, data: { count } });
+}
+// POST /api/chat/groups — Create a group chat
+async function createGroup(req, res) {
+    const userId = req.user.id;
+    const { name, userIds } = req.body;
+    if (!name || !userIds || !Array.isArray(userIds)) {
+        return res.status(400).json({ success: false, message: 'Group name and userIds are required' });
+    }
+    const allUserIds = Array.from(new Set([userId, ...userIds]));
+    const conv = await client_1.default.chatConversation.create({
+        data: {
+            isGroup: true,
+            groupName: name,
+            createdById: userId,
+            lastAt: new Date(),
+            participants: {
+                create: allUserIds.map((id) => ({ userId: id })),
+            },
+        },
+        include: {
+            participants: { include: { user: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true } } } }
+        }
+    });
+    // Notify other members
+    const io = (0, socket_1.getSocketIO)();
+    allUserIds.forEach((id) => {
+        if (id !== userId) {
+            const sid = socket_1.userSocketMap.get(id);
+            if (sid && io)
+                io.to(sid).emit('chat:group:created', conv);
+        }
+    });
+    res.json({ success: true, data: conv });
+}
+// GET /api/chat/groups/:groupId/messages
+async function getGroupMessages(req, res) {
+    const userId = req.user.id;
+    const groupId = +req.params.groupId;
+    const page = +(req.query['page'] || 1);
+    const limit = 50;
+    const conv = await client_1.default.chatConversation.findFirst({
+        where: { id: groupId, isGroup: true, participants: { some: { userId } } },
+    });
+    if (!conv) {
+        return res.status(404).json({ success: false, message: 'Group not found or access denied' });
+    }
+    // Mark received messages as read
+    await client_1.default.chatMessage.updateMany({
+        where: { conversationId: conv.id, isRead: false, senderId: { not: userId } },
+        data: { isRead: true },
+    });
+    const messages = await client_1.default.chatMessage.findMany({
+        where: { conversationId: conv.id },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * limit,
+        take: limit,
+        include: { sender: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true } } },
+    });
+    res.json({ success: true, data: { conversationId: conv.id, messages: messages.reverse() } });
+}
+// POST /api/chat/groups/:groupId/messages
+async function sendGroupMessage(req, res) {
+    const userId = req.user.id;
+    const groupId = +req.params.groupId;
+    const { text } = req.body;
+    if (!text?.trim()) {
+        return res.status(400).json({ success: false, message: 'Message text is required' });
+    }
+    const conv = await client_1.default.chatConversation.findFirst({
+        where: { id: groupId, isGroup: true, participants: { some: { userId } } },
+        include: { participants: true },
+    });
+    if (!conv) {
+        return res.status(404).json({ success: false, message: 'Group not found or access denied' });
+    }
+    const updatedConv = await client_1.default.chatConversation.update({
+        where: { id: conv.id },
+        data: { lastMessage: text.trim(), lastAt: new Date() },
+    });
+    const message = await client_1.default.chatMessage.create({
+        data: { conversationId: conv.id, senderId: userId, text: text.trim() },
+        include: { sender: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true } } },
+    });
+    const io = (0, socket_1.getSocketIO)();
+    conv.participants.forEach((p) => {
+        if (p.userId !== userId) {
+            const sid = socket_1.userSocketMap.get(p.userId);
+            if (sid && io)
+                io.to(sid).emit('chat:message', { conversationId: conv.id, message });
+        }
+        else {
+            const sid = socket_1.userSocketMap.get(userId);
+            if (sid && io)
+                io.to(sid).emit('chat:message:sent', { conversationId: conv.id, message });
+        }
+    });
+    res.json({ success: true, data: message });
 }
 //# sourceMappingURL=chat.controller.js.map

@@ -15,7 +15,16 @@ const storage = multer_1.default.diskStorage({
     destination: (_req, _file, cb) => cb(null, uploadDir),
     filename: (_req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`),
 });
-exports.uploadAvatar = (0, multer_1.default)({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
+const fileFilter = (_req, file, cb) => {
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true);
+    }
+    else {
+        cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WEBP images are allowed.'));
+    }
+};
+exports.uploadAvatar = (0, multer_1.default)({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
 exports.userController = {
     async getAll(req, res, next) {
         try {

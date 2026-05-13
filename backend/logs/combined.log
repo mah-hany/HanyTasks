@@ -7668,3 +7668,456 @@ Argument `id` is missing.
 [2026-05-13 01:01:42] debug: Socket connected: user 1 → WiBfXdKN4YRPsD2xAAA_
 [2026-05-13 01:01:42] debug: Socket connected: user 1 → ERhLibUejyI9IN66AABA
 [2026-05-13 01:01:42] debug: Socket connected: user 1 → edYGbwXSYfe6vK10AABB
+[2026-05-13 05:51:37] info: ✅ Database connected successfully
+[2026-05-13 05:51:37] warn: ⚠️  BREVO_API_KEY not set — email notifications disabled
+[2026-05-13 05:51:37] info: 🔌 Socket.IO initialized
+[2026-05-13 05:51:37] info: ⏰ Schedulers started: keep-alive + overdue + reminders + weekly email
+[2026-05-13 05:51:37] info: 🚀 TaskFlow Pro API running on port 5000
+[2026-05-13 05:51:37] info: 📡 Environment: development
+[2026-05-13 05:51:56] debug: GET /api/notifications — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: GET /api/tasks — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: GET /api/chat/unread-count — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: GET /api/chat/conversations — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: GET /api/chat/users — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: GET /api/tasks/dashboard — ::1
+[2026-05-13 05:51:56] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: POST /api/auth/refresh — ::1
+[2026-05-13 05:51:56] debug: Socket connected: user 1 → -c5ssmCaFn1xqFZJAAAD
+[2026-05-13 05:51:56] debug: Socket connected: user 1 → JsX0vhV-3FPrc13OAAAE
+[2026-05-13 05:51:56] debug: Socket connected: user 1 → 763XNN1Jmk7lTi_KAAAF
+[2026-05-13 05:51:57] debug: GET /api/notifications — ::1
+[2026-05-13 05:51:58] debug: GET /api/chat/unread-count — ::1
+[2026-05-13 05:51:58] debug: GET /api/tasks — ::1
+[2026-05-13 05:51:58] debug: GET /api/chat/conversations — ::1
+[2026-05-13 05:51:58] debug: GET /api/chat/users — ::1
+[2026-05-13 05:51:58] debug: GET /api/tasks/dashboard — ::1
+[2026-05-13 05:52:12] debug: GET /api/tasks — ::1
+[2026-05-13 05:52:12] debug: GET /api/users — ::1
+[2026-05-13 05:52:24] debug: GET /api/tasks/31 — ::1
+[2026-05-13 05:52:28] debug: GET /api/time/31 — ::1
+[2026-05-13 05:52:28] debug: GET /api/time/active/me — ::1
+[2026-05-13 05:52:36] debug: GET /api/users — ::1
+[2026-05-13 05:52:36] debug: GET /api/tasks — ::1
+[2026-05-13 06:00:00] debug: 🕐 Running overdue task check...
+[2026-05-13 06:13:28] debug: Socket disconnected: user 1
+[2026-05-13 06:13:28] debug: Socket disconnected: user 1
+[2026-05-13 06:13:28] debug: Socket disconnected: user 1
+[2026-05-13 06:13:28] debug: GET /api/notifications — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/tasks — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/chat/conversations — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/chat/unread-count — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/chat/users — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/users — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: GET /api/tasks — ::1
+[2026-05-13 06:13:28] error: Error: Invalid or expired token
+    at authenticate (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\auth.js:41:18)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at Function.handle (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:175:3)
+    at router (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at requestLogger (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\dist\middleware\requestLogger.js:7:5)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at urlencodedParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\urlencoded.js:91:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+    at C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:286:9
+    at Function.process_params (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\body-parser\lib\types\json.js:113:7)
+    at Layer.handle [as handle_request] (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (C:\Users\Mohamed Hany\Desktop\ادارة المهام\backend\node_modules\express\lib\router\index.js:328:13)
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:28] debug: Socket connected: user 1 → WhqBGkBuGWfTt6-gAAAJ
+[2026-05-13 06:13:28] debug: Socket connected: user 1 → BWYuMU4jIlMGwKmIAAAK
+[2026-05-13 06:13:28] debug: Socket connected: user 1 → c8iRqtzAq17o4J4YAAAL
+[2026-05-13 06:13:30] debug: POST /api/auth/refresh — ::1
+[2026-05-13 06:13:30] debug: GET /api/users — ::1
+[2026-05-13 06:13:30] debug: GET /api/chat/conversations — ::1
+[2026-05-13 06:13:30] debug: GET /api/notifications — ::1
+[2026-05-13 06:13:30] debug: GET /api/chat/users — ::1
+[2026-05-13 06:13:30] debug: GET /api/chat/unread-count — ::1
+[2026-05-13 06:13:30] debug: GET /api/tasks — ::1
+[2026-05-13 06:13:31] debug: GET /api/tasks — ::1
+[2026-05-13 06:15:00] debug: 🕐 Running overdue task check...
+[2026-05-13 06:16:03] debug: Socket disconnected: user 1
+[2026-05-13 06:16:03] debug: Socket disconnected: user 1
+[2026-05-13 06:16:03] debug: Socket disconnected: user 1
+[2026-05-13 06:16:04] debug: GET /api/notifications — ::1
+[2026-05-13 06:16:04] debug: GET /api/tasks — ::1
+[2026-05-13 06:16:04] debug: GET /api/chat/conversations — ::1
+[2026-05-13 06:16:04] debug: GET /api/chat/unread-count — ::1
+[2026-05-13 06:16:04] debug: GET /api/chat/users — ::1
+[2026-05-13 06:16:04] debug: GET /api/users — ::1
+[2026-05-13 06:16:04] debug: Socket connected: user 1 → Y7eCkRF7Z1onirElAAAP
+[2026-05-13 06:16:04] debug: Socket connected: user 1 → 8_9-Gw7kTqCfZp3gAAAQ
+[2026-05-13 06:16:04] debug: Socket connected: user 1 → h_Y4V5D4OD8Asj3IAAAR
+[2026-05-13 06:16:05] debug: GET /api/tasks — ::1

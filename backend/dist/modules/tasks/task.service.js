@@ -55,7 +55,15 @@ exports.taskService = {
         if (filters.search) {
             where.OR = [
                 { title: { contains: filters.search, mode: 'insensitive' } },
+                { titleAr: { contains: filters.search, mode: 'insensitive' } },
                 { taskCode: { contains: filters.search, mode: 'insensitive' } },
+                { description: { contains: filters.search, mode: 'insensitive' } },
+                { assignedTo: { fullName: { contains: filters.search, mode: 'insensitive' } } },
+                { assignedTo: { fullNameAr: { contains: filters.search, mode: 'insensitive' } } },
+                { createdBy: { fullName: { contains: filters.search, mode: 'insensitive' } } },
+                { createdBy: { fullNameAr: { contains: filters.search, mode: 'insensitive' } } },
+                { category: { name: { contains: filters.search, mode: 'insensitive' } } },
+                { category: { nameAr: { contains: filters.search, mode: 'insensitive' } } },
             ];
         }
         if (filters.fromDate || filters.toDate) {
@@ -65,16 +73,25 @@ exports.taskService = {
             if (filters.toDate)
                 where.dueDate.lte = new Date(filters.toDate);
         }
-        return client_1.default.task.findMany({
-            where,
-            include: {
-                assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
-                createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
-                category: true,
-                _count: { select: { comments: true, attachments: true } },
-            },
-            orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
-        });
+        const page = filters.page ? +filters.page : 1;
+        const limit = filters.limit ? +filters.limit : 50;
+        const skip = (page - 1) * limit;
+        const [tasks, total] = await Promise.all([
+            client_1.default.task.findMany({
+                where,
+                include: {
+                    assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
+                    createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
+                    category: true,
+                    _count: { select: { comments: true, attachments: true } },
+                },
+                orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
+                skip,
+                take: limit
+            }),
+            client_1.default.task.count({ where })
+        ]);
+        return { tasks, total, page };
     },
     async getById(id) {
         const task = await client_1.default.task.findUnique({
@@ -92,7 +109,9 @@ exports.taskService = {
                     orderBy: { commentDate: 'asc' },
                 },
                 attachments: true,
-            },
+                dependsOn: { select: { id: true, taskCode: true, title: true, titleAr: true, status: true } },
+                dependentTasks: { select: { id: true, taskCode: true, title: true, titleAr: true, status: true } },
+            }
         });
         if (!task)
             throw new errorHandler_1.AppError('Task not found', 404);

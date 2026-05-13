@@ -36,9 +36,14 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
       <h1>{{ isAr() ? '📄 المستخلصات' : '📄 Extracts' }}</h1>
       <p>{{ isAr() ? 'إدارة مستخلصات المقاولين' : 'Manage contractor extracts' }}</p>
     </div>
-    <button mat-raised-button color="primary" (click)="openCreate()" *ngIf="canCreate()">
-      <mat-icon>add</mat-icon> {{ isAr() ? 'مستخلص جديد' : 'New Extract' }}
-    </button>
+    <div style="display:flex; gap:10px;">
+      <button mat-stroked-button (click)="exportPdf()" [matTooltip]="isAr() ? 'تصدير PDF' : 'Export PDF'" style="color: #dc2626; border-color: rgba(220, 38, 38, 0.5);">
+        <mat-icon>picture_as_pdf</mat-icon> {{ isAr() ? 'PDF' : 'PDF' }}
+      </button>
+      <button mat-raised-button color="primary" (click)="openCreate()" *ngIf="canCreate()">
+        <mat-icon>add</mat-icon> {{ isAr() ? 'مستخلص جديد' : 'New Extract' }}
+      </button>
+    </div>
   </div>
 
   <!-- Summary chips -->
@@ -777,6 +782,24 @@ export class ExtractsPageComponent implements OnInit, AfterViewInit {
   loadFinancialSummary(f: any) {
     this.svc.getFinancialSummary(f).subscribe(r => {
       if (r.success) this.financialSummary.set(r.data);
+    });
+  }
+
+  exportPdf() {
+    const f: any = {};
+    if (this.filterStatus)     f.status       = this.filterStatus;
+    if (this.filterProject)    f.projectId    = this.filterProject;
+    if (this.filterContractor) f.contractorId = this.filterContractor;
+    if (this.filterSearch)     f.search       = this.filterSearch;
+    this.svc.exportExtractsPdf(f).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a   = document.createElement('a');
+        a.href = url; a.download = `extracts-${new Date().toISOString().split('T')[0]}.pdf`; a.click();
+        URL.revokeObjectURL(url);
+        this.snack.open(this.isAr() ? 'تم تصدير المستخلصات بنجاح' : 'Extracts exported successfully', '✓', { duration: 2500 });
+      },
+      error: () => this.snack.open(this.isAr() ? 'حدث خطأ' : 'Export failed', 'X'),
     });
   }
 

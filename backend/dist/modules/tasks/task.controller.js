@@ -19,7 +19,17 @@ const storage = multer_1.default.diskStorage({
         cb(null, `${Date.now()}-${utf8Name}`);
     },
 });
-exports.uploadAttachment = (0, multer_1.default)({ storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const fileFilter = (_req, file, cb) => {
+    const blockedExtensions = ['.exe', '.bat', '.sh', '.php', '.js', '.mjs', '.cmd', '.vbs', '.scr'];
+    const ext = path_1.default.extname(file.originalname).toLowerCase();
+    if (blockedExtensions.includes(ext)) {
+        cb(new Error(`Invalid file type. Files with extension ${ext} are not allowed.`));
+    }
+    else {
+        cb(null, true);
+    }
+};
+exports.uploadAttachment = (0, multer_1.default)({ storage, fileFilter, limits: { fileSize: 10 * 1024 * 1024 } });
 exports.taskController = {
     async getAll(req, res, next) {
         try {

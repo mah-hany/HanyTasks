@@ -163,7 +163,7 @@ router.get('/me', async (req, res, next) => {
     }
 });
 // POST award points (internal - called by task service)
-router.post('/award', async (req, res, next) => {
+router.post('/award', (0, auth_1.authorizeLevel)(1), async (req, res, next) => {
     try {
         const { userId, points, reason, taskId } = req.body;
         const entry = await client_1.default.userPoint.create({ data: { userId, points, reason, taskId } });

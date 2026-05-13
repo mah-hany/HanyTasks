@@ -13,50 +13,56 @@ export declare const taskService: {
         userId?: number;
         userRoleLevel?: number;
         isArchived?: string | boolean;
-    }): Promise<({
-        _count: {
-            comments: number;
-            attachments: number;
-        };
-        category: {
+        page?: number;
+        limit?: number;
+    }): Promise<{
+        tasks: ({
+            _count: {
+                comments: number;
+                attachments: number;
+            };
+            category: {
+                id: number;
+                name: string;
+                nameAr: string;
+                color: string;
+                icon: string;
+            } | null;
+            assignedTo: {
+                id: number;
+                employeeCode: string;
+                fullName: string;
+                fullNameAr: string;
+                profilePhoto: string | null;
+            };
+            createdBy: {
+                id: number;
+                fullName: string;
+                fullNameAr: string;
+            };
+        } & {
             id: number;
-            name: string;
-            nameAr: string;
-            color: string;
-            icon: string;
-        } | null;
-        assignedTo: {
-            id: number;
-            employeeCode: string;
-            fullName: string;
-            fullNameAr: string;
-            profilePhoto: string | null;
-        };
-        createdBy: {
-            id: number;
-            fullName: string;
-            fullNameAr: string;
-        };
-    } & {
-        id: number;
-        createdAt: Date;
-        updatedAt: Date;
-        assignedToId: number;
-        status: string;
-        description: string | null;
-        title: string;
-        titleAr: string | null;
-        createdById: number;
-        taskCode: string;
-        categoryId: number | null;
-        priority: string;
-        startDate: Date | null;
-        dueDate: Date | null;
-        completedDate: Date | null;
-        progressPercent: number;
-        isArchived: boolean;
-        dependsOnId: number | null;
-    })[]>;
+            createdAt: Date;
+            updatedAt: Date;
+            assignedToId: number;
+            status: string;
+            description: string | null;
+            title: string;
+            titleAr: string | null;
+            createdById: number;
+            taskCode: string;
+            categoryId: number | null;
+            priority: string;
+            startDate: Date | null;
+            dueDate: Date | null;
+            completedDate: Date | null;
+            progressPercent: number;
+            isArchived: boolean;
+            dependsOnId: number | null;
+        })[];
+        total: number;
+        page: number;
+    }>;
     getById(id: number): Promise<{
         category: {
             id: number;
@@ -156,6 +162,20 @@ export declare const taskService: {
             fileType: string;
             uploadedById: number;
             uploadedAt: Date;
+        }[];
+        dependsOn: {
+            id: number;
+            status: string;
+            title: string;
+            titleAr: string | null;
+            taskCode: string;
+        } | null;
+        dependentTasks: {
+            id: number;
+            status: string;
+            title: string;
+            titleAr: string | null;
+            taskCode: string;
         }[];
     } & {
         id: number;

@@ -91,6 +91,19 @@ export class TaskService {
     return this.http.get(`${this.exportUrl}/report/employee/${userId}/csv`, { params, responseType: 'blob' });
   }
 
+  exportTasksPdf(filters: any = {}) {
+    let params = new HttpParams();
+    Object.keys(filters).forEach(k => { if (filters[k]) params = params.set(k, filters[k]); });
+    return this.http.get(`${this.exportUrl}/tasks/pdf`, { params, responseType: 'blob' });
+  }
+
+  exportEmployeeReportPdf(userId: number, from?: string, to?: string) {
+    let params = new HttpParams();
+    if (from) params = params.set('from', from);
+    if (to)   params = params.set('to', to);
+    return this.http.get(`${this.exportUrl}/report/employee/${userId}/pdf`, { params, responseType: 'blob' });
+  }
+
   getDashboardExportData() {
     return this.http.get<any>(`${this.exportUrl}/dashboard/json`);
   }
