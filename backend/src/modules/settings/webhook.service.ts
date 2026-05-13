@@ -29,7 +29,7 @@ export const webhookService = {
         }
 
         // Fire and forget
-        axios.post(hook.url, dataString, { headers, timeout: 5000 }).catch(err => {
+        axios.post(hook.url, dataString, { headers, timeout: 5000 }).catch((err: any) => {
           logger.warn(`Webhook failed for URL ${hook.url}: ${err.message}`);
         });
       }

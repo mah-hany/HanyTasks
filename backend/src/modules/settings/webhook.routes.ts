@@ -15,8 +15,9 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const { name, url, eventTypes, secret, isActive } = req.body;
+    const user = (req as any).user;
     const hook = await prisma.webhook.create({
-      data: { name, url, eventTypes, secret, isActive, createdById: req.user!.id }
+      data: { name, url, eventTypes, secret, isActive, createdById: user.id }
     });
     res.status(201).json({ success: true, data: hook });
   } catch (e) { next(e); }
