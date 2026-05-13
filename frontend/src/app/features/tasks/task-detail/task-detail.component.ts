@@ -42,10 +42,17 @@ import { environment } from '../../../../environments/environment';
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <!-- Inline Delete Confirmation -->
-            <ng-container *ngIf="!confirmDelete(); else confirmDeleteTpl">
-              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(1)" (click)="editTask()">
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2)" (click)="editTask()">
                 <mat-icon>edit</mat-icon> {{ isAr() ? 'تعديل المهمة' : 'Edit Task' }}
               </button>
+              
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2) && !task()?.isArchived" (click)="toggleArchive(true)">
+                <mat-icon>archive</mat-icon> {{ isAr() ? 'أرشفة المهمة' : 'Archive Task' }}
+              </button>
+              <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(2) && task()?.isArchived" (click)="toggleArchive(false)">
+                <mat-icon>unarchive</mat-icon> {{ isAr() ? 'استرجاع المهمة' : 'Unarchive Task' }}
+              </button>
+
               <button mat-stroked-button color="warn" *ngIf="authService.hasRoleLevel(2)" (click)="confirmDelete.set(true)">
                 <mat-icon>delete</mat-icon> {{ isAr() ? 'حذف المهمة' : 'Delete Task' }}
               </button>
@@ -500,6 +507,20 @@ export class TaskDetailComponent implements OnInit {
       },
       error: (err) => {
         this.confirmDelete.set(false);
+        this.snack.open(err.error?.message || 'Error occurred', 'OK', { duration: 3000 });
+      }
+    });
+  }
+
+  toggleArchive(isArchived: boolean) {
+    this.taskService.archive(this.task().id, isArchived).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.snack.open(isArchived ? (this.isAr() ? 'تمت أرشفة المهمة' : 'Task archived') : (this.isAr() ? 'تم الاسترجاع من الأرشيف' : 'Task unarchived'), 'OK', { duration: 3000 });
+          this.loadTask(this.task().id);
+        }
+      },
+      error: (err) => {
         this.snack.open(err.error?.message || 'Error occurred', 'OK', { duration: 3000 });
       }
     });

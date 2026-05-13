@@ -51,6 +51,10 @@ const STATUS_COLUMNS = [
               <mat-icon>list</mat-icon>
             </button>
           </div>
+          <button mat-stroked-button (click)="toggleArchived()" [matTooltip]="isAr() ? (showArchived ? 'إخفاء الأرشيف' : 'عرض الأرشيف') : (showArchived ? 'Hide Archived' : 'Show Archived')">
+            <mat-icon>{{ showArchived ? 'unarchive' : 'archive' }}</mat-icon>
+            {{ isAr() ? (showArchived ? 'إخفاء الأرشيف' : 'عرض الأرشيف') : (showArchived ? 'Hide Archived' : 'Show Archived') }}
+          </button>
           <button mat-stroked-button (click)="exportCsv()" [matTooltip]="isAr() ? 'تصدير CSV' : 'Export CSV'">
             <mat-icon>download</mat-icon>
             {{ isAr() ? 'تصدير' : 'Export' }}
@@ -383,11 +387,12 @@ const STATUS_COLUMNS = [
 export class TasksListComponent implements OnInit {
   readonly STATUS_COLUMNS = STATUS_COLUMNS;
 
-  tasks        = signal<any[]>([]);
+  tasks = signal<any[]>([]);
   filteredTasks = signal<any[]>([]);
-  loading      = signal(true);
-  view         = signal<'kanban' | 'list'>('kanban');
-  allUsers     = signal<any[]>([]);
+  showArchived = false;
+  loading = signal(true);
+  view = signal<'kanban' | 'list'>('kanban');
+  allUsers = signal<any[]>([]);
 
   searchTerm       = '';
   filterStatus     = '';
@@ -459,13 +464,18 @@ export class TasksListComponent implements OnInit {
 
   loadTasks() {
     this.loading.set(true);
-    this.taskService.getAll().subscribe({
+    this.taskService.getAll({ isArchived: this.showArchived }).subscribe({
       next: (res) => {
         this.loading.set(false);
         if (res.success) { this.tasks.set(res.data); this.applyFilters(); }
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  toggleArchived() {
+    this.showArchived = !this.showArchived;
+    this.loadTasks();
   }
 
   applyFilters() {

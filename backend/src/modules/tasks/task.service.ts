@@ -38,8 +38,10 @@ export const taskService = {
     categoryId?: number; departmentId?: number;
     search?: string; fromDate?: string; toDate?: string;
     userId?: number; userRoleLevel?: number;
+    isArchived?: string | boolean;
   }) {
     const where: any = {};
+    where.isArchived = filters.isArchived === 'true' || filters.isArchived === true;
 
     if (filters.userRoleLevel && filters.userRoleLevel > 1 && filters.userId) {
       const subordinateIds = await getSubordinateIds(filters.userId);
@@ -189,6 +191,26 @@ export const taskService = {
     });
 
     return updated;
+  },
+
+  async archive(id: number, isArchived: boolean, userId: number) {
+    const task = await prisma.task.findUnique({ where: { id } });
+    if (!task) throw new AppError('Task not found', 404);
+    
+    await prisma.taskStatusHistory.create({
+      data: {
+        taskId: id,
+        fromStatus: task.status,
+        toStatus: isArchived ? 'ARCHIVED' : task.status,
+        changedById: userId,
+        note: isArchived ? 'Task was archived' : 'Task was unarchived'
+      }
+    });
+
+    return prisma.task.update({
+      where: { id },
+      data: { isArchived }
+    });
   },
 
   async updateStatus(taskId: number, newStatus: TaskStatus, userId: number, note?: string) {

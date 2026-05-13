@@ -69,6 +69,13 @@ export const taskController = {
     } catch (e) { next(e); }
   },
 
+  async archive(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const data = await taskService.archive(+req.params.id, req.body.isArchived, req.user!.id);
+      res.json({ success: true, data });
+    } catch (e) { next(e); }
+  },
+
   async updateStatus(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { status, note } = req.body;
