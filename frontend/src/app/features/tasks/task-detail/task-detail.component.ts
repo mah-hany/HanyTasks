@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
@@ -24,7 +25,7 @@ import { environment } from '../../../../environments/environment';
 @Component({
   selector: 'app-task-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, MatDialogModule, TranslateModule, DatePipe, TimeTrackerComponent],
+  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule, MatChipsModule, MatProgressBarModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule, MatMenuModule, MatCheckboxModule, MatDialogModule, MatTooltipModule, TranslateModule, DatePipe, TimeTrackerComponent],
   template: `
     <div class="page-container fade-in">
       <div *ngIf="loading()" class="loading-center"><mat-spinner diameter="48"></mat-spinner></div>
@@ -41,6 +42,11 @@ import { environment } from '../../../../environments/environment';
             <p>{{ task()?.taskCode }}</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
+            <!-- QR Code Button -->
+            <button mat-stroked-button (click)="showQR()" [matTooltip]="isAr() ? 'عرض رمز QR' : 'Show QR Code'">
+              <mat-icon>qr_code_2</mat-icon>
+            </button>
+            
             <!-- Inline Delete Confirmation -->
             <ng-container *ngIf="!confirmDelete(); else confirmDeleteTpl">
               <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(3)" (click)="editTask()">
@@ -381,6 +387,22 @@ export class TaskDetailComponent implements OnInit {
     this.taskService.getById(id).subscribe({
       next: (res) => { this.loading.set(false); if (res.success) this.task.set(res.data); },
       error: () => this.loading.set(false),
+    });
+  }
+
+  showQR() {
+    const t = this.task();
+    if (!t) return;
+    const url = window.location.href; // current page URL
+    import('../../../shared/components/qr-dialog/qr-dialog.component').then(m => {
+      this.dialog.open(m.QrDialogComponent, {
+        data: {
+          title: this.isAr() ? 'رمز المهمة' : 'Task QR Code',
+          subtitle: t.taskCode + ' - ' + (this.isAr() ? t.titleAr : t.title),
+          url: url
+        },
+        width: '350px'
+      });
     });
   }
 

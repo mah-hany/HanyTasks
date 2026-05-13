@@ -206,6 +206,9 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
             <button mat-icon-button color="warn" *ngIf="canDelete()" (click)="deleteItem(r.id, r.extractNumber)" [matTooltip]="isAr() ? 'حذف' : 'Delete'">
               <mat-icon>delete</mat-icon>
             </button>
+            <button mat-icon-button color="primary" (click)="showQR(r)" [matTooltip]="isAr() ? 'رمز QR' : 'QR Code'">
+              <mat-icon>qr_code_2</mat-icon>
+            </button>
           </div>
         </td>
       </ng-container>
@@ -627,6 +630,20 @@ export class ExtractsPageComponent implements OnInit {
       data: { extractId: r.id, extractNumber: r.extractNumber, contractorName: r.contractor?.name, projectName: r.project?.name, fromStatus: r.status },
     });
     ref.afterClosed().subscribe(result => { if (result) { this.load(); this.snack.open(this.isAr() ? 'تم الإرجاع' : 'Returned', '✓', { duration: 2500 }); } });
+  }
+
+  showQR(r: any) {
+    const url = window.location.origin + '/extracts'; // Go to extracts page
+    import('../../shared/components/qr-dialog/qr-dialog.component').then(m => {
+      this.dialog.open(m.QrDialogComponent, {
+        data: {
+          title: this.isAr() ? 'رمز المستخلص' : 'Extract QR Code',
+          subtitle: '#' + r.extractNumber + ' - ' + r.contractor?.name,
+          url: url
+        },
+        width: '350px'
+      });
+    });
   }
 
   statusLabel(s: string): string {
