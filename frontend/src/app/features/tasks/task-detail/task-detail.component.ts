@@ -42,6 +42,7 @@ import { environment } from '../../../../environments/environment';
           </div>
           <div style="display:flex;gap:8px;align-items:center">
             <!-- Inline Delete Confirmation -->
+            <ng-container *ngIf="!confirmDelete(); else confirmDeleteTpl">
               <button mat-stroked-button color="primary" *ngIf="authService.hasRoleLevel(3)" (click)="editTask()">
                 <mat-icon>edit</mat-icon> {{ isAr() ? 'تعديل المهمة' : 'Edit Task' }}
               </button>
