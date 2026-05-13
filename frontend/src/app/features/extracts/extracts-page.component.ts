@@ -236,11 +236,25 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ isAr() ? 'المهمة المرتبطة (اختياري)' : 'Linked Task (optional)' }}</mat-label>
-          <mat-select [(ngModel)]="newForm.taskId" [placeholder]="isAr() ? 'بدون ربط بمهمة' : 'No linked task'">
-            <mat-option [value]="null">{{ isAr() ? 'بدون ربط بمهمة' : 'No linked task' }}</mat-option>
-            <mat-option *ngFor="let t of tasks()" [value]="t.id">
-              <span style="font-family:monospace;font-size:11px;color:#2563eb">{{t.taskCode}}</span>
-              &nbsp;—&nbsp;{{ isAr() && t.titleAr ? t.titleAr : t.title }}
+          <mat-select [(ngModel)]="newForm.taskId" (openedChange)="formTaskQ=''">
+            <div class="select-search-wrap">
+              <mat-icon class="select-search-icon">search</mat-icon>
+              <input class="select-search-input"
+                     [placeholder]="isAr() ? 'ابحث بكود أو اسم المهمة...' : 'Search by code or title...'"
+                     [(ngModel)]="formTaskQ"
+                     (keydown.space)="$event.stopPropagation()"
+                     (click)="$event.stopPropagation()">
+            </div>
+            <mat-option [value]="null">
+              <mat-icon style="font-size:15px;vertical-align:middle;color:var(--text-muted)">link_off</mat-icon>
+              {{ isAr() ? 'بدون ربط بمهمة' : 'No linked task' }}
+            </mat-option>
+            <mat-option *ngFor="let t of filteredTasksForm()" [value]="t.id">
+              <span class="opt-code">{{t.taskCode}}</span>
+              {{ isAr() && t.titleAr ? t.titleAr : t.title }}
+            </mat-option>
+            <mat-option *ngIf="filteredTasksForm().length === 0" disabled>
+              <span style="color:var(--text-muted);font-size:12px">{{ isAr() ? 'لا نتائج' : 'No results' }}</span>
             </mat-option>
           </mat-select>
           <mat-icon matSuffix style="font-size:16px">link</mat-icon>
@@ -378,9 +392,10 @@ export class ExtractsPageComponent implements OnInit {
 
   summary = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
 
-  // ── Searchable contractor dropdowns ──
+  // ── Searchable dropdowns ──
   filterContractorQ = '';
   formContractorQ   = '';
+  formTaskQ         = '';
 
   filteredContractors = () => {
     const q = this.filterContractorQ.trim().toLowerCase();
@@ -399,6 +414,16 @@ export class ExtractsPageComponent implements OnInit {
       c.name?.toLowerCase().includes(q) ||
       c.nameAr?.toLowerCase().includes(q) ||
       c.code?.toLowerCase().includes(q)
+    );
+  };
+
+  filteredTasksForm = () => {
+    const q = this.formTaskQ.trim().toLowerCase();
+    if (!q) return this.tasks();
+    return this.tasks().filter(t =>
+      t.taskCode?.toLowerCase().includes(q) ||
+      t.title?.toLowerCase().includes(q) ||
+      t.titleAr?.toLowerCase().includes(q)
     );
   };
 
