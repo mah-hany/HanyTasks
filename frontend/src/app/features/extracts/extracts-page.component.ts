@@ -72,9 +72,22 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>{{ isAr() ? 'المقاول' : 'Contractor' }}</mat-label>
-        <mat-select [(ngModel)]="filterContractor" (ngModelChange)="load()">
+        <mat-select [(ngModel)]="filterContractor" (ngModelChange)="load()" (openedChange)="filterContractorQ=''">
+          <div class="select-search-wrap">
+            <mat-icon class="select-search-icon">search</mat-icon>
+            <input class="select-search-input"
+                   [placeholder]="isAr() ? 'ابحث...' : 'Search...'"
+                   [(ngModel)]="filterContractorQ"
+                   (keydown.space)="$event.stopPropagation()"
+                   (click)="$event.stopPropagation()">
+          </div>
           <mat-option value="">{{ isAr() ? 'الكل' : 'All' }}</mat-option>
-          <mat-option *ngFor="let c of contractors()" [value]="c.id">{{c.name}}</mat-option>
+          <mat-option *ngFor="let c of filteredContractors()" [value]="c.id">
+            <span class="opt-code">{{c.code}}</span> {{c.name}}
+          </mat-option>
+          <mat-option *ngIf="filteredContractors().length === 0" disabled>
+            <span style="color:var(--text-muted);font-size:12px">{{ isAr() ? 'لا نتائج' : 'No results' }}</span>
+          </mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline" class="search-field">
@@ -198,8 +211,21 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>{{ isAr() ? 'المقاول' : 'Contractor' }}</mat-label>
-          <mat-select [(ngModel)]="newForm.contractorId">
-            <mat-option *ngFor="let c of contractors()" [value]="c.id">{{c.name}}</mat-option>
+          <mat-select [(ngModel)]="newForm.contractorId" (openedChange)="formContractorQ=''">
+            <div class="select-search-wrap">
+              <mat-icon class="select-search-icon">search</mat-icon>
+              <input class="select-search-input"
+                     [placeholder]="isAr() ? 'اكتب اسم أو كود المقاول...' : 'Search by name or code...'"
+                     [(ngModel)]="formContractorQ"
+                     (keydown.space)="$event.stopPropagation()"
+                     (click)="$event.stopPropagation()">
+            </div>
+            <mat-option *ngFor="let c of filteredContractorsForm()" [value]="c.id">
+              <span class="opt-code">{{c.code}}</span> {{c.name}}
+            </mat-option>
+            <mat-option *ngIf="filteredContractorsForm().length === 0" disabled>
+              <span style="color:var(--text-muted);font-size:12px">{{ isAr() ? 'لا نتائج' : 'No results' }}</span>
+            </mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100">
@@ -306,6 +332,24 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
     .form-body   { padding:16px 24px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1; min-height:0; }
     .form-footer { display:flex; justify-content:flex-end; gap:8px; padding:12px 24px 16px; flex-shrink:0; border-top:1px solid var(--border-color); }
     .w-100 { width:100%; }
+
+    /* ── Searchable select ─────────────────────────── */
+    .select-search-wrap {
+      display:flex; align-items:center; gap:6px;
+      padding:6px 12px 4px; border-bottom:1px solid var(--border-color);
+      position:sticky; top:0; background:#fff; z-index:1;
+    }
+    .select-search-icon { font-size:16px; width:16px; height:16px; color:var(--text-muted); flex-shrink:0; }
+    .select-search-input {
+      flex:1; border:none; outline:none; font-size:13px;
+      background:transparent; color:inherit;
+      font-family:inherit;
+    }
+    .opt-code {
+      display:inline-block; font-family:monospace; font-size:11px;
+      background:#f1f5f9; color:#2563eb; padding:1px 6px;
+      border-radius:4px; margin-inline-end:6px;
+    }
   `]
 })
 export class ExtractsPageComponent implements OnInit {
@@ -333,6 +377,30 @@ export class ExtractsPageComponent implements OnInit {
   newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, taskId: null as any, notes: '' };
 
   summary = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
+
+  // ── Searchable contractor dropdowns ──
+  filterContractorQ = '';
+  formContractorQ   = '';
+
+  filteredContractors = () => {
+    const q = this.filterContractorQ.trim().toLowerCase();
+    if (!q) return this.contractors();
+    return this.contractors().filter(c =>
+      c.name?.toLowerCase().includes(q) ||
+      c.nameAr?.toLowerCase().includes(q) ||
+      c.code?.toLowerCase().includes(q)
+    );
+  };
+
+  filteredContractorsForm = () => {
+    const q = this.formContractorQ.trim().toLowerCase();
+    if (!q) return this.contractors();
+    return this.contractors().filter(c =>
+      c.name?.toLowerCase().includes(q) ||
+      c.nameAr?.toLowerCase().includes(q) ||
+      c.code?.toLowerCase().includes(q)
+    );
+  };
 
   isAr      = () => this.lang.getCurrentLang() === 'ar';
   canCreate = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
