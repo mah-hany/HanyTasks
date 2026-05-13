@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -32,7 +33,7 @@ const STATUS_COLUMNS = [
   standalone: true,
   imports: [CommonModule, DatePipe, RouterLink, FormsModule, MatIconModule, MatButtonModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
-    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule],
+    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule, DragDropModule],
   template: `
     <div class="page-container fade-in">
       <!-- Header -->
@@ -124,7 +125,7 @@ const STATUS_COLUMNS = [
       <div *ngIf="loading()" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
 
       <!-- ── Kanban View ── -->
-      <div *ngIf="!loading() && view() === 'kanban'" class="kanban-board">
+      <div *ngIf="!loading() && view() === 'kanban'" class="kanban-board" cdkDropListGroup>
         <div *ngFor="let col of STATUS_COLUMNS" class="kanban-column">
           <div class="column-header" [style.border-top-color]="col.color">
             <div class="col-header-left">
@@ -132,42 +133,49 @@ const STATUS_COLUMNS = [
               <span [style.color]="col.color">{{ isAr() ? col.labelAr : col.label }}</span>
             </div>
             <span class="column-count" [style.background]="col.bg" [style.color]="col.color">
-              {{ getTasksByStatus(col.key).length }}
+              {{ kanbanData().get(col.key)?.length || 0 }}
             </span>
           </div>
 
-          <div *ngIf="!getTasksByStatus(col.key).length" class="column-empty">
-            <mat-icon>inbox</mat-icon>
-            <p>{{ isAr() ? 'لا توجد مهام' : 'No tasks' }}</p>
-          </div>
-
-          <div class="task-card-kanban" *ngFor="let task of getTasksByStatus(col.key)"
-               [routerLink]="['/tasks', task.id]">
-            <div class="kanban-task-header">
-              <span class="priority-chip" [class]="task.priority.toLowerCase()">{{ getPriorityLabel(task.priority) }}</span>
-              <span class="task-code-badge">{{ task.taskCode }}</span>
+          <div class="column-body" 
+               cdkDropList 
+               [cdkDropListData]="kanbanData().get(col.key) || []"
+               (cdkDropListDropped)="drop($event, col.key)"
+               style="min-height: 150px; padding-bottom: 20px;">
+            <div *ngIf="!(kanbanData().get(col.key)?.length)" class="column-empty">
+              <mat-icon>inbox</mat-icon>
+              <p>{{ isAr() ? 'لا توجد مهام' : 'No tasks' }}</p>
             </div>
-            <div class="kanban-task-title">{{ isAr() && task.titleAr ? task.titleAr : task.title }}</div>
 
-            <!-- Show assignee only if NOT filtering by employee -->
-            <div class="kanban-task-assignee" *ngIf="!filterEmployeeId">
-              <div class="mini-avatar" [matTooltip]="isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName">
-                {{ getInitial(isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName) }}
+            <div class="task-card-kanban" *ngFor="let task of kanbanData().get(col.key)"
+                 cdkDrag [cdkDragData]="task"
+                 [routerLink]="['/tasks', task.id]">
+              <div class="kanban-task-header">
+                <span class="priority-chip" [class]="task.priority.toLowerCase()">{{ getPriorityLabel(task.priority) }}</span>
+                <span class="task-code-badge">{{ task.taskCode }}</span>
               </div>
-              <span class="assignee-name">{{ isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName }}</span>
-            </div>
+              <div class="kanban-task-title">{{ isAr() && task.titleAr ? task.titleAr : task.title }}</div>
 
-            <div class="kanban-task-footer">
-              <div class="tf-progress" style="flex:1">
-                <div class="tf-progress__fill" [style.width]="task.progressPercent + '%'"></div>
+              <!-- Show assignee only if NOT filtering by employee -->
+              <div class="kanban-task-assignee" *ngIf="!filterEmployeeId">
+                <div class="mini-avatar" [matTooltip]="isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName">
+                  {{ getInitial(isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName) }}
+                </div>
+                <span class="assignee-name">{{ isAr() ? task.assignedTo?.fullNameAr : task.assignedTo?.fullName }}</span>
               </div>
-              <span style="font-size:11px;font-weight:700;color:var(--color-primary-light)">{{ task.progressPercent }}%</span>
-            </div>
-            <div class="due-info" *ngIf="task.dueDate">
-              <mat-icon inline style="font-size:12px">schedule</mat-icon>
-              <span [style.color]="isOverdue(task) ? '#dc2626' : 'var(--text-muted)'">
-                {{ task.dueDate | date:'dd/MM/yyyy' }}
-              </span>
+
+              <div class="kanban-task-footer">
+                <div class="tf-progress" style="flex:1">
+                  <div class="tf-progress__fill" [style.width]="task.progressPercent + '%'"></div>
+                </div>
+                <span style="font-size:11px;font-weight:700;color:var(--color-primary-light)">{{ task.progressPercent }}%</span>
+              </div>
+              <div class="due-info" *ngIf="task.dueDate">
+                <mat-icon inline style="font-size:12px">schedule</mat-icon>
+                <span [style.color]="isOverdue(task) ? '#dc2626' : 'var(--text-muted)'">
+                  {{ task.dueDate | date:'dd/MM/yyyy' }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -308,14 +316,28 @@ const STATUS_COLUMNS = [
 
     .task-card-kanban {
       margin: 8px; padding: 12px; border-radius: 10px;
-      background: var(--bg-main); cursor: pointer;
+      background: var(--bg-main); cursor: grab;
       border: 1px solid var(--border-color);
       transition: all 0.2s;
+      &:active { cursor: grabbing; }
       &:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(0,0,0,0.08);
         border-color: var(--color-primary);
       }
+    }
+    
+    .cdk-drag-preview {
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+      background: white;
+      opacity: 0.9;
+    }
+    .cdk-drag-placeholder { opacity: 0; }
+    .cdk-drag-animating { transition: transform 250ms cubic-bezier(0, 0, 0.2, 1); }
+    .column-body.cdk-drop-list-dragging .task-card-kanban:not(.cdk-drag-placeholder) {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
 
     .kanban-task-header {
@@ -377,6 +399,16 @@ export class TasksListComponent implements OnInit {
   selectedEmployee = computed(() =>
     this.filterEmployeeId ? this.allUsers().find(u => u.id === this.filterEmployeeId) ?? null : null
   );
+
+  kanbanData = computed(() => {
+    const tasks = this.filteredTasks();
+    const map = new Map<string, any[]>();
+    for (const col of STATUS_COLUMNS) map.set(col.key, []);
+    for (const t of tasks) {
+      if (map.has(t.status)) map.get(t.status)!.push(t);
+    }
+    return map;
+  });
 
   isAr        = () => this.langService.getCurrentLang() === 'ar';
   canCreate   = () => this.authService.hasRoleLevel(3);
@@ -484,6 +516,36 @@ export class TasksListComponent implements OnInit {
       data: { template: templateData }
     });
     ref.afterClosed().subscribe(result => { if (result) this.loadTasks(); });
+  }
+
+  drop(event: CdkDragDrop<any[]>, newStatus: string) {
+    if (event.previousContainer === event.container) return; // Ignore if dropped in the same column
+    
+    const task = event.item.data;
+    const oldStatus = task.status;
+    if (oldStatus === newStatus) return;
+
+    // Optimistic UI update
+    this.tasks.update(tasks => {
+       const t = tasks.find(x => x.id === task.id);
+       if (t) t.status = newStatus;
+       return [...tasks];
+    });
+    this.applyFilters();
+
+    this.taskService.updateStatus(task.id, newStatus).subscribe({
+      next: () => this.snack.open(this.isAr() ? 'تم التحديث' : 'Status updated', '✓', { duration: 2000 }),
+      error: (err) => {
+         // Revert on error
+         this.tasks.update(tasks => {
+            const t = tasks.find(x => x.id === task.id);
+            if (t) t.status = oldStatus;
+            return [...tasks];
+         });
+         this.applyFilters();
+         this.snack.open(err.error?.message || 'Error updating status', 'X');
+      }
+    });
   }
 
   exportCsv() {
