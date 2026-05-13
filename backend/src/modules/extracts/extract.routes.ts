@@ -411,7 +411,29 @@ router.patch('/:id', async (req: AuthRequest, res: Response, next: NextFunction)
       });
     }
 
-    const { amount, currency, notes, taskId } = req.body;
+    const { amount, currency, notes, taskId, extractNumber } = req.body;
+
+    // Check if extractNumber is being edited and level is <= 2
+    if (extractNumber !== undefined && Number(extractNumber) !== extract.extractNumber) {
+      if (level > 2) {
+        return res.status(403).json({ success: false, message: 'لا تملك صلاحية تعديل رقم المستخلص.' });
+      }
+      // Check for duplicates
+      const dup = await prisma.taskExtract.findFirst({
+        where: {
+          contractorId: extract.contractorId,
+          projectId: extract.projectId,
+          extractNumber: +extractNumber,
+          id: { not: extract.id },
+        },
+      });
+      if (dup) {
+        return res.status(400).json({ 
+          success: false, 
+          message: `هذا المستخلص (${extractNumber}) مسجل بالفعل لنفس المقاول والمشروع.` 
+        });
+      }
+    }
 
     // Build update payload (only provided fields)
     const data: any = {};
@@ -419,6 +441,7 @@ router.patch('/:id', async (req: AuthRequest, res: Response, next: NextFunction)
     if (currency  !== undefined) data.currency = currency;
     if (notes     !== undefined) data.notes    = notes;
     if (taskId    !== undefined) data.taskId   = taskId !== null ? +taskId : null;
+    if (extractNumber !== undefined && level <= 2) data.extractNumber = +extractNumber;
 
     if (Object.keys(data).length === 0) {
       return res.status(400).json({ success: false, message: 'لم يتم تحديد أي حقل للتعديل' });

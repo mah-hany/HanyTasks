@@ -367,6 +367,12 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
       </div>
 
       <div class="form-body">
+        <!-- Extract Number Field (Only editable by ADMIN+) -->
+        <mat-form-field appearance="outline" class="w-100" *ngIf="canEditNumber()">
+          <mat-label>{{ isAr() ? 'رقم المستخلص' : 'Extract Number' }}</mat-label>
+          <input matInput type="number" min="1" [(ngModel)]="editForm.extractNumber">
+        </mat-form-field>
+
         <!-- Amount + Currency -->
         <div class="amount-row">
           <mat-form-field appearance="outline" class="amount-field">
@@ -673,6 +679,7 @@ export class ExtractsPageComponent implements OnInit {
   canCreate = () => (this.auth.currentUser()?.role?.level ?? 99) <= 4;
   canDelete = () => (this.auth.currentUser()?.role?.level ?? 99) <= 2;
   roleLevel = () => this.auth.currentUser()?.role?.level ?? 99;
+  canEditNumber = () => this.roleLevel() <= 2;
 
   // Can edit: SUPERVISOR+ for non-POSTED; ADMIN+ for POSTED
   canEdit = (r: any) => {
@@ -790,6 +797,7 @@ export class ExtractsPageComponent implements OnInit {
       currency: this.editForm.currency,
       notes:    this.editForm.notes,
       taskId:   this.editForm.taskId,
+      extractNumber: this.editForm.extractNumber,
     };
     this.svc.update(this.editForm.id, payload).subscribe({
       next: () => {
