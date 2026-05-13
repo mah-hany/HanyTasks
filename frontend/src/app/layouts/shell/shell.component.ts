@@ -114,15 +114,17 @@ interface NavItem {
             <mat-icon>{{ sidebarCollapsed() ? 'menu_open' : 'menu' }}</mat-icon>
           </button>
 
-          <span class="header-spacer"></span>
-
-          <!-- Search Button -->
-          <button class="header-search-btn desktop-only" (click)="openGlobalSearch()">
-            <mat-icon>search</mat-icon>
-            <span class="search-text">{{ currentLang() === 'ar' ? 'بحث عالمي...' : 'Global Search...' }}</span>
-            <span class="search-shortcut">Ctrl+K</span>
-          </button>
+          <!-- Search Button (Centered) -->
+          <div class="header-search-wrapper desktop-only">
+            <button class="header-search-btn" (click)="openGlobalSearch()">
+              <mat-icon>search</mat-icon>
+              <span class="search-text">{{ currentLang() === 'ar' ? 'بحث عالمي...' : 'Global Search...' }}</span>
+              <span class="search-shortcut">Ctrl+K</span>
+            </button>
+          </div>
           
+          <span class="header-spacer mobile-only"></span>
+
           <!-- Mobile search icon -->
           <button class="header-btn mobile-only" (click)="openGlobalSearch()">
             <mat-icon>search</mat-icon>
@@ -407,13 +409,17 @@ interface NavItem {
     }
 
       /* Header Buttons */
+      .header-search-wrapper {
+        flex: 1; display: flex; justify-content: center; padding: 0 16px;
+      }
       .header-search-btn {
-        display: flex; align-items: center; gap: 8px; background: rgba(100,116,139,0.08); border: 1px solid rgba(100,116,139,0.2);
-        padding: 6px 12px; border-radius: 8px; cursor: pointer; margin-inline-end: 16px; color: var(--text-secondary); transition: all 0.2s;
-        &:hover { background: rgba(100,116,139,0.15); color: var(--text-main); }
+        display: flex; align-items: center; gap: 12px; background: rgba(100,116,139,0.08); border: 1px solid rgba(100,116,139,0.2);
+        padding: 8px 16px; border-radius: 8px; cursor: pointer; color: var(--text-secondary); transition: all 0.2s;
+        width: 100%; max-width: 380px; justify-content: space-between;
+        &:hover { background: rgba(100,116,139,0.15); color: var(--text-main); border-color: rgba(100,116,139,0.3); }
         mat-icon { font-size: 20px; width: 20px; height: 20px; }
-        .search-text { font-size: 13px; font-weight: 500; }
-        .search-shortcut { font-size: 11px; padding: 2px 6px; background: var(--bg-card); border-radius: 4px; border: 1px solid var(--border-color); font-weight: 600; }
+        .search-text { font-size: 14px; font-weight: 500; flex: 1; text-align: start; }
+        .search-shortcut { font-size: 12px; padding: 2px 8px; background: var(--bg-card); border-radius: 4px; border: 1px solid var(--border-color); font-weight: 600; }
       }
 
     /* Header */
