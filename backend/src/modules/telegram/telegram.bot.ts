@@ -115,6 +115,75 @@ function registerHandlers(b: TelegramBot) {
     await b.sendMessage(chatId, '👋 تم تسجيل الخروج. أرسل /start للدخول مجدداً.');
   });
 
+  // /report
+  b.onText(/\/report/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = await getUser(chatId);
+    if (!user) { await b.sendMessage(chatId, '🔒 أرسل /start لتسجيل الدخول'); return; }
+    if (!isAdmin(user)) { await b.sendMessage(chatId, '🔒 صلاحية المديرين فقط.'); return; }
+    
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const [created, completed, overdue] = await Promise.all([
+      prisma.task.count({ where: { createdAt: { gte: today, lt: tomorrow } } }),
+      prisma.task.count({ where: { status: 'COMPLETED', completedDate: { gte: today, lt: tomorrow } } }),
+      prisma.task.count({ where: { dueDate: { lt: today }, status: { notIn: ['COMPLETED', 'CANCELLED'] } } })
+    ]);
+
+    await b.sendMessage(chatId, 
+      `📈 *التقرير اليومي للمدير*\n\n` +
+      `🆕 مهام أُضيفت اليوم: *${created}*\n` +
+      `✅ مهام أُنجزت اليوم: *${completed}*\n` +
+      `⚠️ مهام متأخرة بالمجمل: *${overdue}*`, 
+      { parse_mode: 'Markdown' });
+  });
+
+  // /today_tasks
+  b.onText(/\/today_tasks/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = await getUser(chatId);
+    if (!user) return;
+    
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const tasks = await prisma.task.findMany({
+      where: { assignedToId: user.id, dueDate: { gte: today, lt: tomorrow }, status: { notIn: ['COMPLETED', 'CANCELLED'] } }
+    });
+
+    if (!tasks.length) {
+      await b.sendMessage(chatId, '🎉 ليس لديك مهام مطلوب تسليمها اليوم!');
+      return;
+    }
+    let m = `📅 *مهامك المطلوبة اليوم (${tasks.length})*\n\n`;
+    tasks.forEach(t => { m += `• *${t.taskCode}*: ${t.titleAr || t.title}\n`; });
+    await b.sendMessage(chatId, m, { parse_mode: 'Markdown' });
+  });
+
+  // /employee
+  b.onText(/\/employee/, async (msg) => {
+    const chatId = msg.chat.id;
+    const user = await getUser(chatId);
+    if (!user) return;
+    if (!isAdmin(user)) { await b.sendMessage(chatId, '🔒 صلاحية المديرين فقط.'); return; }
+    
+    sessionState.set(chatId, 'search_employee');
+    await b.sendMessage(chatId, '🔍 أدخل اسم الموظف أو كوده (Employee Code) للبحث عنه:');
+  });
+
+  // /status
+  b.onText(/\/status/, async (msg) => {
+    const chatId = msg.chat.id;
+    if (!(await getUser(chatId))) return;
+    sessionState.set(chatId, 'us_code');
+    await b.sendMessage(chatId, '🔄 أدخل كود المهمة لتغيير حالتها:');
+  });
+
   // Callback queries
   b.on('callback_query', async (query) => {
     const chatId = query.message!.chat.id;
@@ -239,6 +308,20 @@ function registerHandlers(b: TelegramBot) {
     if (sessionState.get(chatId) === 'awaiting_task_code') {
       sessionState.delete(chatId);
       await showTaskByCode(b, chatId, text, user);
+      return;
+    }
+
+    if (sessionState.get(chatId) === 'search_employee') {
+      sessionState.delete(chatId);
+      const emp = await prisma.user.findFirst({
+        where: { OR: [ { employeeCode: { equals: text, mode: 'insensitive' } }, { fullNameAr: { contains: text, mode: 'insensitive' } } ] },
+        include: { role: true }
+      });
+      if (!emp) {
+        await b.sendMessage(chatId, '❌ لم يتم العثور على موظف بهذا الاسم أو الكود.');
+      } else {
+        await showEmpDetails(b, chatId, emp.id);
+      }
       return;
     }
 

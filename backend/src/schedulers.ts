@@ -182,5 +182,41 @@ export function startSchedulers() {
     }
   });
 
-  logger.info('⏰ Schedulers started: keep-alive + overdue + reminders + weekly email');
+  // ── Daily Manager Report at 5 PM ──────────────────────────
+  cron.schedule('0 17 * * *', async () => {
+    logger.debug('📈 Running daily manager report...');
+    try {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(today.getDate() + 1);
+
+      // Get all managers who have a telegram Chat ID
+      const managers = await prisma.user.findMany({
+        where: { role: { level: { lte: 2 } }, isActive: true, telegramChatId: { not: null } }
+      });
+
+      const [created, completed, overdue] = await Promise.all([
+        prisma.task.count({ where: { createdAt: { gte: today, lt: tomorrow } } }),
+        prisma.task.count({ where: { status: 'COMPLETED', completedDate: { gte: today, lt: tomorrow } } }),
+        prisma.task.count({ where: { dueDate: { lt: today }, status: { notIn: ['COMPLETED', 'CANCELLED'] } } })
+      ]);
+
+      const { sendTelegramNotification } = require('./modules/telegram/telegram.bot');
+      for (const m of managers) {
+        await sendTelegramNotification(
+          m.id,
+          `📈 *التقرير اليومي التلقائي*\n\n` +
+          `مرحباً ${m.fullNameAr}، إليك ملخص اليوم:\n` +
+          `🆕 مهام أُضيفت اليوم: *${created}*\n` +
+          `✅ مهام أُنجزت اليوم: *${completed}*\n` +
+          `⚠️ إجمالي المهام المتأخرة: *${overdue}*`
+        );
+      }
+    } catch (err) {
+      logger.error('Daily manager report error:', err);
+    }
+  });
+
+  logger.info('⏰ Schedulers started: keep-alive + overdue + reminders + daily/weekly reports');
 }
