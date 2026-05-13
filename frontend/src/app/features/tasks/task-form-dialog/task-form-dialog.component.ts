@@ -194,7 +194,7 @@ export class TaskFormDialogComponent implements OnInit {
   ngOnInit() {
     this.userService.getAssignable().subscribe(res => { if (res.success) this.users.set(res.data); });
     this.taskService.getCategories().subscribe(res => { if (res.success) this.categories.set(res.data); });
-    this.taskService.getAll({}).subscribe(res => { if (res.success) this.allTasks.set(res.data.tasks || []); });
+    this.taskService.getAll({}).subscribe(res => { if (res.success) this.allTasks.set(res.data); });
 
     if (this.data?.task) {
       this.isEditMode = true;

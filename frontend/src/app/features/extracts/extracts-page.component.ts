@@ -723,7 +723,7 @@ export class ExtractsPageComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.svc.getContractors().subscribe(r => { if (r.success) this.contractors.set(r.data); });
     this.svc.getProjects().subscribe(r => { if (r.success) this.projects.set(r.data); });
-    this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data.tasks || []); });
+    this.taskSvc.getAll().subscribe(r => { if (r.success) this.tasks.set(r.data); });
     // Load enabled currencies from settings; fallback to full list
     this.svc.getCurrencies().subscribe({
       next: r => {

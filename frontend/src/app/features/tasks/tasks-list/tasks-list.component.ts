@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TranslateModule } from '@ngx-translate/core';
 import { TaskService } from '../../../core/services/task.service';
@@ -35,7 +34,7 @@ const STATUS_COLUMNS = [
   standalone: true,
   imports: [CommonModule, DatePipe, RouterLink, FormsModule, MatIconModule, MatButtonModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatChipsModule,
-    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, MatPaginatorModule, TranslateModule, DragDropModule, GanttChartComponent],
+    MatProgressSpinnerModule, MatTooltipModule, MatDialogModule, TranslateModule, DragDropModule, GanttChartComponent],
   template: `
     <div class="page-container fade-in">
       <!-- Header -->
@@ -238,10 +237,6 @@ const STATUS_COLUMNS = [
         <app-gantt-chart [tasks]="filteredTasks()"></app-gantt-chart>
       </div>
 
-      <!-- Paginator -->
-      <mat-paginator [pageSizeOptions]="[20, 50, 100]" pageSize="50" showFirstLastButtons
-                     class="tf-card" style="margin-top: 16px;"></mat-paginator>
-
     </div>
   `,
   styles: [`
@@ -403,10 +398,8 @@ const STATUS_COLUMNS = [
     .loading-center { display: flex; justify-content: center; padding: 60px; }
   `],
 })
-export class TasksListComponent implements OnInit, AfterViewInit {
+export class TasksListComponent implements OnInit {
   readonly STATUS_COLUMNS = STATUS_COLUMNS;
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   tasks = signal<any[]>([]);
   filteredTasks = signal<any[]>([]);
@@ -414,14 +407,13 @@ export class TasksListComponent implements OnInit, AfterViewInit {
   loading = signal(true);
   view = signal<'kanban' | 'list' | 'gantt'>('kanban');
   allUsers = signal<any[]>([]);
-  totalTasksCount = signal(0);
 
   searchTerm       = '';
   filterStatus     = '';
   filterPriority   = '';
   filterEmployeeId: number | null = null;
 
-  totalTasks = computed(() => this.totalTasksCount());
+  totalTasks = computed(() => this.filteredTasks().length);
 
   selectedEmployee = computed(() =>
     this.filterEmployeeId ? this.allUsers().find(u => u.id === this.filterEmployeeId) ?? null : null
@@ -452,7 +444,6 @@ export class TasksListComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // Load all users for SUPERADMIN employee filter
     if (this.isSuperAdmin()) {
       this.userService.getAll({ isActive: true }).subscribe(res => {
         if (res.success) this.allUsers.set(res.data);
@@ -460,13 +451,11 @@ export class TasksListComponent implements OnInit, AfterViewInit {
     }
     this.route.queryParams.subscribe(p => {
       if (p['status']) this.filterStatus = p['status'];
-      // mine=true → filter to current user's tasks (SUPERADMIN only)
       if (p['mine'] === 'true' && this.isSuperAdmin()) {
         const myId = this.authService.currentUser()?.id ?? null;
         this.filterEmployeeId = myId;
         this.view.set('kanban');
       } else if (!p['mine']) {
-        // Clear mine filter when navigating away
         this.filterEmployeeId = null;
       }
       
@@ -483,39 +472,12 @@ export class TasksListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.paginator.page.subscribe(() => {
-      this.loadTasks();
-    });
-  }
-
   loadTasks() {
     this.loading.set(true);
-    const filters: any = { isArchived: this.showArchived };
-    if (this.searchTerm) filters.search = this.searchTerm;
-    if (this.filterStatus) filters.status = this.filterStatus;
-    if (this.filterPriority) filters.priority = this.filterPriority;
-    if (this.filterEmployeeId) filters.assignedToId = this.filterEmployeeId;
-
-    if (this.paginator) {
-      filters.page = this.paginator.pageIndex + 1;
-      filters.limit = this.paginator.pageSize;
-    } else {
-      filters.page = 1;
-      filters.limit = 50;
-    }
-
-    this.taskService.getAll(filters).subscribe({
+    this.taskService.getAll({ isArchived: this.showArchived }).subscribe({
       next: (res) => {
         this.loading.set(false);
-        if (res.success) {
-          this.tasks.set(res.data.tasks);
-          this.filteredTasks.set(res.data.tasks);
-          this.totalTasksCount.set(res.data.total);
-          if (this.paginator) {
-            this.paginator.length = res.data.total;
-          }
-        }
+        if (res.success) { this.tasks.set(res.data); this.applyFilters(); }
       },
       error: () => this.loading.set(false),
     });
@@ -523,17 +485,30 @@ export class TasksListComponent implements OnInit, AfterViewInit {
 
   toggleArchived() {
     this.showArchived = !this.showArchived;
-    if (this.paginator) this.paginator.pageIndex = 0;
     this.loadTasks();
   }
 
-  searchTimeout: any;
   applyFilters() {
-    clearTimeout(this.searchTimeout);
-    this.searchTimeout = setTimeout(() => {
-      if (this.paginator) this.paginator.pageIndex = 0;
-      this.loadTasks();
-    }, 400);
+    let list = this.tasks();
+    if (this.searchTerm) {
+      const s = this.searchTerm.toLowerCase().trim();
+      list = list.filter(t =>
+        t.title?.toLowerCase().includes(s)           ||  
+        t.titleAr?.toLowerCase().includes(s)         ||  
+        t.taskCode?.toLowerCase().includes(s)        ||  
+        t.description?.toLowerCase().includes(s)     ||  
+        t.assignedTo?.fullName?.toLowerCase().includes(s)   ||  
+        t.assignedTo?.fullNameAr?.toLowerCase().includes(s) ||  
+        t.createdBy?.fullName?.toLowerCase().includes(s)    ||  
+        t.createdBy?.fullNameAr?.toLowerCase().includes(s)  ||  
+        t.category?.name?.toLowerCase().includes(s)         ||  
+        t.category?.nameAr?.toLowerCase().includes(s)           
+      );
+    }
+    if (this.filterStatus)     list = list.filter(t => t.status === this.filterStatus);
+    if (this.filterPriority)   list = list.filter(t => t.priority === this.filterPriority);
+    if (this.filterEmployeeId) list = list.filter(t => t.assignedTo?.id === this.filterEmployeeId);
+    this.filteredTasks.set(list);
   }
 
   onEmployeeChange() {

@@ -75,27 +75,16 @@ export const taskService = {
       if (filters.toDate) where.dueDate.lte = new Date(filters.toDate);
     }
 
-    const page = filters.page ? +filters.page : 1;
-    const limit = filters.limit ? +filters.limit : 50;
-    const skip = (page - 1) * limit;
-
-    const [tasks, total] = await Promise.all([
-      prisma.task.findMany({
-        where,
-        include: {
-          assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
-          createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
-          category: true,
-          _count: { select: { comments: true, attachments: true } },
-        },
-        orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
-        skip,
-        take: limit
-      }),
-      prisma.task.count({ where })
-    ]);
-
-    return { tasks, total, page };
+    return prisma.task.findMany({
+      where,
+      include: {
+        assignedTo: { select: { id: true, fullName: true, fullNameAr: true, profilePhoto: true, employeeCode: true } },
+        createdBy: { select: { id: true, fullName: true, fullNameAr: true } },
+        category: true,
+        _count: { select: { comments: true, attachments: true } },
+      },
+      orderBy: [{ priority: 'desc' }, { dueDate: 'asc' }],
+    });
   },
 
   async getById(id: number) {
