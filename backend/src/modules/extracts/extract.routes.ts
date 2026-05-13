@@ -115,6 +115,50 @@ router.get('/', async (req: AuthRequest, res: Response, next: NextFunction) => {
   } catch (e) { next(e); }
 });
 
+// GET /financial-summary — إجماليات مالية مجمّعة حسب الحالة والعملة
+router.get('/financial-summary', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { projectId, contractorId, dateFrom, dateTo } = req.query as Record<string, string>;
+    const where: any = { amount: { not: null } };
+    if (projectId)    where.projectId    = +projectId;
+    if (contractorId) where.contractorId = +contractorId;
+    if (dateFrom || dateTo) {
+      where.receivedAt = {};
+      if (dateFrom) where.receivedAt.gte = new Date(dateFrom);
+      if (dateTo)   where.receivedAt.lte = new Date(dateTo);
+    }
+
+    // مجموع لكل حالة
+    const statuses = ['RECEIVED', 'UNDER_REVIEW', 'POSTED', 'RETURNED'];
+    const byStatus = await Promise.all(
+      statuses.map(async (s) => {
+        const agg = await prisma.taskExtract.aggregate({
+          where: { ...where, status: s },
+          _sum:   { amount: true },
+          _count: { id: true },
+        });
+        return { status: s, total: Number(agg._sum.amount ?? 0), count: agg._count.id };
+      })
+    );
+
+    // إجمالي كل العملات
+    const grandTotal = await prisma.taskExtract.aggregate({
+      where,
+      _sum:   { amount: true },
+      _count: { id: true },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        byStatus,
+        grandTotal:  Number(grandTotal._sum.amount ?? 0),
+        grandCount:  grandTotal._count.id,
+      },
+    });
+  } catch (e) { next(e); }
+});
+
 // GET single extract
 router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -128,7 +172,7 @@ router.get('/:id', async (req: AuthRequest, res: Response, next: NextFunction) =
 router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if ((req.user!.roleLevel ?? 99) > 4) return res.status(403).json({ success: false, message: 'Forbidden' });
-    const { extractNumber, taskId, contractorId, projectId, notes } = req.body;
+    const { extractNumber, taskId, contractorId, projectId, notes, amount, currency } = req.body;
     if (!extractNumber || !contractorId || !projectId)
       return res.status(400).json({ success: false, message: 'extractNumber, contractorId, projectId required' });
 
@@ -139,6 +183,8 @@ router.post('/', async (req: AuthRequest, res: Response, next: NextFunction) => 
         contractorId:  +contractorId,
         projectId:     +projectId,
         notes,
+        amount:        amount ? +amount : null,
+        currency:      currency || 'EGP',
         createdById:   req.user!.id,
       },
       include: INCLUDE,

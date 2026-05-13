@@ -60,6 +60,41 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
     </div>
   </div>
 
+  <!-- Financial Summary Banner -->
+  <div class="financial-banner tf-card" *ngIf="financialSummary()">
+    <div class="fin-title">
+      <mat-icon>account_balance_wallet</mat-icon>
+      {{ isAr() ? 'ملخص مالي' : 'Financial Summary' }}
+    </div>
+    <div class="fin-cards">
+      <div class="fin-card amber">
+        <span class="fin-label">{{ isAr() ? 'مستلم' : 'Received' }}</span>
+        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[0]?.total) }}</span>
+        <span class="fin-count">{{financialSummary()?.byStatus?.[0]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+      </div>
+      <div class="fin-card blue">
+        <span class="fin-label">{{ isAr() ? 'مراجعة' : 'Under Review' }}</span>
+        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[1]?.total) }}</span>
+        <span class="fin-count">{{financialSummary()?.byStatus?.[1]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+      </div>
+      <div class="fin-card green">
+        <span class="fin-label">{{ isAr() ? 'مُدرج' : 'Posted' }}</span>
+        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[2]?.total) }}</span>
+        <span class="fin-count">{{financialSummary()?.byStatus?.[2]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+      </div>
+      <div class="fin-card red">
+        <span class="fin-label">{{ isAr() ? 'مُرجَع' : 'Returned' }}</span>
+        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[3]?.total) }}</span>
+        <span class="fin-count">{{financialSummary()?.byStatus?.[3]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+      </div>
+      <div class="fin-card grand">
+        <span class="fin-label">{{ isAr() ? 'الإجمالي' : 'Grand Total' }}</span>
+        <span class="fin-amount">{{ formatAmount(financialSummary()?.grandTotal) }}</span>
+        <span class="fin-count">{{financialSummary()?.grandCount}} {{ isAr() ? 'مستخلص بمبالغ' : 'with amounts' }}</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Filters -->
   <div class="filter-card tf-card">
     <div class="filter-row">
@@ -139,6 +174,13 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
         <td mat-cell *matCellDef="let r">
           <span *ngIf="r.task" class="code-badge">{{r.task?.taskCode}}</span>
           <span *ngIf="!r.task" class="text-muted">—</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef>{{ isAr() ? 'المبلغ' : 'Amount' }}</th>
+        <td mat-cell *matCellDef="let r">
+          <span *ngIf="r.amount" class="amount-badge">{{r.amount | number:'1.0-0'}} <small>{{r.currency}}</small></span>
+          <span *ngIf="!r.amount" class="text-muted">—</span>
         </td>
       </ng-container>
       <ng-container matColumnDef="receivedAt">
@@ -263,6 +305,24 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
           <mat-label>{{ isAr() ? 'ملاحظات' : 'Notes' }}</mat-label>
           <textarea matInput [(ngModel)]="newForm.notes" rows="2"></textarea>
         </mat-form-field>
+        <!-- حقول مالية -->
+        <div class="amount-row">
+          <mat-form-field appearance="outline" class="amount-field">
+            <mat-label>{{ isAr() ? 'المبلغ (اختياري)' : 'Amount (optional)' }}</mat-label>
+            <input matInput type="number" min="0" [(ngModel)]="newForm.amount" placeholder="0.00">
+            <mat-icon matSuffix>payments</mat-icon>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="currency-field">
+            <mat-label>{{ isAr() ? 'العملة' : 'Currency' }}</mat-label>
+            <mat-select [(ngModel)]="newForm.currency">
+              <mat-option value="EGP">🇪🇬 EGP — جنيه مصري</mat-option>
+              <mat-option value="USD">🇺🇸 USD — دولار</mat-option>
+              <mat-option value="EUR">🇪🇺 EUR — يورو</mat-option>
+              <mat-option value="SAR">🇸🇦 SAR — ريال سعودي</mat-option>
+              <mat-option value="AED">🇦🇪 AED — درهم إماراتي</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
       <div class="form-footer">
         <button mat-button (click)="showCreate.set(false)">{{ isAr() ? 'إلغاء' : 'Cancel' }}</button>
@@ -346,6 +406,46 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
     .form-body   { padding:16px 24px; display:flex; flex-direction:column; gap:12px; overflow-y:auto; flex:1; min-height:0; }
     .form-footer { display:flex; justify-content:flex-end; gap:8px; padding:12px 24px 16px; flex-shrink:0; border-top:1px solid var(--border-color); }
     .w-100 { width:100%; }
+    .form-drawer { height:min(90vh,640px) !important; }
+
+    /* ── Amount row ──────────────────────── */
+    .amount-row { display:flex; gap:10px; }
+    .amount-field { flex:2; }
+    .currency-field { flex:1; }
+    .amount-badge {
+      font-family:monospace; font-size:12px; font-weight:700;
+      color:#16a34a; background:#f0fdf4;
+      padding:2px 8px; border-radius:6px;
+      small { font-size:10px; color:#64748b; margin-inline-start:3px; }
+    }
+
+    /* ── Financial Banner ─────────────────── */
+    .financial-banner {
+      padding:14px 20px; margin-bottom:14px;
+      background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border:1px solid #bbf7d0;
+    }
+    .fin-title {
+      display:flex; align-items:center; gap:7px;
+      font-weight:700; font-size:14px; color:#16a34a; margin-bottom:12px;
+      mat-icon { font-size:18px; }
+    }
+    .fin-cards { display:flex; gap:10px; flex-wrap:wrap; }
+    .fin-card {
+      flex:1; min-width:130px; padding:10px 14px; border-radius:12px;
+      display:flex; flex-direction:column; gap:2px;
+      &.amber { background:#fffbeb; border:1px solid #fde68a; }
+      &.blue  { background:#eff6ff; border:1px solid #bfdbfe; }
+      &.green { background:#f0fdf4; border:1px solid #bbf7d0; }
+      &.red   { background:#fef2f2; border:1px solid #fecaca; }
+      &.grand { background:#1e3a5f; border:1px solid #1e3a5f; }
+    }
+    .fin-label  { font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:.5px; }
+    .fin-card.grand .fin-label { color:rgba(255,255,255,0.7); }
+    .fin-amount { font-size:18px; font-weight:800; font-family:monospace; color:var(--text-primary); }
+    .fin-card.grand .fin-amount { color:#fff; }
+    .fin-count  { font-size:11px; color:var(--text-muted); }
+    .fin-card.grand .fin-count  { color:rgba(255,255,255,0.5); }
 
     /* ── Searchable select ─────────────────────────── */
     .select-search-wrap {
@@ -379,7 +479,7 @@ export class ExtractsPageComponent implements OnInit {
   expandedRow: any = null;
 
   ds = new MatTableDataSource<any>([]);
-  cols = ['extractNumber','contractor','project','status','task','receivedAt','actions'];
+  cols = ['extractNumber','contractor','project','status','task','amount','receivedAt','actions'];
 
   filterStatus     = '';
   filterProject    = '';
@@ -388,9 +488,10 @@ export class ExtractsPageComponent implements OnInit {
   filterFrom: Date | null = null;
   filterTo:   Date | null = null;
 
-  newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, taskId: null as any, notes: '' };
+  newForm = { extractNumber: null as any, contractorId: null as any, projectId: null as any, taskId: null as any, notes: '', amount: null as any, currency: 'EGP' };
 
-  summary = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
+  summary          = signal({ total:0, received:0, underReview:0, returned:0, posted:0 });
+  financialSummary = signal<any>(null);
 
   // ── Searchable dropdowns ──
   filterContractorQ = '';
@@ -471,11 +572,24 @@ export class ExtractsPageComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+
+    this.loadFinancialSummary(f);
+  }
+
+  loadFinancialSummary(f: any) {
+    this.svc.getFinancialSummary(f).subscribe(r => {
+      if (r.success) this.financialSummary.set(r.data);
+    });
+  }
+
+  formatAmount(amount: number | undefined | null): string {
+    if (amount === null || amount === undefined) return '0';
+    return new Intl.NumberFormat(this.isAr() ? 'ar-EG' : 'en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
   }
 
   setFilter(s: string) { this.filterStatus = s; this.load(); }
   toggleExpand(r: any) { this.expandedRow = this.expandedRow === r ? null : r; }
-  openCreate() { this.newForm = { extractNumber: null, contractorId: null, projectId: null, taskId: null, notes: '' }; this.showCreate.set(true); }
+  openCreate() { this.newForm = { extractNumber: null, contractorId: null, projectId: null, taskId: null, notes: '', amount: null, currency: 'EGP' }; this.showCreate.set(true); }
 
   submitCreate() {
     this.saving.set(true);

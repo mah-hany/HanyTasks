@@ -28,6 +28,12 @@ export class ExtractService {
     return this.http.get<any>(this.base, { params: p });
   }
 
+  getFinancialSummary(filters: any = {}) {
+    let p = new HttpParams();
+    Object.entries(filters).forEach(([k, v]) => { if (v !== null && v !== undefined && v !== '') p = p.set(k, String(v)); });
+    return this.http.get<any>(`${this.base}/financial-summary`, { params: p });
+  }
+
   getById(id: number)               { return this.http.get<any>(`${this.base}/${id}`); }
   create(data: any)                 { return this.http.post<any>(this.base, data); }
   updateStatus(id: number, status: string, returnComment?: string) {

@@ -482,6 +482,8 @@ model TaskExtract {
   contractorId  Int
   projectId     Int
   status        String   @default("RECEIVED") // RECEIVED|UNDER_REVIEW|POSTED|RETURNED
+  amount        Decimal? @db.Decimal(15, 2)   // ← المبلغ المالي للمستخلص
+  currency      String   @default("EGP")      // ← العملة (EGP, USD, EUR, SAR...)
   notes         String?
   receivedAt    DateTime @default(now())
   updatedAt     DateTime @updatedAt
