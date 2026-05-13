@@ -60,37 +60,39 @@ import { ReturnCommentDialogComponent } from './return-comment-dialog.component'
     </div>
   </div>
 
-  <!-- Financial Summary Banner -->
-  <div class="financial-banner tf-card" *ngIf="financialSummary()">
-    <div class="fin-title">
-      <mat-icon>account_balance_wallet</mat-icon>
-      {{ isAr() ? 'ملخص مالي' : 'Financial Summary' }}
-    </div>
-    <div class="fin-cards">
-      <div class="fin-card amber">
-        <span class="fin-label">{{ isAr() ? 'مستلم' : 'Received' }}</span>
-        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[0]?.total) }}</span>
-        <span class="fin-count">{{financialSummary()?.byStatus?.[0]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+  <!-- Financial Summary Banners (Per Currency) -->
+  <div class="financial-summaries" *ngIf="financialSummary()?.length > 0">
+    <div class="financial-banner tf-card" *ngFor="let fin of financialSummary()" style="margin-bottom: 16px;">
+      <div class="fin-title">
+        <mat-icon>account_balance_wallet</mat-icon>
+        {{ isAr() ? 'ملخص مالي' : 'Financial Summary' }} ({{ fin.currency }})
       </div>
-      <div class="fin-card blue">
-        <span class="fin-label">{{ isAr() ? 'مراجعة' : 'Under Review' }}</span>
-        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[1]?.total) }}</span>
-        <span class="fin-count">{{financialSummary()?.byStatus?.[1]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
-      </div>
-      <div class="fin-card green">
-        <span class="fin-label">{{ isAr() ? 'مُدرج' : 'Posted' }}</span>
-        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[2]?.total) }}</span>
-        <span class="fin-count">{{financialSummary()?.byStatus?.[2]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
-      </div>
-      <div class="fin-card red">
-        <span class="fin-label">{{ isAr() ? 'مُرجَع' : 'Returned' }}</span>
-        <span class="fin-amount">{{ formatAmount(financialSummary()?.byStatus?.[3]?.total) }}</span>
-        <span class="fin-count">{{financialSummary()?.byStatus?.[3]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
-      </div>
-      <div class="fin-card grand">
-        <span class="fin-label">{{ isAr() ? 'الإجمالي' : 'Grand Total' }}</span>
-        <span class="fin-amount">{{ formatAmount(financialSummary()?.grandTotal) }}</span>
-        <span class="fin-count">{{financialSummary()?.grandCount}} {{ isAr() ? 'مستخلص بمبالغ' : 'with amounts' }}</span>
+      <div class="fin-cards">
+        <div class="fin-card amber">
+          <span class="fin-label">{{ isAr() ? 'مستلم' : 'Received' }}</span>
+          <span class="fin-amount">{{ formatAmount(fin.byStatus?.[0]?.total, fin.currency) }}</span>
+          <span class="fin-count">{{fin.byStatus?.[0]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+        </div>
+        <div class="fin-card blue">
+          <span class="fin-label">{{ isAr() ? 'مراجعة' : 'Under Review' }}</span>
+          <span class="fin-amount">{{ formatAmount(fin.byStatus?.[1]?.total, fin.currency) }}</span>
+          <span class="fin-count">{{fin.byStatus?.[1]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+        </div>
+        <div class="fin-card green">
+          <span class="fin-label">{{ isAr() ? 'مُدرج' : 'Posted' }}</span>
+          <span class="fin-amount">{{ formatAmount(fin.byStatus?.[2]?.total, fin.currency) }}</span>
+          <span class="fin-count">{{fin.byStatus?.[2]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+        </div>
+        <div class="fin-card red">
+          <span class="fin-label">{{ isAr() ? 'مُرجَع' : 'Returned' }}</span>
+          <span class="fin-amount">{{ formatAmount(fin.byStatus?.[3]?.total, fin.currency) }}</span>
+          <span class="fin-count">{{fin.byStatus?.[3]?.count}} {{ isAr() ? 'مستخلص' : 'extracts' }}</span>
+        </div>
+        <div class="fin-card grand">
+          <span class="fin-label">{{ isAr() ? 'الإجمالي' : 'Grand Total' }}</span>
+          <span class="fin-amount">{{ formatAmount(fin.grandTotal, fin.currency) }}</span>
+          <span class="fin-count">{{fin.grandCount}} {{ isAr() ? 'مستخلص بمبالغ' : 'with amounts' }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -755,9 +757,10 @@ export class ExtractsPageComponent implements OnInit {
     });
   }
 
-  formatAmount(amount: number | undefined | null): string {
-    if (amount === null || amount === undefined) return '0';
-    return new Intl.NumberFormat(this.isAr() ? 'ar-EG' : 'en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
+  formatAmount(amount: number | undefined | null, currency?: string): string {
+    if (amount === null || amount === undefined) return '0' + (currency ? ' ' + currency : '');
+    const num = new Intl.NumberFormat(this.isAr() ? 'ar-EG' : 'en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(amount);
+    return currency ? `${num} ${currency}` : num;
   }
 
   setFilter(s: string) { this.filterStatus = s; this.load(); }

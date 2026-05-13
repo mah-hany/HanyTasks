@@ -212,29 +212,38 @@ router.get('/financial-summary', async (req, res, next) => {
             if (dateTo)
                 where.receivedAt.lte = new Date(dateTo);
         }
-        // مجموع لكل حالة
-        const statuses = ['RECEIVED', 'UNDER_REVIEW', 'POSTED', 'RETURNED'];
-        const byStatus = await Promise.all(statuses.map(async (s) => {
-            const agg = await client_1.default.taskExtract.aggregate({
-                where: { ...where, status: s },
-                _sum: { amount: true },
-                _count: { id: true },
-            });
-            return { status: s, total: Number(agg._sum.amount ?? 0), count: agg._count.id };
-        }));
-        // إجمالي كل العملات
-        const grandTotal = await client_1.default.taskExtract.aggregate({
+        const agg = await client_1.default.taskExtract.groupBy({
+            by: ['currency', 'status'],
             where,
             _sum: { amount: true },
             _count: { id: true },
         });
+        const currenciesMap = {};
+        const statuses = ['RECEIVED', 'UNDER_REVIEW', 'POSTED', 'RETURNED'];
+        agg.forEach(a => {
+            const cur = a.currency || 'EGP';
+            if (!currenciesMap[cur]) {
+                currenciesMap[cur] = {
+                    currency: cur,
+                    byStatus: statuses.map(s => ({ status: s, total: 0, count: 0 })),
+                    grandTotal: 0,
+                    grandCount: 0
+                };
+            }
+            const st = a.status;
+            const statusObj = currenciesMap[cur].byStatus.find(s => s.status === st);
+            const total = Number(a._sum.amount ?? 0);
+            const count = a._count.id;
+            if (statusObj) {
+                statusObj.total = total;
+                statusObj.count = count;
+            }
+            currenciesMap[cur].grandTotal += total;
+            currenciesMap[cur].grandCount += count;
+        });
         res.json({
             success: true,
-            data: {
-                byStatus,
-                grandTotal: Number(grandTotal._sum.amount ?? 0),
-                grandCount: grandTotal._count.id,
-            },
+            data: Object.values(currenciesMap),
         });
     }
     catch (e) {
